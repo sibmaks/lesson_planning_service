@@ -1,10 +1,10 @@
-package xyz.dma.soft.api.response.role;
+package xyz.dma.soft.api.response.child;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import xyz.dma.soft.api.entity.RoleInfo;
+import xyz.dma.soft.api.entity.ChildCourseSchedulingInfo;
 import xyz.dma.soft.api.response.StandardResponse;
 
 import java.util.List;
@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class GetRolesResponse extends StandardResponse {
-    private List<RoleInfo> roleInfos;
+public class ChildrenGetResponse extends StandardResponse {
+    private List<ChildCourseSchedulingInfo> childCourseSchedulingInfos;
 }

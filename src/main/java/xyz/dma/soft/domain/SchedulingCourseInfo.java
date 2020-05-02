@@ -1,6 +1,7 @@
 package xyz.dma.soft.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalTime;
 
 @Data
 @Entity
+@Builder
 @Table(name = "scheduling_course_info")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,5 +26,5 @@ public class SchedulingCourseInfo implements Serializable {
     @Column(name = "time_start")
     private LocalTime timeStart;
     @Column(name = "time_end")
-    private LocalTime timeSEnd;
+    private LocalTime timeEnd;
 }

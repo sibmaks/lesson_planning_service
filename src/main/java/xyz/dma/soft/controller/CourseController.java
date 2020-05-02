@@ -6,14 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.dma.soft.api.request.course.CourseAddRequest;
-import xyz.dma.soft.api.request.course.CourseRemoveRequest;
 import xyz.dma.soft.api.request.course.CourseUpdateRequest;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.api.response.course.AddCourseResponse;
 import xyz.dma.soft.api.response.course.GetCoursesResponse;
 import xyz.dma.soft.api.response.course.UpdateCourseResponse;
 import xyz.dma.soft.api.validator.course.CourseAddRequestValidator;
-import xyz.dma.soft.api.validator.course.CourseRemoveRequestValidator;
 import xyz.dma.soft.api.validator.course.CourseUpdateRequestValidator;
 import xyz.dma.soft.core.RequestValidateRequired;
 import xyz.dma.soft.core.SessionRequired;
@@ -46,14 +44,7 @@ public class CourseController extends BaseController {
         return new UpdateCourseResponse(courseService.update(request.getId(), request.getName()));
     }
 
-    @SessionRequired(requiredAction = "MODIFY_COURSES")
-    @RequestValidateRequired(beanValidator = CourseRemoveRequestValidator.class)
-    @RequestMapping(path = "remove", method = RequestMethod.POST)
-    public StandardResponse remove(@RequestBody CourseRemoveRequest request) {
-        courseService.remove(request.getId());
-        return new StandardResponse();
-    }
-
+    @SessionRequired
     @RequestMapping(path = "getAll", method = RequestMethod.POST)
     public StandardResponse getAll() {
         return new GetCoursesResponse(courseService.getAll());

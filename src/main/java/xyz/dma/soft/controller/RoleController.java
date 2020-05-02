@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.dma.soft.api.request.role.GrantRoleRequest;
 import xyz.dma.soft.api.request.role.ModifyRoleRequest;
 import xyz.dma.soft.api.request.role.RetractRoleRequest;
-import xyz.dma.soft.api.response.role.GetRolesResponse;
+import xyz.dma.soft.api.response.role.RolesGetResponse;
 import xyz.dma.soft.api.response.StandardResponse;
-import xyz.dma.soft.api.validator.role.GrantRoleRequestValidator;
-import xyz.dma.soft.api.validator.role.ModifyRoleRequestValidator;
-import xyz.dma.soft.api.validator.role.RetractRoleRequestValidator;
+import xyz.dma.soft.api.validator.role.RoleGrantRequestValidator;
+import xyz.dma.soft.api.validator.role.RoleUpdateRequestValidator;
+import xyz.dma.soft.api.validator.role.RoleRetractRequestValidator;
 import xyz.dma.soft.core.RequestValidateRequired;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.service.RoleService;
@@ -29,15 +29,15 @@ public class RoleController extends BaseController {
     }
 
     @SessionRequired(requiredAction = "MODIFY_ROLES")
-    @RequestValidateRequired(beanValidator = ModifyRoleRequestValidator.class)
-    @RequestMapping(path = "modify", method = RequestMethod.POST)
-    public StandardResponse modify(@RequestBody ModifyRoleRequest request) {
-        roleService.modify(request.getRole(), request.getAllowedActions());
+    @RequestValidateRequired(beanValidator = RoleUpdateRequestValidator.class)
+    @RequestMapping(path = "update", method = RequestMethod.POST)
+    public StandardResponse update(@RequestBody ModifyRoleRequest request) {
+        roleService.update(request.getRole(), request.getAllowedActions());
         return new StandardResponse();
     }
 
     @SessionRequired(requiredAction = "MODIFY_USERS")
-    @RequestValidateRequired(beanValidator = GrantRoleRequestValidator.class)
+    @RequestValidateRequired(beanValidator = RoleGrantRequestValidator.class)
     @RequestMapping(path = "grant", method = RequestMethod.POST)
     public StandardResponse grant(@RequestBody GrantRoleRequest request) {
         roleService.grant(request.getRole(), request.getUserId());
@@ -45,15 +45,16 @@ public class RoleController extends BaseController {
     }
 
     @SessionRequired(requiredAction = "MODIFY_USERS")
-    @RequestValidateRequired(beanValidator = RetractRoleRequestValidator.class)
+    @RequestValidateRequired(beanValidator = RoleRetractRequestValidator.class)
     @RequestMapping(path = "retract", method = RequestMethod.POST)
     public StandardResponse retract(@RequestBody RetractRoleRequest request) {
         roleService.retract(request.getRole(), request.getUserId());
         return new StandardResponse();
     }
 
+    @SessionRequired
     @RequestMapping(path = "getAll", method = RequestMethod.POST)
     public StandardResponse getAll() {
-        return new GetRolesResponse(roleService.getAll());
+        return new RolesGetResponse(roleService.getAll());
     }
 }

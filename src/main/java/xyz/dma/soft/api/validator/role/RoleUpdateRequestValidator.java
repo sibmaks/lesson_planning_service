@@ -12,7 +12,7 @@ import static java.util.Objects.isNull;
 
 @Component
 @AllArgsConstructor
-public class ModifyRoleRequestValidator extends ARequestValidator<ModifyRoleRequest> {
+public class RoleUpdateRequestValidator extends ARequestValidator<ModifyRoleRequest> {
     private final UserActionRepository userActionRepository;
 
     @Override

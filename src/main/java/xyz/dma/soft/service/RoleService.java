@@ -27,7 +27,7 @@ public class RoleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void modify(String roleName, List<String> allowedActions) {
+    public void update(String roleName, List<String> allowedActions) {
         UserRole userRole = userRoleRepository.findFirstByName(roleName);
         if(userRole == null) {
             throw ServiceException.builder().code(ApiResultCode.NOT_FOUND).build();
