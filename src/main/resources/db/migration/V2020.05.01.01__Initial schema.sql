@@ -1,0 +1,45 @@
+create sequence less_planning.child_info_id_seq start 1 increment 50;
+create sequence less_planning.child_scheduling_course_info_id_seq start 1 increment 50;
+create sequence less_planning.course_id_seq start 1 increment 50;
+create sequence less_planning.lesson_id_seq start 1 increment 50;
+create sequence less_planning.scheduling_course_info_id_seq start 1 increment 50;
+create sequence less_planning.user_action_id_seq start 1 increment 50;
+create sequence less_planning.user_id_seq start 1 increment 50;
+create sequence less_planning.user_role_id_seq start 1 increment 50;
+
+create table less_planning.auth_info (last_auth_date timestamp, last_auth_ip varchar(255), user_id int8 not null, primary key (user_id));
+create table less_planning.child_info (id int8 not null, name varchar(255), parent_name varchar(255), phone varchar(255), primary key (id));
+create table less_planning.child_scheduling_course_info (id int8 not null, child_info_id int8, course_id int8, primary key (id));
+create table less_planning.child_scheduling_course_info_scheduling_course_info_list (child_scheduling_course_info_id int8 not null, scheduling_course_info_list_id int8 not null);
+create table less_planning.course (id int8 not null, name varchar(255), author_id int8, primary key (id));
+create table less_planning.lesson (id int8 not null, day_of_week int4, lesson_end_date date, lesson_start_date date, time_end time, time_start time, course_id int8, teacher_id int8, primary key (id));
+create table less_planning.lesson_children (lesson_id int8 not null, children_id int8 not null);
+create table less_planning.scheduling_course_info (id int8 not null, day_of_week int4, time_end time, time_start time, primary key (id));
+create table less_planning.user (id int8 not null, login varchar(255) not null, password varchar(255), registration_date timestamp, primary key (id));
+create table less_planning.user_action (id int8 not null, name varchar(255) not null, primary key (id));
+create table less_planning.user_info (first_name varchar(255), last_name varchar(255), user_id int8 not null, primary key (user_id));
+create table less_planning.user_role (id int8 not null, description varchar(255), name varchar(255) not null, primary key (id));
+create table less_planning.user_role_allowed_actions (user_role_id int8 not null, allowed_actions_id int8 not null);
+create table less_planning.user_user_roles (user_id int8 not null, user_roles_id int8 not null);
+
+alter table if exists less_planning.child_scheduling_course_info_scheduling_course_info_list add constraint UK_9clvbt2i1f3afha761yhbxoe5 unique (scheduling_course_info_list_id);
+alter table if exists less_planning.course add constraint UK_4xqvdpkafb91tt3hsb67ga3fj unique (name);
+alter table if exists less_planning.user add constraint UK_ew1hvam8uwaknuaellwhqchhb unique (login);
+alter table if exists less_planning.user_action add constraint UK_boyls4st4l02dlaah1xkpcrli unique (name);
+alter table if exists less_planning.user_role add constraint UK_lnth8w122wgy7grrjlu8hjmuu unique (name);
+
+alter table if exists less_planning.auth_info add constraint FKsk811invd64ol25y5y0aqcb81 foreign key (user_id) references less_planning.user;
+alter table if exists less_planning.child_scheduling_course_info add constraint FK10sma8p6qsum7q6ihmq3bm6wb foreign key (child_info_id) references less_planning.child_info;
+alter table if exists less_planning.child_scheduling_course_info add constraint FKt9kxerient9pe32haut5teuto foreign key (course_id) references less_planning.course;
+alter table if exists less_planning.child_scheduling_course_info_scheduling_course_info_list add constraint FKnv1qt3odtl0tc531hsod833i foreign key (scheduling_course_info_list_id) references less_planning.scheduling_course_info;
+alter table if exists less_planning.child_scheduling_course_info_scheduling_course_info_list add constraint FK718i4jcy7jixcs8g5u3poq1dt foreign key (child_scheduling_course_info_id) references less_planning.child_scheduling_course_info;
+alter table if exists less_planning.course add constraint FKmaatvkqyrdpwoiq3opi1obk7b foreign key (author_id) references less_planning.user;
+alter table if exists less_planning.lesson add constraint FKjs3c7skmg8bvdddok5lc7s807 foreign key (course_id) references less_planning.course;
+alter table if exists less_planning.lesson add constraint FKe90hlqoby7nbcgxgb169cb2dg foreign key (teacher_id) references less_planning.user;
+alter table if exists less_planning.lesson_children add constraint FKddo1rna58k5ave2yvm41mr3np foreign key (children_id) references less_planning.child_info;
+alter table if exists less_planning.lesson_children add constraint FK3j8fdlwkhfnslq6iageucwert foreign key (lesson_id) references less_planning.lesson;
+alter table if exists less_planning.user_info add constraint FKn8pl63y4abe7n0ls6topbqjh2 foreign key (user_id) references less_planning.user;
+alter table if exists less_planning.user_role_allowed_actions add constraint FKidtguumnx3klfqm8r9lludhqq foreign key (allowed_actions_id) references less_planning.user_action;
+alter table if exists less_planning.user_role_allowed_actions add constraint FKgle7win2tc9bau9i3f8kqsf74 foreign key (user_role_id) references less_planning.user_role;
+alter table if exists less_planning.user_user_roles add constraint FK60vm96njnava0xkygkeuekglu foreign key (user_roles_id) references less_planning.user_role;
+alter table if exists less_planning.user_user_roles add constraint FKhxmdhadm01kwqo2lvyv8l8ho7 foreign key (user_id) references less_planning.user;
