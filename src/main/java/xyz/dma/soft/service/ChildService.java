@@ -2,10 +2,7 @@ package xyz.dma.soft.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import xyz.dma.soft.api.entity.ApiResultCode;
-import xyz.dma.soft.api.entity.ChildCourseSchedulingInfo;
-import xyz.dma.soft.api.entity.ChildInfoEntity;
-import xyz.dma.soft.api.entity.CourseSchedulingInfo;
+import xyz.dma.soft.api.entity.*;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.api.response.child.ChildAddResponse;
 import xyz.dma.soft.api.response.child.ChildUpdateResponse;
@@ -42,7 +39,7 @@ public class ChildService {
             List<ChildSchedulingCourseInfo> kidSchedulingInfo = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
 
             ChildCourseSchedulingInfo childCourseSchedulingInfo = ChildCourseSchedulingInfo.builder()
-                    .childInfo(buildChildInfo(childInfo))
+                    .childInfo(new ChildInfoEntity(childInfo))
                     .courseSchedulingInfos(buildChildCourseSchedulingInfo(kidSchedulingInfo))
                     .build();
             childCourseSchedulingInfos.add(childCourseSchedulingInfo);
@@ -60,21 +57,12 @@ public class ChildService {
                         .dayOfWeek(schedulingCourseInfo.getDayOfWeek())
                         .timeStart(schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_FORMATTER))
                         .timeEnd(schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_FORMATTER))
-                        .courseInfo(CourseService.buildCourseInfo(kidSchedulingInfo.getCourse()))
+                        .courseInfo(new CourseInfo(kidSchedulingInfo.getCourse()))
                         .build();
                 courseSchedulingInfos.add(courseSchedulingInfo);
             }
         }
         return courseSchedulingInfos;
-    }
-
-    public ChildInfoEntity buildChildInfo(ChildInfo childInfo) {
-        return ChildInfoEntity.builder()
-                .id(childInfo.getId())
-                .name(childInfo.getName())
-                .parentName(childInfo.getParentName())
-                .phone(childInfo.getPhone())
-                .build();
     }
 
     public SchedulingCourseInfo buildSchedulingCourseInfo(CourseSchedulingInfo courseSchedulingInfo) {
@@ -95,7 +83,7 @@ public class ChildService {
                 .phone(childInfoEntity.getPhone())
                 .build();
         childInfo = childInfoRepository.save(childInfo);
-        response.setChildInfo(buildChildInfo(childInfo));
+        response.setChildInfo(new ChildInfoEntity(childInfo));
 
         if(courseSchedulingInfos != null) {
             Map<Long, ChildSchedulingCourseInfo> courseIdSchedulingMap = new HashMap<>();
@@ -146,7 +134,7 @@ public class ChildService {
         childInfo.setPhone(childInfoEntity.getPhone());
 
         childInfo = childInfoRepository.save(childInfo);
-        response.setChildInfo(buildChildInfo(childInfo));
+        response.setChildInfo(new ChildInfoEntity(childInfo));
 
         List<ChildSchedulingCourseInfo> schedulingCourseInfosForRemove = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
         if(courseSchedulingInfos != null && !courseSchedulingInfos.isEmpty()) {

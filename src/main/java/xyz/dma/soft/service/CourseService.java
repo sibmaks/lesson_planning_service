@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.api.entity.CourseInfo;
-import xyz.dma.soft.api.entity.UserInfo;
 import xyz.dma.soft.domain.Course;
 import xyz.dma.soft.domain.user.User;
 import xyz.dma.soft.exception.ServiceException;
@@ -25,7 +24,7 @@ public class CourseService {
         List<CourseInfo> courseInfos = new ArrayList<>();
 
         for(Course course : courseRepository.findAll()) {
-            courseInfos.add(buildCourseInfo(course));
+            courseInfos.add(new CourseInfo(course));
         }
 
         return courseInfos;
@@ -41,15 +40,7 @@ public class CourseService {
         course.setName(name);
         course.setAuthor(user);
         course = courseRepository.save(course);
-        return buildCourseInfo(course);
-    }
-
-    public static CourseInfo buildCourseInfo(Course course) {
-        return CourseInfo.builder()
-                .id(course.getId())
-                .name(course.getName())
-                .author(new UserInfo(course.getAuthor()))
-                .build();
+        return new CourseInfo(course);
     }
 
     @Transactional
@@ -71,6 +62,6 @@ public class CourseService {
                 .orElseThrow(() -> ServiceException.builder().code(ApiResultCode.NOT_EXISTS).build());
         course.setName(name);
         course = courseRepository.save(course);
-        return buildCourseInfo(course);
+        return new CourseInfo(course);
     }
 }

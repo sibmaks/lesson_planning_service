@@ -5,13 +5,13 @@ insert into less_planning.user_action (id, name) VALUES
 
 insert into less_planning.user_role (id, name, description) VALUES
     (nextval('less_planning.user_role_id_seq'), 'ADMIN', 'Main role'),
-    (nextval('less_planning.user_role_id_seq'), 'USER', 'Common users role');
+    (nextval('less_planning.user_role_id_seq'), 'TEACHER', 'Teacher role');
 
 insert into less_planning.user_role_allowed_actions (user_role_id, allowed_actions_id) VALUES
     ((select ur.id from less_planning.user_role ur where ur.name = 'ADMIN'), (select ua.id from less_planning.user_action ua where ua.name = 'MODIFY_USERS')),
     ((select ur.id from less_planning.user_role ur where ur.name = 'ADMIN'), (select ua.id from less_planning.user_action ua where ua.name = 'MODIFY_COURSES')),
     ((select ur.id from less_planning.user_role ur where ur.name = 'ADMIN'), (select ua.id from less_planning.user_action ua where ua.name = 'MODIFY_ROLES')),
-    ((select ur.id from less_planning.user_role ur where ur.name = 'USER'), (select ua.id from less_planning.user_action ua where ua.name = 'MODIFY_COURSES'));
+    ((select ur.id from less_planning.user_role ur where ur.name = 'TEACHER'), (select ua.id from less_planning.user_action ua where ua.name = 'MODIFY_COURSES'));
 
 insert into less_planning.user (id, login, password, registration_date) VALUES
     (nextval('less_planning.user_id_seq'), 'admin', '$2a$10$cRDrpt4RtSeWloX1jyqhRuVOW73Cm5rYChneTaNYKcA.HrdpGrorO', now());

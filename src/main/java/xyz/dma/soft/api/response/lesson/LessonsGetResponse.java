@@ -1,11 +1,10 @@
-package xyz.dma.soft.api.response.user;
+package xyz.dma.soft.api.response.lesson;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import xyz.dma.soft.api.entity.RoleInfo;
-import xyz.dma.soft.api.entity.UserInfoEntity;
+import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.api.response.StandardResponse;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class RegisterResponse extends StandardResponse {
-    private UserInfoEntity userInfo;
-    private List<RoleInfo> roleInfos;
+public class LessonsGetResponse extends StandardResponse {
+    private List<LessonEntity> lessons;
 }

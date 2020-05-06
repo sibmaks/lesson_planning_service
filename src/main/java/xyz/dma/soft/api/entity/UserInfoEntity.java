@@ -10,16 +10,16 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo implements Serializable {
+public class UserInfoEntity implements Serializable {
     private long userId;
     private String firstName;
     private String lastName;
 
-    public UserInfo(User user) {
+    public UserInfoEntity(User user) {
         this(user.getId(), user.getUserInfo());
     }
 
-    public UserInfo(Long userId, xyz.dma.soft.domain.user.UserInfo userInfo) {
+    public UserInfoEntity(Long userId, xyz.dma.soft.domain.user.UserInfo userInfo) {
         this.userId = userId;
         this.firstName = userInfo == null ? null : userInfo.getFirstName();
         this.lastName = userInfo == null ? null : userInfo.getLastName();

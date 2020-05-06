@@ -5,6 +5,7 @@ import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.IRequestValidator;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -74,7 +75,24 @@ public abstract class ARequestValidator<T extends StandardRequest> implements IR
         return true;
     }
 
-    public boolean startBeforeEnd(String start, String end) {
+    public boolean isValidDate(String date) {
+        try {
+            LocalDate.parse(date, ICommonConstants.DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean timeStartBeforeEnd(String start, String end) {
         return LocalTime.parse(start, ICommonConstants.TIME_FORMATTER).isBefore(LocalTime.parse(end, ICommonConstants.TIME_FORMATTER));
+    }
+
+    public boolean dateStartBeforeEnd(String start, String end) {
+        return LocalDate.parse(start, ICommonConstants.DATE_FORMATTER).isBefore(LocalDate.parse(end, ICommonConstants.DATE_FORMATTER));
+    }
+
+    public boolean dateStartBeforeEnd(LocalDate start, String end) {
+        return start.isBefore(LocalDate.parse(end, ICommonConstants.DATE_FORMATTER));
     }
 }

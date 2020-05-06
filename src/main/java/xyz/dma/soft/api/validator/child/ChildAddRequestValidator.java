@@ -34,7 +34,7 @@ public class ChildAddRequestValidator extends ARequestValidator<ChildAddRequest>
                         .addConstraint(1, () -> !isValidTime(courseSchedulingInfo.getTimeStart()), "invalid", String.format("courseSchedulingInfos[%d]", i), "timeStart")
                         .addConstraint(0, () -> isNull(courseSchedulingInfo.getTimeEnd()), "empty", String.format("courseSchedulingInfos[%d]", i), "timeEnd")
                         .addConstraint(1, () -> !isValidTime(courseSchedulingInfo.getTimeEnd()), "invalid", String.format("courseSchedulingInfos[%d]", i), "timeEnd")
-                        .addConstraint(2, () -> !startBeforeEnd(courseSchedulingInfo.getTimeStart(), courseSchedulingInfo.getTimeEnd()), "invalid", String.format("courseSchedulingInfos[%d]", i), "timeStart");
+                        .addConstraint(2, () -> !timeStartBeforeEnd(courseSchedulingInfo.getTimeStart(), courseSchedulingInfo.getTimeEnd()), "invalid", String.format("courseSchedulingInfos[%d]", i), "timeStart");
 
                 chainConstraint(context)
                         .addConstraint(0, () -> isNull(courseSchedulingInfo.getCourseInfo()), "empty", String.format("courseSchedulingInfos[%d]", i), "courseInfo")

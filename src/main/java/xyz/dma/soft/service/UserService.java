@@ -5,7 +5,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import xyz.dma.soft.api.entity.ApiResultCode;
-import xyz.dma.soft.api.entity.UserInfo;
+import xyz.dma.soft.api.entity.UserInfoEntity;
 import xyz.dma.soft.api.response.user.LoginResponse;
 import xyz.dma.soft.domain.user.AuthInfo;
 import xyz.dma.soft.domain.user.User;
@@ -44,7 +44,7 @@ public class UserService {
         user.getAuthInfo().setLastAuthIp(remoteAddress);
         userRepository.save(user);
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setUserInfo(new xyz.dma.soft.api.entity.UserInfo(user));
+        loginResponse.setUserInfo(new UserInfoEntity(user));
         loginResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
         return Pair.of(session.getId(), loginResponse);
     }
@@ -62,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse register(String login, String password, UserInfo userInfo, List<String> roles) {
+    public LoginResponse register(String login, String password, UserInfoEntity userInfoEntity, List<String> roles) {
         if(userRepository.existsByLogin(login.toLowerCase())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
@@ -75,7 +75,7 @@ public class UserService {
                 .registrationDate(LocalDateTime.now())
                 .build();
 
-        xyz.dma.soft.domain.user.UserInfo domainUserInfo = new xyz.dma.soft.domain.user.UserInfo(userInfo);
+        xyz.dma.soft.domain.user.UserInfo domainUserInfo = new xyz.dma.soft.domain.user.UserInfo(userInfoEntity);
         domainUserInfo.setUser(user);
         user.setUserInfo(domainUserInfo);
 
@@ -88,8 +88,12 @@ public class UserService {
         user = userRepository.save(user);
 
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setUserInfo(new xyz.dma.soft.api.entity.UserInfo(user));
+        loginResponse.setUserInfo(new UserInfoEntity(user));
         loginResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
         return loginResponse;
+    }
+
+    public User getUser(SessionInfo sessionInfo) {
+        return userRepository.findFirstById(sessionInfo.getUserId());
     }
 }

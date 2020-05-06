@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import xyz.dma.soft.api.entity.RoleInfo;
-import xyz.dma.soft.api.entity.UserInfo;
+import xyz.dma.soft.api.entity.UserInfoEntity;
 import xyz.dma.soft.api.response.StandardResponse;
 
 import java.util.List;
@@ -15,6 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LoginResponse extends StandardResponse {
-    private UserInfo userInfo;
+    private UserInfoEntity userInfo;
     private List<RoleInfo> roleInfos;
 }

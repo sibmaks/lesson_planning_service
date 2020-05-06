@@ -7,4 +7,6 @@ public interface CourseRepository extends CrudRepository<Course, Long> {
     Course findFirstByName(String name);
 
     boolean existsById(Long id);
+
+    Course findFirstById(Long id);
 }

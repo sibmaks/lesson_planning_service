@@ -15,6 +15,7 @@ public enum ApiResultCode {
     PASSWORD_MISMATCH("PasswordMismatch"),
     ROLE_ALREADY_GRANTED("RoleAlreadyGranted"),
     NOT_EXISTS("NotExists"),
+    ACCESS_DENIED("AccessDenied"),
     UNEXPECTED_ERROR("UnexpectedError");
 
     final String code;
