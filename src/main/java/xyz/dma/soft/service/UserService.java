@@ -18,7 +18,9 @@ import xyz.dma.soft.repository.UserRoleRepository;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -28,14 +30,18 @@ public class UserService {
     private final UserRoleRepository userRoleRepository;
 
     @Transactional
-    public Pair<String, LoginResponse> login(String login, String password, String remoteAddress) {
+    public Pair<String, LoginResponse> login(String login, String password, String remoteAddress,
+                                             String countryIso3, String languageIso3) {
         User user = userRepository.findFirstByLogin(login.toLowerCase());
         if(user == null || !BCrypt.checkpw(password, user.getPassword())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.USER_NOT_FOUND)
                     .build();
         }
-        SessionInfo session = sessionService.createSession(user, true);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put(SessionInfo.ATTR_COUNTRY_ISO3, countryIso3);
+        attributes.put(SessionInfo.ATTR_LANGUAGE_ISO3, languageIso3);
+        SessionInfo session = sessionService.createSession(user, attributes, true);
         if(user.getAuthInfo() == null) {
             user.setAuthInfo(new AuthInfo());
             user.getAuthInfo().setUser(user);

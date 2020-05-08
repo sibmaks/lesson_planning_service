@@ -6,6 +6,8 @@ import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.IConstraintContext;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
 
+import static xyz.dma.soft.constants.ICommonConstants.LANGUAGES;
+
 @Component
 public class LoginRequestValidator extends ARequestValidator<LoginRequest> {
     @Override
@@ -13,6 +15,7 @@ public class LoginRequestValidator extends ARequestValidator<LoginRequest> {
         ConstraintContextImpl context = new ConstraintContextImpl();
         addConstraint(context, isEmpty(request.getLogin()), "empty", "login");
         addConstraint(context, isEmpty(request.getPassword()), "empty", "password");
+        addConstraint(context, !LANGUAGES.contains(request.getLanguageIso3()), "invalid", "language");
         return context;
     }
 }

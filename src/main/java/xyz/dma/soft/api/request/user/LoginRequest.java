@@ -13,4 +13,5 @@ import xyz.dma.soft.api.request.StandardRequest;
 public class LoginRequest extends StandardRequest {
     private String login;
     private String password;
+    private String languageIso3;
 }

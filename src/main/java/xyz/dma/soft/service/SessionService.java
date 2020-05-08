@@ -38,10 +38,11 @@ public class SessionService {
         return sessionInfo != null && sessionInfo.getUserId() != null && sessionInfo.isAuthorized();
     }
 
-    public SessionInfo createSession(User user, boolean authorized) {
+    public SessionInfo createSession(User user, Map<String, String> attributes, boolean authorized) {
         SessionInfo sessionInfo = SessionInfo.builder()
                 .id(UUID.randomUUID().toString())
                 .userId(user.getId())
+                .attributes(attributes)
                 .allowedActions(getAllowedActions(user))
                 .authorized(authorized)
                 .build();

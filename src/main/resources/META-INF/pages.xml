@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageInfos>
+    <pageInfos>
+        <name>login</name>
+        <codes>ui.header.language</codes>
+        <codes>ui.header.authorization</codes>
+        <codes>ui.text.login</codes>
+        <codes>ui.text.password</codes>
+        <codes>ui.button.sing_in</codes>
+        <codes>ui.title.authorization</codes>
+    </pageInfos>
+    <pageInfos>
+        <name>scheduling</name>
+        <codes>ui.header.language</codes>
+        <codes>ui.button.log_out</codes>
+    </pageInfos>
+</pageInfos>

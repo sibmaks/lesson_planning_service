@@ -9,6 +9,7 @@ import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.service.SessionService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
@@ -28,6 +29,14 @@ public abstract class BaseController {
     public SessionInfo getCurrentSession() {
         HttpServletRequest request = getCurrentHttpRequest();
         String sessionId = request == null ? null : request.getHeader(ICommonConstants.X_USER_SESSION_ID_HEADER);
+        if(sessionId == null && request != null && request.getCookies() != null) {
+            for(Cookie cookie : request.getCookies()) {
+                if(ICommonConstants.X_USER_SESSION_ID_HEADER.equals(cookie.getName())) {
+                    sessionId = cookie.getValue();
+                    break;
+                }
+            }
+        }
         return sessionId == null || sessionId.isEmpty() ? null : sessionService.getSessionInfo(sessionId);
     }
 }
