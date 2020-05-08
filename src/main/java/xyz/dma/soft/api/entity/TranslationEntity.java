@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TranslationEntity implements Serializable {
     public String code;
-    private String countryISO3;
-    private String languageISO3;
+    private String countryIso3;
+    private String languageIso3;
     public String translation;
 }

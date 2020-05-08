@@ -17,4 +17,5 @@ import java.util.List;
 public class LoginResponse extends StandardResponse {
     private UserInfoEntity userInfo;
     private List<RoleInfo> roleInfos;
+    private String startPageUrl;
 }

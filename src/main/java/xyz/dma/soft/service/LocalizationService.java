@@ -38,8 +38,8 @@ public class LocalizationService {
             Map<String, TranslationEntity> translationMap = localizations.get(localization.getCode());
             TranslationEntity translationEntity = TranslationEntity.builder()
                     .code(localization.getCode())
-                    .countryISO3(locale.getCountryISO3())
-                    .languageISO3(locale.getLanguageISO3())
+                    .countryIso3(locale.getCountryIso3())
+                    .languageIso3(locale.getLanguageIso3())
                     .translation(translation.getTranslation())
                     .build();
             translationMap.put(getLocaleCode(locale), translationEntity);
@@ -48,16 +48,16 @@ public class LocalizationService {
     }
 
     private static String getLocaleCode(Locale locale) {
-        return getLocaleCode(locale.getCountryISO3(), locale.getLanguageISO3());
+        return getLocaleCode(locale.getCountryIso3(), locale.getLanguageIso3());
     }
 
-    private static String getLocaleCode(String countryISO3, String languageISO3) {
-        boolean country = countryISO3 != null && !countryISO3.isEmpty();
-        boolean language = languageISO3 != null && !languageISO3.isEmpty();
+    private static String getLocaleCode(String countryIso3, String languageIso3) {
+        boolean country = countryIso3 != null && !countryIso3.isEmpty();
+        boolean language = languageIso3 != null && !languageIso3.isEmpty();
         if(country && language) {
-            return String.format("%s_%s", languageISO3, countryISO3);
+            return String.format("%s_%s", languageIso3, countryIso3);
         } else if(country || language) {
-            return language ? languageISO3 : countryISO3;
+            return language ? languageIso3 : countryIso3;
         } else {
             return "default";
         }
@@ -70,9 +70,9 @@ public class LocalizationService {
                 .build();
     }
 
-    public Map<String, TranslationEntity> getTranslations(String countryISO3, String languageISO3, List<String> codes) {
+    public Map<String, TranslationEntity> getTranslations(String countryIso3, String languageIso3, List<String> codes) {
         Map<String, TranslationEntity> translationEntityMap = new HashMap<>();
-        String localeCode = getLocaleCode(countryISO3, languageISO3);
+        String localeCode = getLocaleCode(countryIso3, languageIso3);
 
         for(String code : codes) {
             Map<String, TranslationEntity> translationMap = localizations.get(code);
@@ -85,8 +85,8 @@ public class LocalizationService {
                 translationEntityMap.put(code, translationEntity);
                 continue;
             }
-            if(languageISO3 != null) {
-                translationEntity = translationMap.get(languageISO3);
+            if(languageIso3 != null) {
+                translationEntity = translationMap.get(languageIso3);
                 if(translationEntity != null) {
                     translationEntityMap.put(code, translationEntity);
                     continue;

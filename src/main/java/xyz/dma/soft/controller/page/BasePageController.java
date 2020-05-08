@@ -20,7 +20,6 @@ public abstract class BasePageController extends BaseController {
 
     public void putPAgeInfoAttributes(Model model, String languageIso3, String name) {
         PageInfo pageInfo = pageInfoService.getPageInfo(name);
-
         model.addAttribute("codes", pageInfo.getCodes());
         model.addAttribute("language", languageIso3);
         model.addAttribute("translations", localizationService.getTranslations(null,

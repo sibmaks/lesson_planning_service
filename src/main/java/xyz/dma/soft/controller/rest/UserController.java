@@ -54,6 +54,7 @@ public class UserController extends BaseController {
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setUserInfo(profileService.getUserInfo(sessionInfo.getUserId()));
                 loginResponse.setRoleInfos(roleService.getRoles(sessionInfo.getUserId()));
+                loginResponse.setStartPageUrl("/home/");
                 return loginResponse;
             } else {
                 sessionService.deleteSession(sessionInfo.getId());

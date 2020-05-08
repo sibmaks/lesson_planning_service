@@ -19,7 +19,7 @@ public class Locale implements Serializable {
     @SequenceGenerator(name = "locale_id_gen", sequenceName = "locale_id_seq")
     private Long id;
     @Column(name = "country_iso3")
-    private String countryISO3;
+    private String countryIso3;
     @Column(name = "language_iso3")
-    private String languageISO3;
+    private String languageIso3;
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.api.entity.UserInfoEntity;
 import xyz.dma.soft.api.response.user.LoginResponse;
+import xyz.dma.soft.api.response.user.RegisterResponse;
 import xyz.dma.soft.domain.user.AuthInfo;
 import xyz.dma.soft.domain.user.User;
 import xyz.dma.soft.domain.user.UserRole;
@@ -50,6 +51,7 @@ public class UserService {
         user.getAuthInfo().setLastAuthIp(remoteAddress);
         userRepository.save(user);
         LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setStartPageUrl("/home/");
         loginResponse.setUserInfo(new UserInfoEntity(user));
         loginResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
         return Pair.of(session.getId(), loginResponse);
@@ -68,7 +70,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse register(String login, String password, UserInfoEntity userInfoEntity, List<String> roles) {
+    public RegisterResponse register(String login, String password, UserInfoEntity userInfoEntity, List<String> roles) {
         if(userRepository.existsByLogin(login.toLowerCase())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
@@ -93,10 +95,10 @@ public class UserService {
 
         user = userRepository.save(user);
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setUserInfo(new UserInfoEntity(user));
-        loginResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
-        return loginResponse;
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setUserInfo(new UserInfoEntity(user));
+        registerResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
+        return registerResponse;
     }
 
     public User getUser(SessionInfo sessionInfo) {

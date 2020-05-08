@@ -18,7 +18,6 @@ public class PageController extends BasePageController {
         super(sessionService, pageInfoService, localizationService);
     }
 
-
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String index(Model model) {
         SessionInfo sessionInfo = getCurrentSession();
@@ -29,8 +28,18 @@ public class PageController extends BasePageController {
         return "redirect:/home/";
     }
 
-    @RequestMapping(path = "/{page}", method = RequestMethod.GET)
-    public String index(@PathVariable String page, Model model) {
+    @RequestMapping(path = "/home/", method = RequestMethod.GET)
+    public String home(Model model) {
+        SessionInfo sessionInfo = getCurrentSession();
+        if(sessionInfo == null || !sessionInfo.isAuthorized()) {
+            putPAgeInfoAttributes(model, "rus", "login");
+            return "login";
+        }
+        return "redirect:/scheduling/";
+    }
+
+    @RequestMapping(path = "/{page}/", method = RequestMethod.GET)
+    public String page(@PathVariable String page, Model model) {
         SessionInfo sessionInfo = getCurrentSession();
         if(sessionInfo == null || !sessionInfo.isAuthorized()) {
             return "redirect:/";
