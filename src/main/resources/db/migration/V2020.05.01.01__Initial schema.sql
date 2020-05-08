@@ -22,7 +22,7 @@ create table less_planning.user_role (id int8 not null, description varchar(255)
 create table less_planning.user_role_allowed_actions (user_role_id int8 not null, allowed_actions_id int8 not null);
 create table less_planning.user_user_roles (user_id int8 not null, user_roles_id int8 not null);
 
-alter table if exists less_planning.child_scheduling_course_info_scheduling_course_info_list add constraint UK_9clvbt2i1f3afha761yhbxoe5 unique (scheduling_course_info_list_id);
+alter table if exists less_planning.child_scheduling_course_info_scheduling_course_info_list add constraint UK_9clvbt2i1f3afha761yhbxoe5 unique (scheduling_course_info_list_id, child_scheduling_course_info_id);
 alter table if exists less_planning.course add constraint UK_4xqvdpkafb91tt3hsb67ga3fj unique (name);
 alter table if exists less_planning.user add constraint UK_ew1hvam8uwaknuaellwhqchhb unique (login);
 alter table if exists less_planning.user_action add constraint UK_boyls4st4l02dlaah1xkpcrli unique (name);

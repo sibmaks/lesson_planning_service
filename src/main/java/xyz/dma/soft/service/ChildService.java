@@ -118,7 +118,8 @@ public class ChildService {
             childSchedulingCourseInfoRepository.saveAll(courseIdSchedulingMap.values());
         }
 
-        response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo)));
+        List<ChildSchedulingCourseInfo> schedulingInfos = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
+        response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(schedulingInfos));
         return response;
     }
 

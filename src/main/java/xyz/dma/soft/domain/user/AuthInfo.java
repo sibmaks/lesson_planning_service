@@ -1,8 +1,6 @@
 package xyz.dma.soft.domain.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "auth_info")
+@EqualsAndHashCode(exclude = "user")
+@ToString(exclude = "user")
 public class AuthInfo implements Serializable {
     @Id
     @Column(name = "id")

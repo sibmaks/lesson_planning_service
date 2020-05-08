@@ -1,8 +1,6 @@
 package xyz.dma.soft.domain.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import xyz.dma.soft.api.entity.UserInfoEntity;
 
 import javax.persistence.*;
@@ -13,6 +11,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_info")
+@EqualsAndHashCode(exclude = "user")
+@ToString(exclude = "user")
 public class UserInfo implements Serializable {
     @Id
     @Column(name = "id")

@@ -9,5 +9,7 @@ import java.util.List;
 public interface ChildSchedulingCourseInfoRepository extends CrudRepository<ChildSchedulingCourseInfo, Long> {
     List<ChildSchedulingCourseInfo> findAllByChildInfo(ChildInfo childInfo);
 
+    List<ChildSchedulingCourseInfo> findAllByCourseId(Long course);
+
     void deleteAllByChildInfo(ChildInfo childInfo);
 }
