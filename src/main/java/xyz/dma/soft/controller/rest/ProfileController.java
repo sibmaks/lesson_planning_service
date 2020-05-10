@@ -11,6 +11,7 @@ import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.controller.BaseController;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
+import xyz.dma.soft.service.LocalizationService;
 import xyz.dma.soft.service.ProfileService;
 import xyz.dma.soft.service.SessionService;
 
@@ -18,10 +19,13 @@ import xyz.dma.soft.service.SessionService;
 @RequestMapping(path = "/v3/profile/", consumes = {MediaType.APPLICATION_JSON_VALUE})
 public class ProfileController extends BaseController {
     private final ProfileService profileService;
+    private final LocalizationService localizationService;
 
-    public ProfileController(SessionService sessionService, ProfileService profileService) {
+    public ProfileController(SessionService sessionService, ProfileService profileService,
+                             LocalizationService localizationService) {
         super(sessionService);
         this.profileService = profileService;
+        this.localizationService = localizationService;
     }
 
     @SessionRequired
@@ -36,6 +40,13 @@ public class ProfileController extends BaseController {
     public StandardResponse changeProfile(@RequestBody ChangeProfileRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         profileService.changeProfile(sessionInfo.getUserId(), request.getUserInfo());
-        return new StandardResponse();
+        StandardResponse response = new StandardResponse();
+        response.getResponseInfo().setMessage(localizationService.getTranslation(
+                sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(), "ui.text.successfully_saved"
+        ).getTranslation());
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslation(
+                null, "eng", "ui.text.successfully_saved"
+        ).getTranslation());
+        return response;
     }
 }

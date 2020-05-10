@@ -1,11 +1,14 @@
 package xyz.dma.soft.service;
 
 import org.springframework.stereotype.Service;
+import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.domain.user.User;
 import xyz.dma.soft.domain.user.UserAction;
 import xyz.dma.soft.domain.user.UserRole;
 import xyz.dma.soft.entity.SessionInfo;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,16 +25,6 @@ public class SessionService {
         sessionInfoMapBySessionId = new ConcurrentHashMap<>();
         sessionInfoMapByUserId = new ConcurrentHashMap<>();
         sessionByLoginModificationLock = new ReentrantLock();
-    }
-
-    public boolean isSessionValid(String sessionId) {
-        SessionInfo sessionInfo = sessionInfoMapBySessionId.get(sessionId);
-        return sessionInfo != null && sessionInfo.getUserId() != null;
-    }
-
-    public boolean isAuthorized(String sessionId) {
-        SessionInfo sessionInfo = sessionInfoMapBySessionId.get(sessionId);
-        return isAuthorized(sessionInfo);
     }
 
     public boolean isAuthorized(SessionInfo sessionInfo) {
@@ -115,5 +108,18 @@ public class SessionService {
         } finally {
             sessionByLoginModificationLock.unlock();
         }
+    }
+
+    public SessionInfo getCurrentSession(HttpServletRequest request) {
+        String sessionId = request == null ? null : request.getHeader(ICommonConstants.X_USER_SESSION_ID_HEADER);
+        if(sessionId == null && request != null && request.getCookies() != null) {
+            for(Cookie cookie : request.getCookies()) {
+                if(ICommonConstants.X_USER_SESSION_ID_HEADER.equals(cookie.getName())) {
+                    sessionId = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return sessionId == null || sessionId.isEmpty() ? null : getSessionInfo(sessionId);
     }
 }

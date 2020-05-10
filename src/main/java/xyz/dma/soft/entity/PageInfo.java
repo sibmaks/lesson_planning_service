@@ -14,5 +14,9 @@ import java.util.List;
 @XmlRootElement
 public class PageInfo implements Serializable {
     private String name;
+    private boolean abstractPage;
+    private String allowedAction;
+    private List<String> extendsPages;
     private List<String> codes;
+    private String templatePath;
 }

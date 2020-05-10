@@ -2,6 +2,7 @@ package xyz.dma.soft.conf.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,12 +14,26 @@ import xyz.dma.soft.api.entity.ResponseInfo;
 import xyz.dma.soft.api.response.ConstraintResponse;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.constants.ICommonConstants;
+import xyz.dma.soft.entity.PageInfo;
+import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ConstraintException;
+import xyz.dma.soft.exception.PageNotFoundException;
 import xyz.dma.soft.exception.ServiceException;
+import xyz.dma.soft.service.PageInfoService;
+import xyz.dma.soft.service.SessionService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @ControllerAdvice
 public class DefaultExceptionHandler {
+    private final PageInfoService pageInfoService;
+    private final SessionService sessionService;
+
+    public DefaultExceptionHandler(PageInfoService pageInfoService, SessionService sessionService) {
+        this.pageInfoService = pageInfoService;
+        this.sessionService = sessionService;
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.OK)
@@ -81,5 +96,13 @@ public class DefaultExceptionHandler {
         } else {
             return handleException(e);
         }
+    }
+
+    @ExceptionHandler(PageNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.OK)
+    public String handlePageNotFoundException(HttpServletRequest request, Model model)   {
+        SessionInfo sessionInfo = sessionService.getCurrentSession(request);
+        PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, "404");
+        return pageInfo.getTemplatePath();
     }
 }

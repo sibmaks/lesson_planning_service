@@ -29,6 +29,7 @@ public class UserService {
     private final SessionService sessionService;
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final LocalizationService localizationService;
 
     @Transactional
     public Pair<String, LoginResponse> login(String login, String password, String remoteAddress,
@@ -37,6 +38,10 @@ public class UserService {
         if(user == null || !BCrypt.checkpw(password, user.getPassword())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.USER_NOT_FOUND)
+                    .message(localizationService.getTranslation(countryIso3, languageIso3,
+                            "ui.text.error.user_not_found").getTranslation())
+                    .systemMessage(localizationService.getTranslation(null, "eng",
+                            "ui.text.error.user_not_found").getTranslation())
                     .build();
         }
         Map<String, String> attributes = new HashMap<>();
@@ -58,11 +63,17 @@ public class UserService {
     }
 
     @Transactional
-    public void setPassword(Long userId, String oldPassword, String newPassword) {
-        User user = userRepository.findFirstById(userId);
+    public void setPassword(SessionInfo sessionInfo, String oldPassword, String newPassword) {
+        User user = userRepository.findFirstById(sessionInfo.getUserId());
         if(!BCrypt.checkpw(oldPassword, user.getPassword())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.PASSWORD_MISMATCH)
+                    .message(localizationService
+                            .getTranslation(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                                    "ui.text.error.passwords_mismatch").getTranslation())
+                    .systemMessage(localizationService
+                            .getTranslation(null, "eng",
+                                    "ui.text.error.passwords_mismatch").getTranslation())
                     .build();
         }
         user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
@@ -70,10 +81,17 @@ public class UserService {
     }
 
     @Transactional
-    public RegisterResponse register(String login, String password, UserInfoEntity userInfoEntity, List<String> roles) {
+    public RegisterResponse register(SessionInfo sessionInfo, String login, String password,
+                                     UserInfoEntity userInfoEntity, List<String> roles) {
         if(userRepository.existsByLogin(login.toLowerCase())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
+                    .message(localizationService
+                            .getTranslation(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                                    "ui.text.error.already_exists").getTranslation())
+                    .systemMessage(localizationService
+                            .getTranslation(null, "eng",
+                                    "ui.text.error.already_exists").getTranslation())
                     .build();
         }
 

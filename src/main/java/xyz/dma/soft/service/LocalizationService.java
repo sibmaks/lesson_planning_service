@@ -9,6 +9,7 @@ import xyz.dma.soft.api.entity.TranslationEntity;
 import xyz.dma.soft.repository.TranslationRepository;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,11 @@ public class LocalizationService {
                 .code(code)
                 .translation(String.format("** %s - not translated yet **", code))
                 .build();
+    }
+
+    public TranslationEntity getTranslation(String countryIso3, String languageIso3, String code) {
+        Map<String, TranslationEntity> translationEntityMap = getTranslations(countryIso3, languageIso3, Arrays.asList(code));
+        return translationEntityMap.get(code);
     }
 
     public Map<String, TranslationEntity> getTranslations(String countryIso3, String languageIso3, List<String> codes) {

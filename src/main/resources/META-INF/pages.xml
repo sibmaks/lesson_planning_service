@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageInfos>
     <pageInfos>
+        <name>$BASE_PAGE_INFO</name>
+        <abstractPage>true</abstractPage>
+        <codes>ui.header.scheduling</codes>
+        <codes>ui.header.courses</codes>
+        <codes>ui.header.children</codes>
+        <codes>ui.header.profile</codes>
+        <codes>ui.button.log_out</codes>
+    </pageInfos>
+    <pageInfos>
         <name>login</name>
+        <templatePath>/login</templatePath>
         <codes>ui.header.language</codes>
         <codes>ui.header.authorization</codes>
         <codes>ui.text.login</codes>
@@ -11,7 +21,27 @@
     </pageInfos>
     <pageInfos>
         <name>scheduling</name>
-        <codes>ui.header.language</codes>
-        <codes>ui.button.log_out</codes>
+        <templatePath>/scheduling/index</templatePath>
+        <extendsPages>$BASE_PAGE_INFO</extendsPages>
+        <codes>ui.title.scheduling.index</codes>
+    </pageInfos>
+    <pageInfos>
+        <name>404</name>
+        <templatePath>/errors/404</templatePath>
+        <codes>ui.error.404.title</codes>
+        <codes>ui.error.404.header</codes>
+        <codes>ui.error.404.text</codes>
+        <codes>ui.button.home</codes>
+    </pageInfos>
+    <pageInfos>
+        <name>profile</name>
+        <templatePath>/profile/index</templatePath>
+        <extendsPages>$BASE_PAGE_INFO</extendsPages>
+        <codes>ui.text.successfully_saved</codes>
+        <codes>ui.text.first_name</codes>
+        <codes>ui.text.last_name</codes>
+        <codes>ui.header.profile.change</codes>
+        <codes>ui.title.profile.change</codes>
+        <codes>ui.button.save</codes>
     </pageInfos>
 </pageInfos>

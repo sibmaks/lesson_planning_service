@@ -29,17 +29,24 @@ angular.module('authApp', [])
             }
 
             $scope.handleLoginResponse = function(data, textStatus, request) {
-                $('button#sing_in').prop("disabled", false);
-                if (data?.responseInfo?.resultCode === "Ok") {
-                    $.cookie('X-User-Session-Id', request.getResponseHeader('X-User-Session-Id'),
-                        { expires: 7, path: '/' });
-                    window.location.replace(data.startPageUrl);
-                }
+                $scope.$apply(function () {
+                    $('button#sing_in').prop("disabled", false);
+                    const responseCode = data?.responseInfo?.resultCode;
+                    const responseMessage = data?.responseInfo?.message;
+                    if (responseCode === "Ok") {
+                        $.cookie('X-User-Session-Id', request.getResponseHeader('X-User-Session-Id'),
+                            {expires: 7});
+                        window.location.replace(data.startPageUrl);
+                    } else if (responseMessage !== undefined && responseMessage !== null) {
+                        $scope.error = responseMessage;
+                    }
+                });
             }
 
             $scope.handleChangeLanguageResponse = function (data) {
                 $scope.$apply(function () {
-                    if (data?.responseInfo?.resultCode === "Ok") {
+                    const responseCode = data?.responseInfo?.resultCode;
+                    if (responseCode === "Ok") {
                         $scope.language = data.translations[$scope.codes[0]].languageIso3;
                         $scope.translations = data.translations;
                     }

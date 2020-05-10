@@ -79,7 +79,7 @@ public class UserController extends BaseController {
     @RequestMapping(path = "setPassword", method = RequestMethod.POST)
     public StandardResponse setPassword(@RequestBody SetPasswordRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        userService.setPassword(sessionInfo.getUserId(), request.getOldPassword(), request.getNewPassword());
+        userService.setPassword(sessionInfo, request.getOldPassword(), request.getNewPassword());
         sessionService.deleteAllExpectCurrent(sessionInfo);
         return new StandardResponse();
     }
@@ -88,6 +88,8 @@ public class UserController extends BaseController {
     @RequestValidateRequired(beanValidator = RegisterRequestValidator.class)
     @RequestMapping(path = "register", method = RequestMethod.POST)
     public StandardResponse register(@RequestBody RegisterRequest request) {
-        return userService.register(request.getLogin(), request.getPassword(), request.getUserInfo(), request.getRoles());
+        SessionInfo sessionInfo = getCurrentSession();
+        return userService.register(sessionInfo, request.getLogin(), request.getPassword(), request.getUserInfo(),
+                request.getRoles());
     }
 }

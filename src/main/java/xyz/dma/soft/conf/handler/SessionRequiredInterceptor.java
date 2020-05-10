@@ -6,7 +6,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import xyz.dma.soft.api.entity.ApiResultCode;
-import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ServiceException;
@@ -26,12 +25,8 @@ public class SessionRequiredInterceptor implements HandlerInterceptor {
         if(handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             if(handlerMethod.getMethod().isAnnotationPresent(SessionRequired.class)) {
-                String sessionId = request.getHeader(ICommonConstants.X_USER_SESSION_ID_HEADER);
-                if(sessionId == null || sessionId.trim().isEmpty()) {
-                    throw ServiceException.builder().code(ApiResultCode.UNAUTHORIZED).build();
-                }
-                SessionInfo sessionInfo = sessionService.getSessionInfo(sessionId);
-                if(!sessionService.isAuthorized(sessionInfo)) {
+                SessionInfo sessionInfo = sessionService.getCurrentSession(request);
+                if(sessionInfo == null || !sessionInfo.isAuthorized()) {
                     throw ServiceException.builder().code(ApiResultCode.UNAUTHORIZED).build();
                 }
                 SessionRequired sessionRequired = handlerMethod.getMethod().getAnnotation(SessionRequired.class);
