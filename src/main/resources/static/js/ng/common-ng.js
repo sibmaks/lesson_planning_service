@@ -1,5 +1,6 @@
 const commonModule = angular.module('lessonPlanning', []);
 commonModule.controller('CommonController', function ($scope) {
+        $scope.page = window.location.pathname;
             $scope.allowedActions = allowedActions;
             $scope.translations = translations;
 

@@ -4,6 +4,7 @@ import xyz.dma.soft.api.request.StandardRequest;
 import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.IRequestValidator;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
+import xyz.dma.soft.entity.ConstraintType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class ARequestValidator<T extends StandardRequest> implements IRequestValidator<T> {
-    public boolean addConstraint(ConstraintContextImpl context, boolean condition, String comment, String ... path) {
+    public boolean addConstraint(ConstraintContextImpl context, boolean condition, ConstraintType comment, String ... path) {
         if(condition) {
             String fieldPath = String.join(".", Arrays.asList(path));
             context.addConstraint(fieldPath, comment);
@@ -47,11 +48,11 @@ public abstract class ARequestValidator<T extends StandardRequest> implements IR
             this.context = context;
         }
 
-        public ChainRequestValidator addConstraint(Supplier<Boolean> condition, String comment, String ... path) {
+        public ChainRequestValidator addConstraint(Supplier<Boolean> condition, ConstraintType comment, String ... path) {
             return addConstraint(0, condition, comment, path);
         }
 
-        public ChainRequestValidator addConstraint(int index, Supplier<Boolean> condition, String comment, String ... path) {
+        public ChainRequestValidator addConstraint(int index, Supplier<Boolean> condition, ConstraintType comment, String ... path) {
             if((!failed || index == failedIndex) && condition.get()) {
                 String fieldPath = String.join(".", Arrays.asList(path));
                 context.addConstraint(fieldPath, comment);

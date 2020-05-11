@@ -8,17 +8,19 @@
 
     <div class="collapse navbar-collapse" id="navbarPanel">
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
+        <li class="nav-item" ng-class="{active: page.startsWith('/scheduling/')}">
             <a class="nav-link" href="/scheduling/" th:text="${translations['ui.header.scheduling'].translation}">
             </a>
         </li>
-        <li th:if="${allowedActions.contains('MODIFY_COURSES')}" class="nav-item">
+        <li th:if="${allowedActions.contains('MODIFY_COURSES')}" class="nav-item"
+            ng-class="{active: page.startsWith('/course/')}">
             <a class="nav-link" href="/course/" th:text="${translations['ui.header.courses'].translation}"></a>
         </li>
-        <li th:if="${allowedActions.contains('MODIFY_CHILDREN')}" class="nav-item">
+        <li th:if="${allowedActions.contains('MODIFY_CHILDREN')}" class="nav-item"
+            ng-class="{active: page.startsWith('/child/')}">
             <a class="nav-link" href="/child/" th:text="${translations['ui.header.children'].translation}"></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" ng-class="{active: page.startsWith('/profile/')}">
             <a class="nav-link" href="/profile/" th:text="${translations['ui.header.profile'].translation}"></a>
         </li>
     </ul>

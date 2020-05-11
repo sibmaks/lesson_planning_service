@@ -1,7 +1,8 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru" ng-app="authApp" ng-controller="AuthorizationController">
 <head>
-    <meta th:replace="includes/header :: header"/>
+    <!--/*/ <th:block th:include="includes/header :: header"></th:block> /*/-->
+    <link th:href="@{/css/floating-labels.css}" rel="stylesheet">
     <style>
         .auth-logo {
             font-size: 7rem;

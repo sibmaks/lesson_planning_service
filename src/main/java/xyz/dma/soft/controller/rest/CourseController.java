@@ -35,14 +35,15 @@ public class CourseController extends BaseController {
     @RequestMapping(path = "add", method = RequestMethod.POST)
     public StandardResponse add(@RequestBody CourseAddRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        return new AddCourseResponse(courseService.add(sessionInfo.getUserId(), request.getName()));
+        return new AddCourseResponse(courseService.add(sessionInfo, request.getName()));
     }
 
     @SessionRequired(requiredAction = "MODIFY_COURSES")
     @RequestValidateRequired(beanValidator = CourseUpdateRequestValidator.class)
     @RequestMapping(path = "update", method = RequestMethod.POST)
     public StandardResponse update(@RequestBody CourseUpdateRequest request) {
-        return new UpdateCourseResponse(courseService.update(request.getId(), request.getName()));
+        SessionInfo sessionInfo = getCurrentSession();
+        return new UpdateCourseResponse(courseService.update(sessionInfo, request.getId(), request.getName()));
     }
 
     @SessionRequired

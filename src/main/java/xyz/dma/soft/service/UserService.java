@@ -38,10 +38,10 @@ public class UserService {
         if(user == null || !BCrypt.checkpw(password, user.getPassword())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.USER_NOT_FOUND)
-                    .message(localizationService.getTranslation(countryIso3, languageIso3,
-                            "ui.text.error.user_not_found").getTranslation())
-                    .systemMessage(localizationService.getTranslation(null, "eng",
-                            "ui.text.error.user_not_found").getTranslation())
+                    .message(localizationService.getTranslated(countryIso3, languageIso3,
+                            "ui.text.error.user_not_found"))
+                    .systemMessage(localizationService.getTranslated("eng",
+                            "ui.text.error.user_not_found"))
                     .build();
         }
         Map<String, String> attributes = new HashMap<>();
@@ -69,11 +69,11 @@ public class UserService {
             throw ServiceException.builder()
                     .code(ApiResultCode.PASSWORD_MISMATCH)
                     .message(localizationService
-                            .getTranslation(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
-                                    "ui.text.error.passwords_mismatch").getTranslation())
+                            .getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                                    "ui.text.error.passwords_mismatch"))
                     .systemMessage(localizationService
-                            .getTranslation(null, "eng",
-                                    "ui.text.error.passwords_mismatch").getTranslation())
+                            .getTranslated("eng",
+                                    "ui.text.error.passwords_mismatch"))
                     .build();
         }
         user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
@@ -87,11 +87,11 @@ public class UserService {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
                     .message(localizationService
-                            .getTranslation(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
-                                    "ui.text.error.already_exists").getTranslation())
+                            .getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                                    "ui.text.error.already_exists"))
                     .systemMessage(localizationService
-                            .getTranslation(null, "eng",
-                                    "ui.text.error.already_exists").getTranslation())
+                            .getTranslated("eng",
+                                    "ui.text.error.already_exists"))
                     .build();
         }
 

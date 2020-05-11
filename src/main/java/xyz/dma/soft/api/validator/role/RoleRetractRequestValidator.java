@@ -5,6 +5,7 @@ import xyz.dma.soft.api.request.role.RetractRoleRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.IConstraintContext;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
+import xyz.dma.soft.entity.ConstraintType;
 
 import static java.util.Objects.isNull;
 
@@ -14,8 +15,8 @@ public class RoleRetractRequestValidator extends ARequestValidator<RetractRoleRe
     @Override
     public IConstraintContext validate(RetractRoleRequest request) {
         ConstraintContextImpl context = new ConstraintContextImpl();
-        addConstraint(context, isNull(request.getRole()), "empty", "role");
-        addConstraint(context, isNull(request.getUserId()), "empty", "userId");
+        addConstraint(context, isNull(request.getRole()), ConstraintType.EMPTY, "role");
+        addConstraint(context, isNull(request.getUserId()), ConstraintType.EMPTY, "userId");
         return context;
     }
 }

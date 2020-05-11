@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru" ng-app="lessonPlanningProfile">
 <head>
-    <meta th:replace="includes/header :: header"/>
+    <!--/*/ <th:block th:include="includes/header :: header"></th:block> /*/-->
     <title th:text="${translations['ui.title.profile.change'].translation}"></title>
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -10,45 +10,43 @@
     </script>
 </head>
 <body>
-<div class="container">
-    <meta th:replace="includes/menu"/>
-    <div class="row col-lg-12">
-        <div class="jumbotron col-lg-8 offset-2" ng-controller="ProfileController">
-            <div class="container">
-                <h1 class="display-4" th:text="${translations['ui.header.profile.change'].translation}"></h1>
-                <hr class="my-4"/>
-                <form class="col-lg-10 offset-1">
-                    <div ng-cloak class="form-label-group" ng-if="resultInfo != null && !resultInfo.empty()">
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{resultInfo}}
-                        </div>
+<meta th:replace="includes/menu"/>
+<main role="main" class="container">
+    <div class="jumbotron col-lg-8 offset-lg-2 col-sm-10 offset-sm-1" ng-controller="ProfileController">
+        <div class="container">
+            <h1 class="display-4" th:text="${translations['ui.header.profile.change'].translation}"></h1>
+            <hr class="my-4"/>
+            <form class="col-lg-10">
+                <div ng-cloak class="form-label-group" ng-if="resultInfo != null && !resultInfo.empty()">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{resultInfo}}
                     </div>
-                    <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{error}}
-                        </div>
+                </div>
+                <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
                     </div>
-                    <div class="form-group">
-                        <label for="firstNameInput" th:text="${translations['ui.text.first_name'].translation}"></label>
-                        <input type="text" class="form-control" id="firstNameInput"
-                               ng-model="userInfo.firstName"
-                               th:value="${userInfo.firstName}">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastNameInput" th:text="${translations['ui.text.last_name'].translation}"></label>
-                        <input type="text" class="form-control" id="lastNameInput"
-                               ng-model="userInfo.lastName"
-                               th:value="${userInfo.lastName}">
-                    </div>
-                    <div class="form-group text-right">
-                        <button id="save_profile" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
-                                th:text="${translations['ui.button.save'].translation}"></button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstNameInput" th:text="${translations['ui.text.first_name'].translation}"></label>
+                    <input type="text" class="form-control" id="firstNameInput"
+                           ng-model="userInfo.firstName"
+                           th:value="${userInfo.firstName}">
+                </div>
+                <div class="form-group">
+                    <label for="lastNameInput" th:text="${translations['ui.text.last_name'].translation}"></label>
+                    <input type="text" class="form-control" id="lastNameInput"
+                           ng-model="userInfo.lastName"
+                           th:value="${userInfo.lastName}">
+                </div>
+                <div class="form-group text-right">
+                    <button id="save_profile" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
+                            th:text="${translations['ui.button.save'].translation}"></button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+</main>
 <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
 <script th:src="@{/js/jquery.cookie.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>

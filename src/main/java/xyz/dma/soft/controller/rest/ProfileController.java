@@ -41,12 +41,12 @@ public class ProfileController extends BaseController {
         SessionInfo sessionInfo = getCurrentSession();
         profileService.changeProfile(sessionInfo.getUserId(), request.getUserInfo());
         StandardResponse response = new StandardResponse();
-        response.getResponseInfo().setMessage(localizationService.getTranslation(
+        response.getResponseInfo().setMessage(localizationService.getTranslated(
                 sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(), "ui.text.successfully_saved"
-        ).getTranslation());
-        response.getResponseInfo().setSystemMessage(localizationService.getTranslation(
+        ));
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslated(
                 null, "eng", "ui.text.successfully_saved"
-        ).getTranslation());
+        ));
         return response;
     }
 }

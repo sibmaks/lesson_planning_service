@@ -1,5 +1,7 @@
 package xyz.dma.soft.core;
 
+import xyz.dma.soft.entity.ConstraintType;
+
 import java.util.Map;
 
 public interface IConstraintContext {
@@ -7,5 +9,5 @@ public interface IConstraintContext {
         return getConstraints() == null || getConstraints().isEmpty();
     }
 
-    Map<String, String> getConstraints();
+    Map<String, ConstraintType> getConstraints();
 }

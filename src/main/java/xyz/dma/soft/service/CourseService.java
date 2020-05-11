@@ -6,6 +6,7 @@ import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.api.entity.CourseInfo;
 import xyz.dma.soft.domain.Course;
 import xyz.dma.soft.domain.user.User;
+import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ServiceException;
 import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.UserRepository;
@@ -17,13 +18,14 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CourseService {
+    private final LocalizationService localizationService;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
     public List<CourseInfo> getAll() {
         List<CourseInfo> courseInfos = new ArrayList<>();
 
-        for(Course course : courseRepository.findAll()) {
+        for(Course course : courseRepository.findAllByOrderById()) {
             courseInfos.add(new CourseInfo(course));
         }
 
@@ -31,10 +33,15 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseInfo add(Long userId, String name) {
-        User user = userRepository.findFirstById(userId);
+    public CourseInfo add(SessionInfo sessionInfo, String name) {
+        User user = userRepository.findFirstById(sessionInfo.getUserId());
         if(courseRepository.findFirstByName(name) != null) {
-            throw ServiceException.builder().code(ApiResultCode.ALREADY_EXISTS).build();
+            throw ServiceException.builder()
+                    .code(ApiResultCode.ALREADY_EXISTS)
+                    .message(localizationService.getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                            "ui.text.error.already_exists"))
+                    .systemMessage(localizationService.getTranslated("eng", "ui.text.error.already_exists"))
+                    .build();
         }
         Course course = new Course();
         course.setName(name);
@@ -52,10 +59,15 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseInfo update(Long id, String name) {
+    public CourseInfo update(SessionInfo sessionInfo, Long id, String name) {
         Course checkCourse = courseRepository.findFirstByName(name);
         if(checkCourse != null && checkCourse.getId() != id) {
-            throw ServiceException.builder().code(ApiResultCode.ALREADY_EXISTS).build();
+            throw ServiceException.builder()
+                    .code(ApiResultCode.ALREADY_EXISTS)
+                    .message(localizationService.getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
+                            "ui.text.error.already_exists"))
+                    .systemMessage(localizationService.getTranslated("eng", "ui.text.error.already_exists"))
+                    .build();
         }
         Course course = courseRepository
                 .findById(id)

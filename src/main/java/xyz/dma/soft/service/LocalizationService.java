@@ -76,6 +76,16 @@ public class LocalizationService {
         return translationEntityMap.get(code);
     }
 
+    public String getTranslated(String countryIso3, String languageIso3, String code) {
+        TranslationEntity translationEntity = getTranslation(countryIso3, languageIso3, code);
+        return translationEntity == null ? null : translationEntity.getTranslation();
+    }
+
+    public String getTranslated(String languageIso3, String code) {
+        TranslationEntity translationEntity = getTranslation(null, languageIso3, code);
+        return translationEntity == null ? null : translationEntity.getTranslation();
+    }
+
     public Map<String, TranslationEntity> getTranslations(String countryIso3, String languageIso3, List<String> codes) {
         Map<String, TranslationEntity> translationEntityMap = new HashMap<>();
         String localeCode = getLocaleCode(countryIso3, languageIso3);

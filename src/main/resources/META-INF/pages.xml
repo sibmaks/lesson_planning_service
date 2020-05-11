@@ -44,4 +44,20 @@
         <codes>ui.title.profile.change</codes>
         <codes>ui.button.save</codes>
     </pageInfos>
+    <pageInfos>
+        <name>course</name>
+        <templatePath>/course/index</templatePath>
+        <extendsPages>$BASE_PAGE_INFO</extendsPages>
+        <codes>ui.title.course.list</codes>
+        <codes>ui.header.course.list</codes>
+        <codes>ui.header.course.name</codes>
+        <codes>ui.header.course_edit</codes>
+        <codes>ui.button.edit</codes>
+        <codes>ui.button.save</codes>
+        <codes>ui.button.add</codes>
+        <codes>ui.title.course.add</codes>
+        <codes>ui.title.course.edit</codes>
+        <codes>ui.header.course.add</codes>
+        <codes>ui.header.course.edit</codes>
+    </pageInfos>
 </pageInfos>

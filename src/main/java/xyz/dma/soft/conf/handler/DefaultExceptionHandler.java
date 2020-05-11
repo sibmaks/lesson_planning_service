@@ -14,25 +14,34 @@ import xyz.dma.soft.api.entity.ResponseInfo;
 import xyz.dma.soft.api.response.ConstraintResponse;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.constants.ICommonConstants;
+import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.entity.PageInfo;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ConstraintException;
 import xyz.dma.soft.exception.PageNotFoundException;
 import xyz.dma.soft.exception.ServiceException;
+import xyz.dma.soft.service.LocalizationService;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
 public class DefaultExceptionHandler {
+    private static final String LOCALIZATION_TOKEN_FORMAT = "api.constraint.%s";
+
     private final PageInfoService pageInfoService;
     private final SessionService sessionService;
+    private final LocalizationService localizationService;
 
-    public DefaultExceptionHandler(PageInfoService pageInfoService, SessionService sessionService) {
+    public DefaultExceptionHandler(PageInfoService pageInfoService, SessionService sessionService,
+                                   LocalizationService localizationService) {
         this.pageInfoService = pageInfoService;
         this.sessionService = sessionService;
+        this.localizationService = localizationService;
     }
 
     @ExceptionHandler(Exception.class)
@@ -63,11 +72,24 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(ConstraintException.class)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    public StandardResponse handleConstraintException(ConstraintException e) {
+    public StandardResponse handleConstraintException(HttpServletRequest request, ConstraintException e) {
         ResponseInfo responseInfo = ResponseInfo.builder()
                 .resultCode(ApiResultCode.CONSTRAINT_EXCEPTION)
                 .build();
-        return new ConstraintResponse(responseInfo, e.getConstraintContext().getConstraints());
+        SessionInfo sessionInfo = sessionService.getCurrentSession(request);
+        String countryIso3 = null;
+        String languageIso3 = null;
+        if(sessionInfo != null) {
+            countryIso3 = sessionInfo.getCountryIso3();
+            languageIso3 = sessionInfo.getLanguageIso3();
+        }
+        Map<String, String> localizedConstraints = new HashMap<>();
+        for(Map.Entry<String, ConstraintType> constraintTypeEntry : e.getConstraintContext().getConstraints().entrySet()) {
+            String message = localizationService.getTranslated(countryIso3, languageIso3,
+                    String.format(LOCALIZATION_TOKEN_FORMAT, constraintTypeEntry.getValue().name().toLowerCase()));
+            localizedConstraints.put(constraintTypeEntry.getKey(), message);
+        }
+        return new ConstraintResponse(responseInfo, localizedConstraints);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

@@ -6,6 +6,7 @@ import xyz.dma.soft.api.request.lesson.LessonUpdateRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.IConstraintContext;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
+import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.LessonRepository;
 
@@ -22,25 +23,25 @@ public class LessonUpdateRequestValidator extends ARequestValidator<LessonUpdate
         ConstraintContextImpl context = new ConstraintContextImpl();
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getId()), "empty", "id")
-                .addConstraint(1, () -> !lessonRepository.existsById(request.getId()), "invalid", "id");
+                .addConstraint(0, () -> isNull(request.getId()), ConstraintType.EMPTY, "id")
+                .addConstraint(1, () -> !lessonRepository.existsById(request.getId()), ConstraintType.INVALID, "id");
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getCourseId()), "empty", "courseId")
-                .addConstraint(1, () -> !courseRepository.existsById(request.getCourseId()), "invalid", "courseId");
+                .addConstraint(0, () -> isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
+                .addConstraint(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId");
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getLessonStartDate()), "empty", "lessonStartDate")
-                .addConstraint(1, () -> !isValidDate(request.getLessonStartDate()), "invalid", "lessonStartDate");
+                .addConstraint(0, () -> isNull(request.getLessonStartDate()), ConstraintType.EMPTY, "lessonStartDate")
+                .addConstraint(1, () -> !isValidDate(request.getLessonStartDate()), ConstraintType.INVALID, "lessonStartDate");
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getTimeStart()), "empty", "timeStart")
-                .addConstraint(1, () -> !isValidTime(request.getTimeStart()), "invalid", "timeStart")
-                .addConstraint(0, () -> isNull(request.getTimeEnd()), "empty", "timeEnd")
-                .addConstraint(1, () -> !isValidTime(request.getTimeEnd()), "invalid", "timeEnd")
-                .addConstraint(2, () -> !timeStartBeforeEnd(request.getTimeStart(), request.getTimeEnd()), "invalid", "timeStart");
+                .addConstraint(0, () -> isNull(request.getTimeStart()), ConstraintType.EMPTY, "timeStart")
+                .addConstraint(1, () -> !isValidTime(request.getTimeStart()), ConstraintType.INVALID, "timeStart")
+                .addConstraint(0, () -> isNull(request.getTimeEnd()), ConstraintType.EMPTY, "timeEnd")
+                .addConstraint(1, () -> !isValidTime(request.getTimeEnd()), ConstraintType.INVALID, "timeEnd")
+                .addConstraint(2, () -> !timeStartBeforeEnd(request.getTimeStart(), request.getTimeEnd()), ConstraintType.INVALID, "timeStart");
 
-        addConstraint(context, !inRange(request.getDayOfWeek(), 1, 7), "invalid", "dayOfWeek");
+        addConstraint(context, !inRange(request.getDayOfWeek(), 1, 7), ConstraintType.INVALID, "dayOfWeek");
 
         return context;
     }

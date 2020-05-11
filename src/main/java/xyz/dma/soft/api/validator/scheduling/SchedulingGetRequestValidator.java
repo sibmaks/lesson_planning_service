@@ -6,6 +6,7 @@ import xyz.dma.soft.api.request.scheduling.SchedulingGetRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.IConstraintContext;
 import xyz.dma.soft.core.impl.ConstraintContextImpl;
+import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
 
 import static java.util.Objects.isNull;
@@ -20,15 +21,15 @@ public class SchedulingGetRequestValidator extends ARequestValidator<SchedulingG
         ConstraintContextImpl context = new ConstraintContextImpl();
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getCourseId()), "empty", "courseId")
-                .addConstraint(1, () -> !courseRepository.existsById(request.getCourseId()), "invalid", "courseId");
+                .addConstraint(0, () -> isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
+                .addConstraint(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId");
 
         chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getFromDate()), "empty", "fromDate")
-                .addConstraint(1, () -> !isValidDate(request.getFromDate()), "invalid", "fromDate")
-                .addConstraint(0, () -> isNull(request.getToDate()), "empty", "toDate")
-                .addConstraint(1, () -> !isValidDate(request.getToDate()), "invalid", "toDate")
-                .addConstraint(2, () -> !dateStartBeforeEnd(request.getFromDate(), request.getToDate()), "invalid", "fromDate");
+                .addConstraint(0, () -> isNull(request.getFromDate()), ConstraintType.EMPTY, "fromDate")
+                .addConstraint(1, () -> !isValidDate(request.getFromDate()), ConstraintType.INVALID, "fromDate")
+                .addConstraint(0, () -> isNull(request.getToDate()), ConstraintType.EMPTY, "toDate")
+                .addConstraint(1, () -> !isValidDate(request.getToDate()), ConstraintType.INVALID, "toDate")
+                .addConstraint(2, () -> !dateStartBeforeEnd(request.getFromDate(), request.getToDate()), ConstraintType.INVALID, "fromDate");
 
         return context;
     }
