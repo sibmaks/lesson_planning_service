@@ -3,6 +3,7 @@ angular.module('authApp', [])
             $scope.codes = codes;
             $scope.language = language;
             $scope.translations = translations;
+            $scope.constraints = {};
 
             $scope.changeLanguage = function (lang) {
                 $.ajax({
@@ -37,6 +38,8 @@ angular.module('authApp', [])
                         $.cookie('X-User-Session-Id', request.getResponseHeader('X-User-Session-Id'),
                             {expires: 7});
                         window.location.replace(data.startPageUrl);
+                    } else if (responseCode === "ConstraintException") {
+                        $scope.constraints = data.constrains;
                     } else if (responseMessage !== undefined && responseMessage !== null) {
                         $scope.error = responseMessage;
                     }

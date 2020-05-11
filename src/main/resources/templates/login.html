@@ -64,16 +64,19 @@
         <div class="form-label-group">
             <input type="text" id="inputLogin" class="form-control" ng-model="login"
                    placeholder="{{translations['ui.text.login'].translation}}"
+                   ng-class="{'is-invalid': constraints.login}"
                    required autofocus>
+            <div class="invalid-feedback" ng-bind="constraints.login"></div>
             <label for="inputLogin"
                    ng-bind="translations['ui.text.login'].translation"
                    th:text="${translations['ui.text.login'].translation}"></label>
         </div>
-
         <div class="form-label-group">
             <input type="password" id="inputPassword" class="form-control" ng-model="password"
                    placeholder="{{translations['ui.text.password'].translation}}"
+                   ng-class="{'is-invalid': constraints.password}"
                    required>
+            <div class="invalid-feedback" ng-bind="constraints.password"></div>
             <label for="inputPassword"
                    ng-bind="translations['ui.text.password'].translation"
                    th:text="${translations['ui.text.password'].translation}"></label>
