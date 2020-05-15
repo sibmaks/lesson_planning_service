@@ -38,8 +38,7 @@ public class CourseService {
         if(courseRepository.findFirstByName(name) != null) {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
-                    .message(localizationService.getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
-                            "ui.text.error.already_exists"))
+                    .message(localizationService.getTranslated(sessionInfo, "ui.text.error.already_exists"))
                     .systemMessage(localizationService.getTranslated("eng", "ui.text.error.already_exists"))
                     .build();
         }
@@ -64,8 +63,7 @@ public class CourseService {
         if(checkCourse != null && checkCourse.getId() != id) {
             throw ServiceException.builder()
                     .code(ApiResultCode.ALREADY_EXISTS)
-                    .message(localizationService.getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
-                            "ui.text.error.already_exists"))
+                    .message(localizationService.getTranslated(sessionInfo, "ui.text.error.already_exists"))
                     .systemMessage(localizationService.getTranslated("eng", "ui.text.error.already_exists"))
                     .build();
         }

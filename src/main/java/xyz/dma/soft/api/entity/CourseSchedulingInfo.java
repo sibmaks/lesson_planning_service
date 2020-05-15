@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class    CourseSchedulingInfo implements Serializable {
+public class CourseSchedulingInfo implements Serializable {
     private Long id;
     private CourseInfo courseInfo;
     private int dayOfWeek;

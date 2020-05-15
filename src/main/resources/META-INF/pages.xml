@@ -60,4 +60,25 @@
         <codes>ui.header.course.add</codes>
         <codes>ui.header.course.edit</codes>
     </pageInfos>
+    <pageInfos>
+        <name>child</name>
+        <templatePath>/child/index</templatePath>
+        <extendsPages>$BASE_PAGE_INFO</extendsPages>
+        <codes>ui.title.child.list</codes>
+        <codes>ui.header.child.name</codes>
+        <codes>ui.header.child.parent</codes>
+        <codes>ui.header.phone</codes>
+        <codes>ui.button.edit</codes>
+        <codes>ui.button.save</codes>
+        <codes>ui.button.add</codes>
+        <codes>ui.button.remove</codes>
+        <codes>ui.header.children</codes>
+        <codes>ui.header.child.add</codes>
+        <codes>ui.header.child.edit</codes>
+        <codes>ui.header.day_of_week</codes>
+        <codes>ui.header.time_start</codes>
+        <codes>ui.header.time_end</codes>
+        <codes>ui.header.child.courses_scheduling</codes>
+        <codes>ui.header.course.name</codes>
+    </pageInfos>
 </pageInfos>

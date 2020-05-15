@@ -25,3 +25,11 @@ commonModule.controller('CommonController', function ($scope) {
             }
         }
     );
+
+function isEmpty(line) {
+    return line === null || line === undefined || line.trim().length === 0;
+}
+
+function isNull(obj) {
+    return obj === null || obj === undefined;
+}

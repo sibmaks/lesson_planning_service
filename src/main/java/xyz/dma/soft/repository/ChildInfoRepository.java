@@ -8,5 +8,7 @@ import java.util.List;
 public interface ChildInfoRepository extends CrudRepository<ChildInfo, Long> {
     boolean existsById(Long id);
 
+    List<ChildInfo> getAllByOrderById();
+
     List<ChildInfo> getAllByIdIn(List<Long> ids);
 }

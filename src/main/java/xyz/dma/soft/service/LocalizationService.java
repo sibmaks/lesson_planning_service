@@ -6,6 +6,7 @@ import xyz.dma.soft.domain.i18n.Locale;
 import xyz.dma.soft.domain.i18n.Localization;
 import xyz.dma.soft.domain.i18n.Translation;
 import xyz.dma.soft.api.entity.TranslationEntity;
+import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.repository.TranslationRepository;
 
 import javax.annotation.PostConstruct;
@@ -78,6 +79,11 @@ public class LocalizationService {
 
     public String getTranslated(String countryIso3, String languageIso3, String code) {
         TranslationEntity translationEntity = getTranslation(countryIso3, languageIso3, code);
+        return translationEntity == null ? null : translationEntity.getTranslation();
+    }
+
+    public String getTranslated(SessionInfo sessionInfo, String code) {
+        TranslationEntity translationEntity = getTranslation(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(), code);
         return translationEntity == null ? null : translationEntity.getTranslation();
     }
 

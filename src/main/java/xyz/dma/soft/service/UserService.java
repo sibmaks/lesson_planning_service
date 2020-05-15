@@ -68,12 +68,8 @@ public class UserService {
         if(!BCrypt.checkpw(oldPassword, user.getPassword())) {
             throw ServiceException.builder()
                     .code(ApiResultCode.PASSWORD_MISMATCH)
-                    .message(localizationService
-                            .getTranslated(sessionInfo.getCountryIso3(), sessionInfo.getLanguageIso3(),
-                                    "ui.text.error.passwords_mismatch"))
-                    .systemMessage(localizationService
-                            .getTranslated("eng",
-                                    "ui.text.error.passwords_mismatch"))
+                    .message(localizationService.getTranslated(sessionInfo, "ui.text.error.passwords_mismatch"))
+                    .systemMessage(localizationService.getTranslated("eng", "ui.text.error.passwords_mismatch"))
                     .build();
         }
         user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));

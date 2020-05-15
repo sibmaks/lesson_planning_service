@@ -11,6 +11,7 @@ import xyz.dma.soft.domain.ChildInfo;
 import xyz.dma.soft.domain.ChildSchedulingCourseInfo;
 import xyz.dma.soft.domain.Course;
 import xyz.dma.soft.domain.SchedulingCourseInfo;
+import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ServiceException;
 import xyz.dma.soft.repository.ChildInfoRepository;
 import xyz.dma.soft.repository.ChildSchedulingCourseInfoRepository;
@@ -19,6 +20,7 @@ import xyz.dma.soft.repository.SchedulingCourseInfoRepository;
 import xyz.dma.soft.utils.ConvertUtils;
 
 import javax.transaction.Transactional;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +33,12 @@ public class ChildService {
     private final ChildSchedulingCourseInfoRepository childSchedulingCourseInfoRepository;
     private final CourseRepository courseRepository;
     private final SchedulingCourseInfoRepository schedulingCourseInfoRepository;
+    private final LocalizationService localizationService;
 
     public List<ChildCourseSchedulingInfo> getAll() {
         List<ChildCourseSchedulingInfo> childCourseSchedulingInfos = new ArrayList<>();
 
-        for(ChildInfo childInfo : childInfoRepository.findAll()) {
+        for(ChildInfo childInfo : childInfoRepository.getAllByOrderById()) {
             List<ChildSchedulingCourseInfo> kidSchedulingInfo = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
 
             ChildCourseSchedulingInfo childCourseSchedulingInfo = ChildCourseSchedulingInfo.builder()
@@ -74,7 +77,7 @@ public class ChildService {
     }
 
     @Transactional
-    public StandardResponse add(ChildInfoEntity childInfoEntity, List<CourseSchedulingInfo> courseSchedulingInfos) {
+    public StandardResponse add(SessionInfo sessionInfo, ChildInfoEntity childInfoEntity, List<CourseSchedulingInfo> courseSchedulingInfos) {
         ChildAddResponse response = new ChildAddResponse();
 
         ChildInfo childInfo = ChildInfo.builder()
@@ -113,6 +116,17 @@ public class ChildService {
                     schedulingCourseInfo = buildSchedulingCourseInfo(courseSchedulingInfo);
                     schedulingCourseInfo = schedulingCourseInfoRepository.save(schedulingCourseInfo);
                 }
+                SchedulingCourseInfo finalSchedulingCourseInfo = schedulingCourseInfo;
+                if(childSchedulingCourseInfo.getSchedulingCourseInfoList().stream()
+                        .filter(it -> it.getDayOfWeek() == finalSchedulingCourseInfo.getDayOfWeek())
+                        .filter(it -> it.getTimeStart().equals(finalSchedulingCourseInfo.getTimeStart()))
+                        .anyMatch(it -> it.getTimeEnd().equals(finalSchedulingCourseInfo.getTimeEnd()))) {
+                    throw ServiceException.builder()
+                            .code(ApiResultCode.DUPLICATES)
+                            .message(localizationService.getTranslated(sessionInfo, "ui.error.scheduling_duplicates"))
+                            .systemMessage(localizationService.getTranslated("eng", "ui.error.scheduling_duplicates"))
+                            .build();
+                }
                 childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
             }
             childSchedulingCourseInfoRepository.saveAll(courseIdSchedulingMap.values());
@@ -124,7 +138,8 @@ public class ChildService {
     }
 
     @Transactional
-    public StandardResponse update(ChildInfoEntity childInfoEntity, List<CourseSchedulingInfo> courseSchedulingInfos) {
+    public StandardResponse update(SessionInfo sessionInfo, ChildInfoEntity childInfoEntity,
+                                   List<CourseSchedulingInfo> courseSchedulingInfos) {
         ChildUpdateResponse response = new ChildUpdateResponse();
 
         ChildInfo childInfo = childInfoRepository.findById(childInfoEntity.getId())
@@ -137,47 +152,76 @@ public class ChildService {
         childInfo = childInfoRepository.save(childInfo);
         response.setChildInfo(new ChildInfoEntity(childInfo));
 
-        List<ChildSchedulingCourseInfo> schedulingCourseInfosForRemove = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
+
         if(courseSchedulingInfos != null && !courseSchedulingInfos.isEmpty()) {
-            Map<Long, ChildSchedulingCourseInfo> courseIdSchedulingMap = new HashMap<>();
+            List<CourseSchedulingInfo> schedulingCourseInfosSource =
+                    buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo));
+
+            Map<Number, ChildSchedulingCourseInfo> childSchedulingCourseInfos = new HashMap<>();
 
             for(CourseSchedulingInfo courseSchedulingInfo : courseSchedulingInfos) {
-                Long courseId = courseSchedulingInfo.getCourseInfo().getId();
-                if(!courseIdSchedulingMap.containsKey(courseId)) {
-                    ChildSchedulingCourseInfo childSchedulingCourseInfo = schedulingCourseInfosForRemove.stream()
-                            .filter(it -> it.getId() == courseId).findFirst().orElse(null);
-                    if(childSchedulingCourseInfo == null) {
-                        Course course = courseRepository.findById(courseId)
-                                .orElseThrow(() -> ServiceException.builder().code(ApiResultCode.COURSE_NOT_FOUND).build());
+                CourseSchedulingInfo courseSchedulingInfoSource = schedulingCourseInfosSource.stream()
+                        .filter(it -> it.getCourseInfo().getId().equals(courseSchedulingInfo.getCourseInfo().getId()))
+                        .filter(it -> it.getDayOfWeek() == courseSchedulingInfo.getDayOfWeek())
+                        .filter(it -> it.getTimeStart().equals(courseSchedulingInfo.getTimeStart()))
+                        .filter(it -> it.getTimeEnd().equals(courseSchedulingInfo.getTimeEnd()))
+                        .findAny()
+                        .orElse(null);
 
-                        childSchedulingCourseInfo = ChildSchedulingCourseInfo
-                                .builder()
-                                .childInfo(childInfo)
-                                .course(course)
-                                .schedulingCourseInfoList(new ArrayList<>())
-                                .build();
-                    } else {
-                        childSchedulingCourseInfo.setSchedulingCourseInfoList(new ArrayList<>());
-                        schedulingCourseInfosForRemove.remove(childSchedulingCourseInfo);
-                    }
-                    courseIdSchedulingMap.put(courseId, childSchedulingCourseInfo);
+                if (courseSchedulingInfoSource != null) {
+                    schedulingCourseInfosSource.remove(courseSchedulingInfoSource);
+                    courseSchedulingInfo.setId(courseSchedulingInfoSource.getId());
                 }
-                ChildSchedulingCourseInfo childSchedulingCourseInfo = courseIdSchedulingMap.get(courseId);
-                SchedulingCourseInfo schedulingCourseInfo =
-                        schedulingCourseInfoRepository.findFirstByDayOfWeekAndTimeStartAndTimeEnd(
-                                courseSchedulingInfo.getDayOfWeek(),
-                                ConvertUtils.parseTime(courseSchedulingInfo.getTimeStart()),
-                                ConvertUtils.parseTime(courseSchedulingInfo.getTimeEnd()));
+
+                Course course = courseRepository.findById(courseSchedulingInfo.getCourseInfo().getId())
+                        .orElseThrow(() -> ServiceException.builder().code(ApiResultCode.COURSE_NOT_FOUND).build());
+
+                if(!childSchedulingCourseInfos.containsKey(courseSchedulingInfo.getCourseInfo().getId())) {
+                    ChildSchedulingCourseInfo childSchedulingCourseInfo = ChildSchedulingCourseInfo.builder()
+                            .id(courseSchedulingInfo.getId())
+                            .childInfo(childInfo)
+                            .course(course)
+                            .schedulingCourseInfoList(new ArrayList<>())
+                            .build();
+                    childSchedulingCourseInfos.put(childSchedulingCourseInfo.getCourse().getId(), childSchedulingCourseInfo);
+                }
+
+                LocalTime startTime = ConvertUtils.parseTime(courseSchedulingInfo.getTimeStart());
+                LocalTime endTime = ConvertUtils.parseTime(courseSchedulingInfo.getTimeEnd());
+
+                SchedulingCourseInfo schedulingCourseInfo = schedulingCourseInfoRepository.findFirstByDayOfWeekAndTimeStartAndTimeEnd(
+                        courseSchedulingInfo.getDayOfWeek(), startTime, endTime);
                 if(schedulingCourseInfo == null) {
-                    schedulingCourseInfo = buildSchedulingCourseInfo(courseSchedulingInfo);
+                    schedulingCourseInfo = SchedulingCourseInfo.builder()
+                            .timeStart(startTime)
+                            .timeEnd(endTime)
+                            .dayOfWeek(courseSchedulingInfo.getDayOfWeek())
+                            .build();
                     schedulingCourseInfo = schedulingCourseInfoRepository.save(schedulingCourseInfo);
+                }
+
+                ChildSchedulingCourseInfo childSchedulingCourseInfo = childSchedulingCourseInfos.get(courseSchedulingInfo.getCourseInfo().getId());
+
+                SchedulingCourseInfo finalSchedulingCourseInfo = schedulingCourseInfo;
+                if(childSchedulingCourseInfo.getSchedulingCourseInfoList().stream()
+                        .filter(it -> it.getDayOfWeek() == finalSchedulingCourseInfo.getDayOfWeek())
+                        .filter(it -> it.getTimeStart().equals(finalSchedulingCourseInfo.getTimeStart()))
+                        .anyMatch(it -> it.getTimeEnd().equals(finalSchedulingCourseInfo.getTimeEnd()))) {
+                    throw ServiceException.builder()
+                            .code(ApiResultCode.DUPLICATES)
+                            .message(localizationService.getTranslated(sessionInfo, "ui.error.scheduling_duplicates"))
+                            .systemMessage(localizationService.getTranslated("eng", "ui.error.scheduling_duplicates"))
+                            .build();
                 }
                 childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
             }
 
-            courseIdSchedulingMap.values().forEach(childSchedulingCourseInfoRepository::save);
+            schedulingCourseInfosSource.forEach(it -> childSchedulingCourseInfoRepository.deleteById(it.getId()));
+            childSchedulingCourseInfoRepository.saveAll(childSchedulingCourseInfos.values());
+        } else {
+            childSchedulingCourseInfoRepository.deleteAllByChildInfo(childInfo);
         }
-        childSchedulingCourseInfoRepository.deleteAll(schedulingCourseInfosForRemove);
+
 
         response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo)));
 
