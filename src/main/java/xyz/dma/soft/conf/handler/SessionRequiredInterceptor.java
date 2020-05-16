@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
@@ -37,10 +36,5 @@ public class SessionRequiredInterceptor implements HandlerInterceptor {
             }
         }
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                           ModelAndView modelAndView) {
     }
 }

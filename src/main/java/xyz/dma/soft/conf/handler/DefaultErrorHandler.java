@@ -42,8 +42,9 @@ public class DefaultErrorHandler implements ErrorController {
         Map<String, Object> defaultAttributes = this.errorAttributes.getErrorAttributes(request, false);
         ResponseInfo responseInfo = response.getResponseInfo();
         responseInfo.setResultCode(ApiResultCode.UNEXPECTED_ERROR);
-        responseInfo.setMessage((String) defaultAttributes.get("message"));
-        responseInfo.setSystemMessage((String) defaultAttributes.get("error"));
+        String systemMessage = defaultAttributes.get("message") + "\n" + defaultAttributes.get("error");
+        //responseInfo.setMessage((String) defaultAttributes.get("message"));
+        responseInfo.setSystemMessage(systemMessage);
         return response;
     }
 

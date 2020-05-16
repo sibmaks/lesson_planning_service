@@ -39,7 +39,7 @@ public class ChildService {
         List<ChildCourseSchedulingInfo> childCourseSchedulingInfos = new ArrayList<>();
 
         for(ChildInfo childInfo : childInfoRepository.getAllByOrderById()) {
-            List<ChildSchedulingCourseInfo> kidSchedulingInfo = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
+            List<ChildSchedulingCourseInfo> kidSchedulingInfo = childSchedulingCourseInfoRepository.findAllByChildInfoOrderById(childInfo);
 
             ChildCourseSchedulingInfo childCourseSchedulingInfo = ChildCourseSchedulingInfo.builder()
                     .childInfo(new ChildInfoEntity(childInfo))
@@ -132,7 +132,7 @@ public class ChildService {
             childSchedulingCourseInfoRepository.saveAll(courseIdSchedulingMap.values());
         }
 
-        List<ChildSchedulingCourseInfo> schedulingInfos = childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo);
+        List<ChildSchedulingCourseInfo> schedulingInfos = childSchedulingCourseInfoRepository.findAllByChildInfoOrderById(childInfo);
         response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(schedulingInfos));
         return response;
     }
@@ -155,23 +155,17 @@ public class ChildService {
 
         if(courseSchedulingInfos != null && !courseSchedulingInfos.isEmpty()) {
             List<CourseSchedulingInfo> schedulingCourseInfosSource =
-                    buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo));
+                    buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfoOrderById(childInfo));
 
             Map<Number, ChildSchedulingCourseInfo> childSchedulingCourseInfos = new HashMap<>();
 
             for(CourseSchedulingInfo courseSchedulingInfo : courseSchedulingInfos) {
-                CourseSchedulingInfo courseSchedulingInfoSource = schedulingCourseInfosSource.stream()
+                schedulingCourseInfosSource.stream()
                         .filter(it -> it.getCourseInfo().getId().equals(courseSchedulingInfo.getCourseInfo().getId()))
                         .filter(it -> it.getDayOfWeek() == courseSchedulingInfo.getDayOfWeek())
                         .filter(it -> it.getTimeStart().equals(courseSchedulingInfo.getTimeStart()))
                         .filter(it -> it.getTimeEnd().equals(courseSchedulingInfo.getTimeEnd()))
-                        .findAny()
-                        .orElse(null);
-
-                if (courseSchedulingInfoSource != null) {
-                    schedulingCourseInfosSource.remove(courseSchedulingInfoSource);
-                    courseSchedulingInfo.setId(courseSchedulingInfoSource.getId());
-                }
+                        .findAny().ifPresent(courseSchedulingInfoSource -> courseSchedulingInfo.setId(courseSchedulingInfoSource.getId()));
 
                 Course course = courseRepository.findById(courseSchedulingInfo.getCourseInfo().getId())
                         .orElseThrow(() -> ServiceException.builder().code(ApiResultCode.COURSE_NOT_FOUND).build());
@@ -215,15 +209,13 @@ public class ChildService {
                 }
                 childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
             }
-
-            schedulingCourseInfosSource.forEach(it -> childSchedulingCourseInfoRepository.deleteById(it.getId()));
             childSchedulingCourseInfoRepository.saveAll(childSchedulingCourseInfos.values());
         } else {
             childSchedulingCourseInfoRepository.deleteAllByChildInfo(childInfo);
         }
 
 
-        response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfo(childInfo)));
+        response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(childSchedulingCourseInfoRepository.findAllByChildInfoOrderById(childInfo)));
 
         return response;
     }

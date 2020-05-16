@@ -7,7 +7,7 @@ import xyz.dma.soft.domain.ChildSchedulingCourseInfo;
 import java.util.List;
 
 public interface ChildSchedulingCourseInfoRepository extends CrudRepository<ChildSchedulingCourseInfo, Long> {
-    List<ChildSchedulingCourseInfo> findAllByChildInfo(ChildInfo childInfo);
+    List<ChildSchedulingCourseInfo> findAllByChildInfoOrderById(ChildInfo childInfo);
 
     List<ChildSchedulingCourseInfo> findAllByCourseId(Long course);
 
