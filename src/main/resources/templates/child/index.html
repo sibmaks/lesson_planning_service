@@ -103,7 +103,8 @@
                         </thead>
                         <tbody
                                 onload="console.log('321')">
-                        <tr ng-repeat="courseSchedulingInfo in child.courseSchedulingInfos">
+                        <tr ng-repeat="courseSchedulingInfo in child.courseSchedulingInfos"
+                            ng-class="{'table-danger': courseSchedulingInfo.duplicate}">
                             <td>
                                 <select class="form-control" ng-model="courseSchedulingInfo.courseInfo.id"
                                         required>

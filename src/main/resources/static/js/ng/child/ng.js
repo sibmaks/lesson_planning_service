@@ -131,12 +131,32 @@ lPCModule.controller('ChildController', function ($scope) {
                             courseSchedulingInfos: data.courseSchedulingInfos
                         });
                     }
+                    for(let i = 0, size = $scope.child?.courseSchedulingInfos?.length; i < size; i++) {
+                        $scope.child.courseSchedulingInfos[i].duplicate = null;
+                    }
                     $scope.showList();
                 } else if (responseCode === "ConstraintException") {
                     if (!isNull(data.constrains['childInfo.id'])) {
                         document.location.reload(true);
                     } else {
                         $scope.constraints = data.constrains;
+                    }
+                } else if (responseCode === "Duplicates") {
+                    if (!isNull(responseMessage)) {
+                        $scope.error = responseMessage;
+                    }
+
+                    for(let i = 0, size = $scope.child?.courseSchedulingInfos?.length; i < size; i++) {
+                        const iInfo = $scope.child?.courseSchedulingInfos[i];
+                        for(let j = 0; j < i; j++) {
+                            const jInfo = $scope.child?.courseSchedulingInfos[j];
+                            if(Number(iInfo.courseInfo.id) === Number(jInfo.courseInfo.id) &&
+                                Number(iInfo.dayOfWeek) === Number(jInfo.dayOfWeek) &&
+                                iInfo.timeStart === jInfo.timeStart && iInfo.timeEnd === jInfo.timeEnd) {
+                                iInfo.duplicate = true;
+                                break;
+                            }
+                        }
                     }
                 } else if (!isNull(responseMessage)) {
                     $scope.error = responseMessage;
