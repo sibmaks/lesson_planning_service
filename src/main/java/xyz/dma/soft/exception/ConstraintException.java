@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import xyz.dma.soft.core.IConstraintContext;
+import xyz.dma.soft.core.constraint.IConstraintContext;
 
 @Data
 @AllArgsConstructor

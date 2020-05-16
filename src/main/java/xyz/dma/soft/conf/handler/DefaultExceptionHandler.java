@@ -14,7 +14,7 @@ import xyz.dma.soft.api.entity.ResponseInfo;
 import xyz.dma.soft.api.response.ConstraintResponse;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.constants.ICommonConstants;
-import xyz.dma.soft.entity.ConstraintType;
+import xyz.dma.soft.core.constraint.ConstraintInfo;
 import xyz.dma.soft.entity.PageInfo;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ConstraintException;
@@ -84,10 +84,10 @@ public class DefaultExceptionHandler {
             languageIso3 = sessionInfo.getLanguageIso3();
         }
         Map<String, String> localizedConstraints = new HashMap<>();
-        for(Map.Entry<String, ConstraintType> constraintTypeEntry : e.getConstraintContext().getConstraints().entrySet()) {
+        for(ConstraintInfo constraintInfo : e.getConstraintContext().getConstraints()) {
             String message = localizationService.getTranslated(countryIso3, languageIso3,
-                    String.format(LOCALIZATION_TOKEN_FORMAT, constraintTypeEntry.getValue().name().toLowerCase()));
-            localizedConstraints.put(constraintTypeEntry.getKey(), message);
+                    String.format(LOCALIZATION_TOKEN_FORMAT, constraintInfo.getConstraintType().name().toLowerCase()));
+            localizedConstraints.put(constraintInfo.getParameter(), message);
         }
         return new ConstraintResponse(responseInfo, localizedConstraints);
     }

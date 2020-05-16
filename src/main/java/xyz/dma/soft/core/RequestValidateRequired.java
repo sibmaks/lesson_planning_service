@@ -2,6 +2,7 @@ package xyz.dma.soft.core;
 
 
 import xyz.dma.soft.api.request.StandardRequest;
+import xyz.dma.soft.core.constraint.IRequestValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.lesson.LessonsGetRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.core.IConstraintContext;
-import xyz.dma.soft.core.impl.ConstraintContextImpl;
+import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
-
-import static java.util.Objects.isNull;
 
 @Component
 @AllArgsConstructor
@@ -18,19 +16,16 @@ public class LessonsGetRequestValidator extends ARequestValidator<LessonsGetRequ
 
     @Override
     public IConstraintContext validate(LessonsGetRequest request) {
-        ConstraintContextImpl context = new ConstraintContextImpl();
+        ConstraintContextBuilder context = new ConstraintContextBuilder()
+                .assertConstraintViolation(0, isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
+                .assertConstraintViolation(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId")
 
-        chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
-                .addConstraint(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId");
+                .assertConstraintViolation(0, isNull(request.getFromDate()), ConstraintType.EMPTY, "fromDate")
+                .assertConstraintViolation(1, not(isValidDate(request.getFromDate())), ConstraintType.INVALID, "fromDate")
+                .assertConstraintViolation(0, isNull(request.getToDate()), ConstraintType.EMPTY, "toDate")
+                .assertConstraintViolation(1, not(isValidDate(request.getToDate())), ConstraintType.INVALID, "toDate")
+                .assertConstraintViolation(2, not(dateStartBeforeEnd(request.getFromDate(), request.getToDate())), ConstraintType.INVALID, "fromDate");
 
-        chainConstraint(context)
-                .addConstraint(0, () -> isNull(request.getFromDate()), ConstraintType.EMPTY, "fromDate")
-                .addConstraint(1, () -> !isValidDate(request.getFromDate()), ConstraintType.INVALID, "fromDate")
-                .addConstraint(0, () -> isNull(request.getToDate()), ConstraintType.EMPTY, "toDate")
-                .addConstraint(1, () -> !isValidDate(request.getToDate()), ConstraintType.INVALID, "toDate")
-                .addConstraint(2, () -> !dateStartBeforeEnd(request.getFromDate(), request.getToDate()), ConstraintType.INVALID, "fromDate");
-
-        return context;
+        return context.build();
     }
 }
