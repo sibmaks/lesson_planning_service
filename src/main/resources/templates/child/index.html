@@ -54,7 +54,8 @@
                 </div>
             </div>
             <div ng-cloak class="col-lg-12" ng-if="mode == 'modify'">
-                <form class="col-lg-10">
+                <form>
+                    <fieldset class="col-lg-10">
                     <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{error}}
@@ -87,10 +88,10 @@
                         <div class="invalid-feedback" ng-bind="constraints['childInfo.phone']"></div>
                         <div class="invalid-feedback" ng-bind="constraints.childInfo"></div>
                     </div>
+                    </fieldset>
                     <h1 class="display-5"
                         th:text="${translations['ui.header.child.courses_scheduling'].translation}"></h1>
-                    <table class="table table-striped"
-                           onload="console.log('456')">
+                    <table class="table table-striped">
                         <thead>
                         <tr>
                             <th th:text="${translations['ui.header.course.name'].translation}"></th>
@@ -101,8 +102,7 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody
-                                onload="console.log('321')">
+                        <tbody>
                         <tr ng-repeat="courseSchedulingInfo in child.courseSchedulingInfos"
                             ng-class="{'table-danger': courseSchedulingInfo.duplicate}">
                             <td>
@@ -132,8 +132,7 @@
                                        data-target="#{{startDatetimepickerTemplate + courseSchedulingInfo.dateTimePickerIndex}}"
                                        ng-model="courseSchedulingInfo.timeStart"
                                        ng-value="courseSchedulingInfo.timeStart"
-                                       elem-ready="initStartDate({{courseSchedulingInfo.dateTimePickerIndex}})"
-                                       onload="console.log('123')"/>
+                                       elem-ready="initStartDate({{courseSchedulingInfo.dateTimePickerIndex}})"/>
                             </td>
                             <td style="position: relative">
                                 <input type="text" class="form-control datetimepicker-input"
