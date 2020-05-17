@@ -31,8 +31,8 @@ public class LessonEntity implements Serializable {
     public LessonEntity(Lesson lesson) {
         this.id = lesson.getId();
         this.dayOfWeek = lesson.getDayOfWeek();
-        this.timeStart = lesson.getTimeStart().format(ICommonConstants.TIME_FORMATTER);
-        this.timeEnd = lesson.getTimeEnd().format(ICommonConstants.TIME_FORMATTER);
+        this.timeStart = lesson.getTimeStart().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        this.timeEnd = lesson.getTimeEnd().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
         this.lessonStartDate = lesson.getLessonStartDate().format(ICommonConstants.DATE_FORMATTER);
         this.lessonEndDate = lesson.getLessonEndDate() == null ? null : lesson.getLessonEndDate().format(ICommonConstants.DATE_FORMATTER);
         this.courseInfo = new CourseInfo(lesson.getCourse());

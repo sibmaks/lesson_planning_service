@@ -55,8 +55,8 @@ lPCModule.controller('SchedulingController', function ($scope) {
 
             for(let i = 0, size = list?.length; i < size; i++) {
                 const item = list[i];
-                const timeStart = moment.utc(item.timeStart, 'HH:mm:ss');
-                const timeEnd = moment.utc(item.timeEnd, 'HH:mm:ss');
+                const timeStart = moment.utc(item.timeStart, 'HH:mm');
+                const timeEnd = moment.utc(item.timeEnd, 'HH:mm');
                 if(timeEnd > timeRange.from && timeStart < timeRange.to) {
                     result.push(item);
                 }

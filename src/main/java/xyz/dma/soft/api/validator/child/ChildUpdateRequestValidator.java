@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.entity.CourseSchedulingInfo;
 import xyz.dma.soft.api.request.child.ChildUpdateRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
+import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.entity.ConstraintType;
@@ -34,10 +35,10 @@ public class ChildUpdateRequestValidator extends ARequestValidator<ChildUpdateRe
 
                 context
                         .assertConstraintViolation(0, isNull(courseSchedulingInfo.getTimeStart()), ConstraintType.EMPTY, String.format("courseSchedulingInfos[%d]", i), "timeStart")
-                        .assertConstraintViolation(1, not(isValidTime(courseSchedulingInfo.getTimeStart())), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeStart")
+                        .assertConstraintViolation(1, not(isValidTime(courseSchedulingInfo.getTimeStart(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeStart")
                         .assertConstraintViolation(0, isNull(courseSchedulingInfo.getTimeEnd()), ConstraintType.EMPTY, String.format("courseSchedulingInfos[%d]", i), "timeEnd")
-                        .assertConstraintViolation(1, not(isValidTime(courseSchedulingInfo.getTimeEnd())), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeEnd")
-                        .assertConstraintViolation(2, not(timeStartBeforeEnd(courseSchedulingInfo.getTimeStart(), courseSchedulingInfo.getTimeEnd())), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeStart");
+                        .assertConstraintViolation(1, not(isValidTime(courseSchedulingInfo.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeEnd")
+                        .assertConstraintViolation(2, not(timeStartBeforeEnd(courseSchedulingInfo.getTimeStart(), courseSchedulingInfo.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, String.format("courseSchedulingInfos[%d]", i), "timeStart");
 
                 context
                         .assertConstraintViolation(0, isNull(courseSchedulingInfo.getCourseInfo()), ConstraintType.EMPTY, String.format("courseSchedulingInfos[%d]", i), "courseInfo")

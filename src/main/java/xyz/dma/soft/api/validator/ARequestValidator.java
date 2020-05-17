@@ -6,6 +6,7 @@ import xyz.dma.soft.core.constraint.IRequestValidator;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,10 +40,10 @@ public abstract class ARequestValidator<T extends StandardRequest> implements IR
         return () -> !supplier.get();
     }
 
-    public Supplier<Boolean> isValidTime(String time) {
+    public Supplier<Boolean> isValidTime(String time, DateTimeFormatter formatter) {
         return () -> {
             try {
-                LocalTime.parse(time, ICommonConstants.TIME_FORMATTER);
+                LocalTime.parse(time, formatter);
             } catch (DateTimeParseException e) {
                 return false;
             }
@@ -61,8 +62,8 @@ public abstract class ARequestValidator<T extends StandardRequest> implements IR
         };
     }
 
-    public Supplier<Boolean> timeStartBeforeEnd(String start, String end) {
-        return () -> LocalTime.parse(start, ICommonConstants.TIME_FORMATTER).isBefore(LocalTime.parse(end, ICommonConstants.TIME_FORMATTER));
+    public Supplier<Boolean> timeStartBeforeEnd(String start, String end, DateTimeFormatter formatter) {
+        return () -> LocalTime.parse(start, formatter).isBefore(LocalTime.parse(end, formatter));
     }
 
     public Supplier<Boolean> dateStartBeforeEnd(String start, String end) {

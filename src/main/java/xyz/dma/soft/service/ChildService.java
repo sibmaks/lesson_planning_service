@@ -58,8 +58,8 @@ public class ChildService {
                 CourseSchedulingInfo courseSchedulingInfo = CourseSchedulingInfo.builder()
                         .id(kidSchedulingInfo.getId())
                         .dayOfWeek(schedulingCourseInfo.getDayOfWeek())
-                        .timeStart(schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_FORMATTER))
-                        .timeEnd(schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_FORMATTER))
+                        .timeStart(schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER))
+                        .timeEnd(schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER))
                         .courseInfo(new CourseInfo(kidSchedulingInfo.getCourse()))
                         .build();
                 courseSchedulingInfos.add(courseSchedulingInfo);
@@ -71,8 +71,8 @@ public class ChildService {
     public SchedulingCourseInfo buildSchedulingCourseInfo(CourseSchedulingInfo courseSchedulingInfo) {
         return SchedulingCourseInfo.builder()
                 .dayOfWeek(courseSchedulingInfo.getDayOfWeek())
-                .timeStart(ConvertUtils.parseTime(courseSchedulingInfo.getTimeStart()))
-                .timeEnd(ConvertUtils.parseTime(courseSchedulingInfo.getTimeEnd()))
+                .timeStart(ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeStart()))
+                .timeEnd(ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeEnd()))
                 .build();
     }
 
@@ -110,8 +110,8 @@ public class ChildService {
                 SchedulingCourseInfo schedulingCourseInfo =
                         schedulingCourseInfoRepository.findFirstByDayOfWeekAndTimeStartAndTimeEnd(
                                 courseSchedulingInfo.getDayOfWeek(),
-                                ConvertUtils.parseTime(courseSchedulingInfo.getTimeStart()),
-                                ConvertUtils.parseTime(courseSchedulingInfo.getTimeEnd()));
+                                ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeStart()),
+                                ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeEnd()));
                 if(schedulingCourseInfo == null) {
                     schedulingCourseInfo = buildSchedulingCourseInfo(courseSchedulingInfo);
                     schedulingCourseInfo = schedulingCourseInfoRepository.save(schedulingCourseInfo);
@@ -160,12 +160,15 @@ public class ChildService {
             Map<Number, ChildSchedulingCourseInfo> childSchedulingCourseInfos = new HashMap<>();
 
             for(CourseSchedulingInfo courseSchedulingInfo : courseSchedulingInfos) {
-                schedulingCourseInfosSource.stream()
+                long courseSchedulingInfoId = schedulingCourseInfosSource.stream()
                         .filter(it -> it.getCourseInfo().getId().equals(courseSchedulingInfo.getCourseInfo().getId()))
                         .filter(it -> it.getDayOfWeek() == courseSchedulingInfo.getDayOfWeek())
                         .filter(it -> it.getTimeStart().equals(courseSchedulingInfo.getTimeStart()))
                         .filter(it -> it.getTimeEnd().equals(courseSchedulingInfo.getTimeEnd()))
-                        .findAny().ifPresent(courseSchedulingInfoSource -> courseSchedulingInfo.setId(courseSchedulingInfoSource.getId()));
+                        .findAny()
+                        .map(CourseSchedulingInfo::getId)
+                        .orElse(0L);
+                courseSchedulingInfo.setId(courseSchedulingInfoId);
 
                 Course course = courseRepository.findById(courseSchedulingInfo.getCourseInfo().getId())
                         .orElseThrow(() -> ServiceException.builder().code(ApiResultCode.COURSE_NOT_FOUND).build());
@@ -180,8 +183,8 @@ public class ChildService {
                     childSchedulingCourseInfos.put(childSchedulingCourseInfo.getCourse().getId(), childSchedulingCourseInfo);
                 }
 
-                LocalTime startTime = ConvertUtils.parseTime(courseSchedulingInfo.getTimeStart());
-                LocalTime endTime = ConvertUtils.parseTime(courseSchedulingInfo.getTimeEnd());
+                LocalTime startTime = ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeStart());
+                LocalTime endTime = ConvertUtils.parseTimeWithoutSeconds(courseSchedulingInfo.getTimeEnd());
 
                 SchedulingCourseInfo schedulingCourseInfo = schedulingCourseInfoRepository.findFirstByDayOfWeekAndTimeStartAndTimeEnd(
                         courseSchedulingInfo.getDayOfWeek(), startTime, endTime);

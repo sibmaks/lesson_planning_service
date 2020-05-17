@@ -42,9 +42,9 @@ lPCModule.controller('ChildController', function ($scope) {
 
         $scope.initStartDate = function (id) {
             const field = $('#' + $scope.startDatetimepickerTemplate + id);
-            const val = isEmpty(field.val()) ? moment('12:00:00', moment.HTML5_FMT.TIME_SECONDS) : moment(field.val(), moment.HTML5_FMT.TIME_SECONDS);
+            const val = isEmpty(field.val()) ? moment('12:00', moment.HTML5_FMT.TIME_SECONDS) : moment(field.val(), moment.HTML5_FMT.TIME_SECONDS);
             field.datetimepicker({
-                format: 'HH:mm:ss',
+                format: 'HH:mm',
                 date: val,
                 enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
                 stepping: 30
@@ -55,9 +55,9 @@ lPCModule.controller('ChildController', function ($scope) {
             const startField = $('#' + $scope.startDatetimepickerTemplate + id);
             const endField = $('#' + $scope.endDatetimepickerTemplate + id);
             const startVal = moment(startField.val(), moment.HTML5_FMT.TIME_SECONDS);
-            const val = isEmpty(endField.val()) ? moment('13:00:00', moment.HTML5_FMT.TIME_SECONDS) : moment(endField.val(), moment.HTML5_FMT.TIME_SECONDS);
+            const val = isEmpty(endField.val()) ? moment('13:00', moment.HTML5_FMT.TIME_SECONDS) : moment(endField.val(), moment.HTML5_FMT.TIME_SECONDS);
             $(endField).datetimepicker({
-                format: 'HH:mm:ss',
+                format: 'HH:mm',
                 date: val,
                 enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
                 stepping: 30

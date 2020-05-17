@@ -58,8 +58,8 @@ public class LessonService {
 
         User teacher = userService.getUser(sessionInfo);
 
-        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_FORMATTER);
-        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_FORMATTER);
+        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
 
         if(lessonRepository.existsByCourse_IdAndTeacherAndDayOfWeekAndTimeStartAndTimeEnd(courseId, teacher, dayOfWeek,
                 timeStartVal, timeEndVal)) {
@@ -104,8 +104,8 @@ public class LessonService {
 
         User teacher = userService.getUser(sessionInfo);
 
-        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_FORMATTER);
-        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_FORMATTER);
+        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
 
         Lesson lesson = lessonRepository.findFirstById(id);
 

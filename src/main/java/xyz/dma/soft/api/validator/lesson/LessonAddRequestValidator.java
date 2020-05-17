@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.lesson.LessonAddRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
+import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.entity.ConstraintType;
@@ -24,10 +25,10 @@ public class LessonAddRequestValidator extends ARequestValidator<LessonAddReques
                 .assertConstraintViolation(1, not(isValidDate(request.getLessonStartDate())), ConstraintType.INVALID, "lessonStartDate")
 
                 .assertConstraintViolation(0, isNull(request.getTimeStart()), ConstraintType.EMPTY, "timeStart")
-                .assertConstraintViolation(1, not(isValidTime(request.getTimeStart())), ConstraintType.INVALID, "timeStart")
+                .assertConstraintViolation(1, not(isValidTime(request.getTimeStart(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeStart")
                 .assertConstraintViolation(0, isNull(request.getTimeEnd()), ConstraintType.EMPTY, "timeEnd")
-                .assertConstraintViolation(1, not(isValidTime(request.getTimeEnd())), ConstraintType.INVALID, "timeEnd")
-                .assertConstraintViolation(2, not(timeStartBeforeEnd(request.getTimeStart(), request.getTimeEnd())), ConstraintType.INVALID, "timeStart")
+                .assertConstraintViolation(1, not(isValidTime(request.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeEnd")
+                .assertConstraintViolation(2, not(timeStartBeforeEnd(request.getTimeStart(), request.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeStart")
 
                 .assertConstraintViolation(not(inRange(request.getDayOfWeek(), 1, 7)), ConstraintType.INVALID, "dayOfWeek");
 
