@@ -22,4 +22,6 @@ public class Locale implements Serializable {
     private String countryIso3;
     @Column(name = "language_iso3")
     private String languageIso3;
+    @Column(name = "locale_code")
+    private String localeCode;
 }

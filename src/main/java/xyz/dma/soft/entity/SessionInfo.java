@@ -14,6 +14,7 @@ import java.util.Map;
 public class SessionInfo implements Serializable {
     public static String ATTR_LANGUAGE_ISO3 = "ATTR_LANGUAGE_ISO3";
     public static String ATTR_COUNTRY_ISO3 = "ATTR_COUNTRY_ISO3";
+    public static String ATTR_LOCALE = "ATTR_LOCALE";
 
     private String id;
     private Long userId;
@@ -27,6 +28,10 @@ public class SessionInfo implements Serializable {
 
     public String getCountryIso3() {
         return getAttribute(ATTR_COUNTRY_ISO3);
+    }
+
+    public String getLocale() {
+        return getAttribute(ATTR_LOCALE);
     }
 
     public String getAttribute(String key) {

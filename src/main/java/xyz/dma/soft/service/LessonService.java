@@ -17,9 +17,7 @@ import xyz.dma.soft.repository.LessonRepository;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +27,7 @@ public class LessonService {
     private final LessonRepository lessonRepository;
     private final ChildInfoRepository childInfoRepository;
 
-    public List<LessonEntity> get(SessionInfo sessionInfo, Long courseId, String fromDate, String toDate) {
+    public Map<Integer, List<LessonEntity>> get(SessionInfo sessionInfo, Long courseId, String fromDate, String toDate) {
         User user = userService.getUser(sessionInfo);
 
         LocalDate startDateVal = LocalDate.parse(fromDate, ICommonConstants.DATE_FORMATTER);
@@ -40,10 +38,13 @@ public class LessonService {
                 courseId, user, startDateVal, endDateVal
         );
 
-        List<LessonEntity> lessonEntities = new ArrayList<>();
+        Map<Integer, List<LessonEntity>> lessonEntities = new HashMap<>();
 
         for(Lesson lesson : lessons) {
-            lessonEntities.add(new LessonEntity(lesson));
+            if(!lessonEntities.containsKey(lesson.getDayOfWeek())) {
+                lessonEntities.put(lesson.getDayOfWeek(), new ArrayList<>());
+            }
+            lessonEntities.get(lesson.getDayOfWeek()).add(new LessonEntity(lesson));
         }
 
         return lessonEntities;

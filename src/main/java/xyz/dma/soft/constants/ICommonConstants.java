@@ -10,6 +10,8 @@ public interface ICommonConstants {
     String TIME_FORMAT = "HH:mm:ss";
     DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
+    String TIME_FORMAT_WITHOUT_SECONDS = "HH:mm";
+    DateTimeFormatter TIME_WITHOUT_SECONDS_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT_WITHOUT_SECONDS);
 
     String DATE_FORMAT = "dd-MM-yyyy";
     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);

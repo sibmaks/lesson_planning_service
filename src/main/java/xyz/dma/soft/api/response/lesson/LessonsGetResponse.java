@@ -8,11 +8,12 @@ import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.api.response.StandardResponse;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LessonsGetResponse extends StandardResponse {
-    private List<LessonEntity> lessons;
+    private Map<Integer, List<LessonEntity>> lessons;
 }

@@ -47,6 +47,7 @@ public class UserService {
         Map<String, String> attributes = new HashMap<>();
         attributes.put(SessionInfo.ATTR_COUNTRY_ISO3, countryIso3);
         attributes.put(SessionInfo.ATTR_LANGUAGE_ISO3, languageIso3);
+        attributes.put(SessionInfo.ATTR_LOCALE, localizationService.getLocale(countryIso3, languageIso3).getLocaleCode());
         SessionInfo session = sessionService.createSession(user, attributes, true);
         if(user.getAuthInfo() == null) {
             user.setAuthInfo(new AuthInfo());

@@ -24,6 +24,9 @@
         <templatePath>/scheduling/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.scheduling.index</codes>
+        <codes>ui.button.load</codes>
+        <codes>ui.text.lesson</codes>
+        <codes>ui.text.children_scheduled</codes>
     </pageInfos>
     <pageInfos>
         <name>404</name>

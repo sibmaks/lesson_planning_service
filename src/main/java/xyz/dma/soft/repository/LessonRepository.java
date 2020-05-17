@@ -14,7 +14,7 @@ import java.util.List;
 public interface LessonRepository extends CrudRepository<Lesson, Long> {
 
     @Query("select l from Lesson l where l.course.id = ?1 and l.teacher = ?2 and " +
-            "l.lessonStartDate >= ?3 and (l.lessonEndDate is null or l.lessonEndDate <= ?4)")
+            "l.lessonStartDate <= ?4 and (l.lessonEndDate is null or l.lessonEndDate >= ?3)")
     List<Lesson> getAllByCourse_IdAndTeacherAndLessonStartDateAfterAndLessonEndDateBefore(Long courseId,
                                                                                           User teacher,
                                                                                           LocalDate startDate,
@@ -22,7 +22,7 @@ public interface LessonRepository extends CrudRepository<Lesson, Long> {
 
 
     @Query("select l from Lesson l where l.course.id = ?1 and " +
-            "l.lessonStartDate >= ?2 and (l.lessonEndDate is null or l.lessonEndDate <= ?3)")
+            "l.lessonStartDate <= ?3 and (l.lessonEndDate is null or l.lessonEndDate >= ?2)")
     List<Lesson> getAllByCourse_IdAndLessonStartDateAfterAndLessonEndDateBefore(Long courseId,
                                                                                 LocalDate startDate,
                                                                                 LocalDate endDate);

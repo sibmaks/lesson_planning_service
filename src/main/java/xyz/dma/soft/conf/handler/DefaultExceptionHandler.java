@@ -51,8 +51,6 @@ public class DefaultExceptionHandler {
         log.error(e.getMessage(), e);
         ResponseInfo responseInfo = ResponseInfo.builder()
                 .resultCode(ApiResultCode.UNEXPECTED_ERROR)
-                .message(e.getLocalizedMessage())
-                .systemMessage(e.getMessage())
                 .build();
         return new StandardResponse(responseInfo);
     }
