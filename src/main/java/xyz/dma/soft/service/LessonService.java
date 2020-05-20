@@ -3,6 +3,7 @@ package xyz.dma.soft.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import xyz.dma.soft.api.entity.ApiResultCode;
+import xyz.dma.soft.api.entity.ChildInfoEntity;
 import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.domain.ChildInfo;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -52,60 +54,48 @@ public class LessonService {
 
     @Transactional
     public LessonEntity add(SessionInfo sessionInfo, Long courseId, int dayOfWeek, String timeStart, String timeEnd,
-                      String lessonStartDate, List<Long> children) {
+                      String lessonStartDate, String lessonEndDate, List<ChildInfoEntity> children) {
+        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(Collectors.toList());
         List<ChildInfo> childInfos = children == null || children.isEmpty() ? Collections.emptyList() :
-                childInfoRepository.getAllByIdIn(children);
+                childInfoRepository.getAllByIdIn(childrenIds);
 
         User teacher = userService.getUser(sessionInfo);
 
-        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
-        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_FORMATTER);
+        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_FORMATTER);
 
         if(lessonRepository.existsByCourse_IdAndTeacherAndDayOfWeekAndTimeStartAndTimeEnd(courseId, teacher, dayOfWeek,
                 timeStartVal, timeEndVal)) {
             throw ServiceException.builder().code(ApiResultCode.ALREADY_EXISTS).build();
         }
 
-        Lesson lesson = Lesson.builder()
+        Lesson.LessonBuilder lesson = Lesson.builder()
                 .course(courseRepository.findFirstById(courseId))
                 .dayOfWeek(dayOfWeek)
                 .timeStart(timeStartVal)
                 .timeEnd(timeEndVal)
                 .lessonStartDate(LocalDate.parse(lessonStartDate, ICommonConstants.DATE_FORMATTER))
                 .teacher(teacher)
-                .children(childInfos)
-                .build();
+                .children(childInfos);
 
-        return new LessonEntity(lessonRepository.save(lesson));
+        if(lessonEndDate != null && !lessonEndDate.isEmpty()) {
+            lesson.lessonEndDate(LocalDate.parse(lessonEndDate, ICommonConstants.DATE_FORMATTER));
+        }
+
+        return new LessonEntity(lessonRepository.save(lesson.build()));
     }
 
     @Transactional
-    public LessonEntity stop(SessionInfo sessionInfo, Long lessonId, String lessonEndDate) {
-        User user = userService.getUser(sessionInfo);
-        Lesson lesson = lessonRepository.findFirstById(lessonId);
-
-        if(user.getId() != lesson.getTeacher().getId()) {
-            throw ServiceException.builder().code(ApiResultCode.ACCESS_DENIED).build();
-        }
-
-        if(lessonEndDate == null || lessonEndDate.isEmpty()) {
-            lesson.setLessonEndDate(LocalDate.now());
-        } else {
-            lesson.setLessonEndDate(LocalDate.parse(lessonEndDate, ICommonConstants.DATE_FORMATTER));
-        }
-        lesson = lessonRepository.save(lesson);
-        return new LessonEntity(lesson);
-    }
-
     public LessonEntity update(SessionInfo sessionInfo, Long id, Long courseId, int dayOfWeek, String timeStart,
-                               String timeEnd, String lessonStartDate, List<Long> children) {
+                               String timeEnd, String lessonStartDate, String lessonEndDate, List<ChildInfoEntity> children) {
+        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(Collectors.toList());
         List<ChildInfo> childInfos = children == null || children.isEmpty() ? Collections.emptyList() :
-                childInfoRepository.getAllByIdIn(children);
+                childInfoRepository.getAllByIdIn(childrenIds);
 
         User teacher = userService.getUser(sessionInfo);
 
-        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
-        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        LocalTime timeStartVal = LocalTime.parse(timeStart, ICommonConstants.TIME_FORMATTER);
+        LocalTime timeEndVal = LocalTime.parse(timeEnd, ICommonConstants.TIME_FORMATTER);
 
         Lesson lesson = lessonRepository.findFirstById(id);
 
@@ -118,7 +108,7 @@ public class LessonService {
             }
         }
 
-        lesson = Lesson.builder()
+        Lesson.LessonBuilder lessonBuilder = Lesson.builder()
                 .id(id)
                 .course(courseRepository.findFirstById(courseId))
                 .dayOfWeek(dayOfWeek)
@@ -126,9 +116,12 @@ public class LessonService {
                 .timeEnd(timeEndVal)
                 .lessonStartDate(LocalDate.parse(lessonStartDate, ICommonConstants.DATE_FORMATTER))
                 .teacher(teacher)
-                .children(childInfos)
-                .build();
+                .children(childInfos);
 
-        return new LessonEntity(lessonRepository.save(lesson));
+        if(lessonEndDate != null && !lessonEndDate.isEmpty()) {
+            lessonBuilder.lessonEndDate(LocalDate.parse(lessonEndDate, ICommonConstants.DATE_FORMATTER));
+        }
+
+        return new LessonEntity(lessonRepository.save(lessonBuilder.build()));
     }
 }

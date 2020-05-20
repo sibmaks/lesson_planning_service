@@ -2,11 +2,14 @@ package xyz.dma.soft.api.validator.lesson;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import xyz.dma.soft.api.entity.CourseInfo;
+import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.api.request.lesson.LessonUpdateRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.constants.ICommonConstants;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.IChainConstraintValidator;
 import xyz.dma.soft.core.constraint.IConstraintContext;
+import xyz.dma.soft.core.constraint.ILineConstraintValidator;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.LessonRepository;
@@ -19,25 +22,69 @@ public class LessonUpdateRequestValidator extends ARequestValidator<LessonUpdate
 
     @Override
     public IConstraintContext validate(LessonUpdateRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        ILineConstraintValidator<LessonEntity> constraintValidator = contextBuilder
+                .chain(request)
+                .map(LessonUpdateRequest::getLessonEntity, "lessonEntity")
+                .validate(this::notNull)
+                .line();
 
-                .assertConstraintViolation(0, isNull(request.getId()), ConstraintType.EMPTY, "id")
-                .assertConstraintViolation(1, () -> !lessonRepository.existsById(request.getId()), ConstraintType.INVALID, "id")
+        constraintValidator
+                .chain()
+                .map(LessonEntity::getId, "id")
+                .validate(this::notNull)
+                .validate(it -> lessonRepository.existsById(it) ? null : ConstraintType.INVALID);
 
-                .assertConstraintViolation(0, isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
-                .assertConstraintViolation(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId")
+        constraintValidator
+                .chain()
+                .map(LessonEntity::getCourseInfo, "courseInfo")
+                .validate(this::notNull)
+                .map(CourseInfo::getId, "id")
+                .validate(this::notNull)
+                .validate(it -> courseRepository.existsById(it) ? null : ConstraintType.INVALID);
 
-                .assertConstraintViolation(0, isNull(request.getLessonStartDate()), ConstraintType.EMPTY, "lessonStartDate")
-                .assertConstraintViolation(1, not(isValidDate(request.getLessonStartDate())), ConstraintType.INVALID, "lessonStartDate")
+        constraintValidator
+                .chain()
+                .map(LessonEntity::getDayOfWeek, "dayOfWeek")
+                .validate(it -> inRange(it, 1, 7));
 
-                .assertConstraintViolation(0, isNull(request.getTimeStart()), ConstraintType.EMPTY, "timeStart")
-                .assertConstraintViolation(1, not(isValidTime(request.getTimeStart(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeStart")
-                .assertConstraintViolation(0, isNull(request.getTimeEnd()), ConstraintType.EMPTY, "timeEnd")
-                .assertConstraintViolation(1, not(isValidTime(request.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeEnd")
-                .assertConstraintViolation(2, not(timeStartBeforeEnd(request.getTimeStart(), request.getTimeEnd(), ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER)), ConstraintType.INVALID, "timeStart")
+        IChainConstraintValidator<LessonEntity> timeChainConstraint = constraintValidator.chain();
+        ILineConstraintValidator<LessonEntity> timeBorderChainConstraint = timeChainConstraint.line();
 
-                .assertConstraintViolation(not(inRange(request.getDayOfWeek(), 1, 7)), ConstraintType.INVALID, "dayOfWeek");
+        timeBorderChainConstraint
+                .chain()
+                .map(LessonEntity::getTimeStart, "timeStart")
+                .validate(this::notEmpty)
+                .validate(this::isValidTime);
 
-        return context.build();
+        timeBorderChainConstraint
+                .chain()
+                .map(LessonEntity::getTimeEnd, "timeEnd")
+                .validate(this::notEmpty)
+                .validate(this::isValidTime);
+
+        timeChainConstraint
+                .validate(it -> timeStartBeforeEnd(it.getTimeStart(), it.getTimeEnd()), "timeStart");
+
+        IChainConstraintValidator<LessonEntity> dateChainConstraint = constraintValidator.chain();
+        ILineConstraintValidator<LessonEntity> dateBorderChainConstraint = dateChainConstraint.line();
+
+        dateBorderChainConstraint
+                .chain()
+                .map(LessonEntity::getLessonStartDate, "lessonStartDate")
+                .validate(this::notEmpty)
+                .validate(this::isValidDate);
+
+         dateBorderChainConstraint
+                .chain()
+                .map(LessonEntity::getLessonEndDate, "lessonEndDate")
+                .filter(this::notEmpty)
+                .validate(this::isValidDate);
+
+        dateChainConstraint
+                .filter(it -> notEmpty(it.getLessonEndDate()))
+                .validate(it -> dateStartBeforeEnd(it.getLessonStartDate(), it.getLessonEndDate()), "lessonStartDate");
+
+        return contextBuilder.build();
     }
 }

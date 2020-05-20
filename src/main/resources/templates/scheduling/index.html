@@ -57,9 +57,9 @@
                     </thead>
                     <tbody ng-if="dateRange !== null && dateRange !== undefined && dateRange !== []">
                     <tr ng-repeat="timeRange in timeRanges" ng-init="timeIndex = $index">
-                        <td style="white-space: nowrap;">
+                        <th style="white-space: nowrap;">
                             {{timeRange.from.format('HH:mm')}}-{{timeRange.to.format('HH:mm')}}
-                        </td>
+                        </th>
                         <td style="white-space: nowrap;" ng-repeat="day in dateRange"
                             ng-init="
                             dayIndex = $index;
@@ -79,6 +79,9 @@
                                         <p ng-repeat="schedulingChild in schedulingChildren">
                                             {{schedulingChild.child.name}}, {{schedulingChild.child.parentName}} - {{schedulingChild.child.phone}} ({{schedulingChild.timeStart}}-{{schedulingChild.timeEnd}})
                                         </p>
+                                        <p class="text-right">
+                                            <a href="#" class="btn btn-outline-primary"><i class="fas fa-plus"></i></a>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -97,6 +100,9 @@
                                     <div class="card-body">
                                         <p ng-repeat="child in timeLesson.children">
                                             {{child.name}}, {{child.parentName}} - {{child.phone}}
+                                        </p>
+                                        <p class="text-right">
+                                            <a href="#" class="btn btn-outline-primary"><i class="far fa-edit"></i></a>
                                         </p>
                                     </div>
                                 </div>

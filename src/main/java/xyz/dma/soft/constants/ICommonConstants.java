@@ -7,11 +7,8 @@ import java.util.List;
 public interface ICommonConstants {
     String X_USER_SESSION_ID_HEADER = "X-User-Session-Id";
 
-    String TIME_FORMAT = "HH:mm:ss";
+    String TIME_FORMAT = "HH:mm";
     DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
-
-    String TIME_FORMAT_WITHOUT_SECONDS = "HH:mm";
-    DateTimeFormatter TIME_WITHOUT_SECONDS_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT_WITHOUT_SECONDS);
 
     String DATE_FORMAT = "dd-MM-yyyy";
     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);

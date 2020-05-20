@@ -6,6 +6,7 @@ import xyz.dma.soft.api.request.user.RegisterRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IConstraintContext;
+import xyz.dma.soft.core.constraint.ILineConstraintValidator;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.UserRoleRepository;
 
@@ -16,22 +17,34 @@ public class RegisterRequestValidator extends ARequestValidator<RegisterRequest>
 
     @Override
     public IConstraintContext validate(RegisterRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
-                .assertConstraintViolation(isEmpty(request.getLogin()), ConstraintType.EMPTY, "login")
-                .assertConstraintViolation(isEmpty(request.getPassword()), ConstraintType.EMPTY, "password")
-                .assertConstraintViolation(0, isNull(request.getUserInfo()), ConstraintType.EMPTY, "userInfo")
-                .assertConstraintViolation(1, isEmpty(request.getUserInfo().getFirstName()), ConstraintType.EMPTY, "userInfo", "firstName")
-                .assertConstraintViolation(1, isEmpty(request.getUserInfo().getLastName()), ConstraintType.EMPTY, "userInfo", "lastName")
-                .assertConstraintViolation(0, isEmpty(request.getRoles()), ConstraintType.EMPTY, "roles")
-                .assertConstraintViolation(1, () -> {
-                    for (String role : request.getRoles()) {
-                        if(!userRoleRepository.existsByName(role)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }, ConstraintType.INVALID, "roles");
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        
+        ILineConstraintValidator<RegisterRequest> constraintValidator = contextBuilder
+                .line(request)
+                    .validate(it -> notEmpty(it.getLogin()), "login")
+                    .validate(it -> notEmpty(it.getPassword()), "password");
 
-        return context.build();
+        constraintValidator
+                .chain()
+                    .map(RegisterRequest::getUserInfo, "userInfo")
+                    .validate(this::notNull)
+                    .line()
+                        .validate(it -> notEmpty(it.getFirstName()), "firstName")
+                        .validate(it -> notEmpty(it.getLastName()), "lastName");
+
+        constraintValidator
+                .chain()
+                    .map(RegisterRequest::getRoles, "roles")
+                    .validate(this::notEmpty)
+                    .validate((it) -> {
+                        for (String role : it) {
+                            if(!userRoleRepository.existsByName(role)) {
+                                return ConstraintType.INVALID;
+                            }
+                        }
+                        return null;
+                    });
+
+        return contextBuilder.build();
     }
 }

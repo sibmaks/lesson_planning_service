@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.lesson.LessonsGetRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.IChainConstraintValidator;
 import xyz.dma.soft.core.constraint.IConstraintContext;
+import xyz.dma.soft.core.constraint.ILineConstraintValidator;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
 
@@ -16,16 +18,33 @@ public class LessonsGetRequestValidator extends ARequestValidator<LessonsGetRequ
 
     @Override
     public IConstraintContext validate(LessonsGetRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
-                .assertConstraintViolation(0, isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
-                .assertConstraintViolation(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId")
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
 
-                .assertConstraintViolation(0, isNull(request.getFromDate()), ConstraintType.EMPTY, "fromDate")
-                .assertConstraintViolation(1, not(isValidDate(request.getFromDate())), ConstraintType.INVALID, "fromDate")
-                .assertConstraintViolation(0, isNull(request.getToDate()), ConstraintType.EMPTY, "toDate")
-                .assertConstraintViolation(1, not(isValidDate(request.getToDate())), ConstraintType.INVALID, "toDate")
-                .assertConstraintViolation(2, not(dateStartBeforeEnd(request.getFromDate(), request.getToDate())), ConstraintType.INVALID, "fromDate");
+        ILineConstraintValidator<LessonsGetRequest> constraintValidator = contextBuilder.line(request);
 
-        return context.build();
+        constraintValidator
+                .chain()
+                .map(LessonsGetRequest::getCourseId, "courseId")
+                .validate(this::notNull)
+                .validate(it -> !courseRepository.existsById(it) ? ConstraintType.INVALID : null);
+
+        IChainConstraintValidator<LessonsGetRequest> dateChainConstraint = constraintValidator.chain();
+        ILineConstraintValidator<LessonsGetRequest> dateBorderChainConstraint = dateChainConstraint.line();
+
+        dateBorderChainConstraint
+                .chain()
+                .map(LessonsGetRequest::getFromDate, "fromDate")
+                .validate(this::notNull)
+                .validate(this::isValidDate);
+
+        dateBorderChainConstraint
+                .chain()
+                .map(LessonsGetRequest::getToDate, "toDate")
+                .validate(this::notNull)
+                .validate(this::isValidDate);
+
+        dateChainConstraint
+                .validate(it -> dateStartBeforeEnd(it.getFromDate(), it.getToDate()), "fromDate");
+        return contextBuilder.build();
     }
 }

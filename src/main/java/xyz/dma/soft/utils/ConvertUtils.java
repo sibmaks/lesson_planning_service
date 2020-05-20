@@ -6,6 +6,6 @@ import java.time.LocalTime;
 
 public class ConvertUtils {
     public static LocalTime parseTimeWithoutSeconds(String time) {
-        return LocalTime.parse(time, ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        return LocalTime.parse(time, ICommonConstants.TIME_FORMATTER);
     }
 }

@@ -58,8 +58,8 @@ public class ChildService {
                 CourseSchedulingInfo courseSchedulingInfo = CourseSchedulingInfo.builder()
                         .id(kidSchedulingInfo.getId())
                         .dayOfWeek(schedulingCourseInfo.getDayOfWeek())
-                        .timeStart(schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER))
-                        .timeEnd(schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER))
+                        .timeStart(schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_FORMATTER))
+                        .timeEnd(schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_FORMATTER))
                         .courseInfo(new CourseInfo(kidSchedulingInfo.getCourse()))
                         .build();
                 courseSchedulingInfos.add(courseSchedulingInfo);

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.scheduling.SchedulingGetRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
 import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.IChainConstraintValidator;
 import xyz.dma.soft.core.constraint.IConstraintContext;
+import xyz.dma.soft.core.constraint.ILineConstraintValidator;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
 
@@ -16,17 +18,33 @@ public class SchedulingGetRequestValidator extends ARequestValidator<SchedulingG
 
     @Override
     public IConstraintContext validate(SchedulingGetRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        
+        ILineConstraintValidator<SchedulingGetRequest> constraintValidator = contextBuilder.line(request);
+        constraintValidator
+                .chain()
+                    .map(SchedulingGetRequest::getCourseId, "courseId")
+                    .validate(this::notNull)
+                    .validate(it -> courseRepository.existsById(it) ? null : ConstraintType.INVALID);
 
-                .assertConstraintViolation(0, isNull(request.getCourseId()), ConstraintType.EMPTY, "courseId")
-                .assertConstraintViolation(1, () -> !courseRepository.existsById(request.getCourseId()), ConstraintType.INVALID, "courseId")
+        IChainConstraintValidator<SchedulingGetRequest> dateChainConstraint = constraintValidator.chain();
+        ILineConstraintValidator<SchedulingGetRequest> dateBorderChainConstraint = dateChainConstraint.line();
 
-                .assertConstraintViolation(0, isNull(request.getFromDate()), ConstraintType.EMPTY, "fromDate")
-                .assertConstraintViolation(1, not(isValidDate(request.getFromDate())), ConstraintType.INVALID, "fromDate")
-                .assertConstraintViolation(0, isNull(request.getToDate()), ConstraintType.EMPTY, "toDate")
-                .assertConstraintViolation(1, not(isValidDate(request.getToDate())), ConstraintType.INVALID, "toDate")
-                .assertConstraintViolation(2, not(dateStartBeforeEnd(request.getFromDate(), request.getToDate())), ConstraintType.INVALID, "fromDate");
+        dateBorderChainConstraint
+                .chain()
+                    .map(SchedulingGetRequest::getFromDate, "fromDate")
+                    .validate(this::notNull)
+                    .validate(this::isValidDate);
 
-        return context.build();
+        dateBorderChainConstraint
+                .chain()
+                    .map(SchedulingGetRequest::getToDate, "toDate")
+                    .validate(this::notNull)
+                    .validate(this::isValidDate);
+
+        dateChainConstraint
+                .validate(it -> dateStartBeforeEnd(it.getFromDate(), it.getToDate()), "fromDate");
+
+        return contextBuilder.build();
     }
 }

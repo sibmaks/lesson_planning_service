@@ -13,11 +13,15 @@ import static xyz.dma.soft.constants.ICommonConstants.LANGUAGES;
 public class LoginRequestValidator extends ARequestValidator<LoginRequest> {
     @Override
     public IConstraintContext validate(LoginRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
-            .assertConstraintViolation(isEmpty(request.getLogin()), ConstraintType.EMPTY, "login")
-            .assertConstraintViolation(isEmpty(request.getPassword()), ConstraintType.EMPTY, "password")
-            .assertConstraintViolation(0, isEmpty(request.getLanguageIso3()), ConstraintType.EMPTY, "languageIso3")
-            .assertConstraintViolation(1, () -> !LANGUAGES.contains(request.getLanguageIso3()), ConstraintType.INVALID, "languageIso3");
-        return context.build();
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        contextBuilder
+                .line(request)
+                    .validate(it -> notEmpty(it.getLogin()), "login")
+                    .validate(it -> notEmpty(it.getPassword()), "password")
+                    .chain()
+                        .map(LoginRequest::getLanguageIso3, "languageIso3")
+                        .validate(this::notEmpty)
+                        .validate(it -> LANGUAGES.contains(it) ? null : ConstraintType.INVALID);
+        return contextBuilder.build();
     }
 }

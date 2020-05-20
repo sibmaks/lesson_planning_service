@@ -16,13 +16,15 @@ public class RoleUpdateRequestValidator extends ARequestValidator<ModifyRoleRequ
 
     @Override
     public IConstraintContext validate(ModifyRoleRequest request) {
-        ConstraintContextBuilder context = new ConstraintContextBuilder()
-                .assertConstraintViolation(isNull(request.getRole()), ConstraintType.EMPTY, "role");
-        if(request.getAllowedActions() != null) {
-            for(String action : request.getAllowedActions()) {
-                context.assertConstraintViolation(isNull(userActionRepository.findFirstByName(action)), ConstraintType.INVALID, "allowedActions", action);
-            }
-        }
-        return context.build();
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        contextBuilder
+                .line(request)
+                    .validate(it -> notNull(it.getRole()), "role")
+                    .chain()
+                        .filter(it -> notEmpty(it.getAllowedActions()))
+                        .flatMap(ModifyRoleRequest::getAllowedActions, "allowedActions")
+                            .validate(this::notNull)
+                            .validate(it -> userActionRepository.findFirstByName(it) == null ? ConstraintType.INVALID : null);
+        return contextBuilder.build();
     }
 }

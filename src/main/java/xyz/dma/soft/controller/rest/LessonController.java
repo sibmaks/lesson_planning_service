@@ -5,17 +5,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.api.request.lesson.LessonAddRequest;
-import xyz.dma.soft.api.request.lesson.LessonStopRequest;
 import xyz.dma.soft.api.request.lesson.LessonUpdateRequest;
 import xyz.dma.soft.api.request.lesson.LessonsGetRequest;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.api.response.lesson.LessonAddResponse;
-import xyz.dma.soft.api.response.lesson.LessonStopResponse;
 import xyz.dma.soft.api.response.lesson.LessonUpdateResponse;
 import xyz.dma.soft.api.response.lesson.LessonsGetResponse;
 import xyz.dma.soft.api.validator.lesson.LessonAddRequestValidator;
-import xyz.dma.soft.api.validator.lesson.LessonStopRequestValidator;
 import xyz.dma.soft.api.validator.lesson.LessonUpdateRequestValidator;
 import xyz.dma.soft.api.validator.lesson.LessonsGetRequestValidator;
 import xyz.dma.soft.controller.BaseController;
@@ -36,21 +34,14 @@ public class LessonController extends BaseController {
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")
-    @RequestValidateRequired(beanValidator = LessonStopRequestValidator.class)
-    @RequestMapping(path = "stop", method = RequestMethod.POST)
-    public StandardResponse stop(@RequestBody LessonStopRequest request) {
-        SessionInfo sessionInfo = getCurrentSession();
-        return new LessonStopResponse(lessonService.stop(sessionInfo, request.getLessonId(), request.getLessonEndDate()));
-    }
-
-    @SessionRequired(requiredAction = "CRUD_LESSONS")
     @RequestValidateRequired(beanValidator = LessonAddRequestValidator.class)
     @RequestMapping(path = "add", method = RequestMethod.POST)
     public StandardResponse add(@RequestBody LessonAddRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        return new LessonAddResponse(lessonService.add(sessionInfo, request.getCourseId(),
-                request.getDayOfWeek(), request.getTimeStart(), request.getTimeEnd(), request.getLessonStartDate(),
-                request.getChildren()));
+        LessonEntity lessonEntity = request.getLessonEntity();
+        return new LessonAddResponse(lessonService.add(sessionInfo, lessonEntity.getCourseInfo().getId(),
+                lessonEntity.getDayOfWeek(), lessonEntity.getTimeStart(), lessonEntity.getTimeEnd(), lessonEntity.getLessonStartDate(),
+                lessonEntity.getLessonEndDate(), lessonEntity.getChildren()));
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")
@@ -58,9 +49,10 @@ public class LessonController extends BaseController {
     @RequestMapping(path = "update", method = RequestMethod.POST)
     public StandardResponse update(@RequestBody LessonUpdateRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        return new LessonUpdateResponse(lessonService.update(sessionInfo, request.getId(), request.getCourseId(),
-                request.getDayOfWeek(), request.getTimeStart(), request.getTimeEnd(), request.getLessonStartDate(),
-                request.getChildren()));
+        LessonEntity lessonEntity = request.getLessonEntity();
+        return new LessonUpdateResponse(lessonService.update(sessionInfo, lessonEntity.getId(), lessonEntity.getCourseInfo().getId(),
+                lessonEntity.getDayOfWeek(), lessonEntity.getTimeStart(), lessonEntity.getTimeEnd(), lessonEntity.getLessonStartDate(),
+                lessonEntity.getLessonEndDate(), lessonEntity.getChildren()));
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")

@@ -26,8 +26,8 @@ public class ChildSchedulingEntity implements Serializable {
         this.id = childSchedulingCourseInfo.getId();
         this.courseInfo = new CourseInfo(childSchedulingCourseInfo.getCourse());
         this.dayOfWeek = schedulingCourseInfo.getDayOfWeek();
-        this.timeStart = schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
-        this.timeEnd = schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_WITHOUT_SECONDS_FORMATTER);
+        this.timeStart = schedulingCourseInfo.getTimeStart().format(ICommonConstants.TIME_FORMATTER);
+        this.timeEnd = schedulingCourseInfo.getTimeEnd().format(ICommonConstants.TIME_FORMATTER);
         this.child = new ChildInfoEntity(childSchedulingCourseInfo.getChildInfo());
     }
 }
