@@ -116,18 +116,7 @@ public class ChildService {
                     schedulingCourseInfo = buildSchedulingCourseInfo(courseSchedulingInfo);
                     schedulingCourseInfo = schedulingCourseInfoRepository.save(schedulingCourseInfo);
                 }
-                SchedulingCourseInfo finalSchedulingCourseInfo = schedulingCourseInfo;
-                if(childSchedulingCourseInfo.getSchedulingCourseInfoList().stream()
-                        .filter(it -> it.getDayOfWeek() == finalSchedulingCourseInfo.getDayOfWeek())
-                        .filter(it -> it.getTimeStart().equals(finalSchedulingCourseInfo.getTimeStart()))
-                        .anyMatch(it -> it.getTimeEnd().equals(finalSchedulingCourseInfo.getTimeEnd()))) {
-                    throw ServiceException.builder()
-                            .code(ApiResultCode.DUPLICATES)
-                            .message(localizationService.getTranslated(sessionInfo, "ui.error.scheduling_duplicates"))
-                            .systemMessage(localizationService.getTranslated("eng", "ui.error.scheduling_duplicates"))
-                            .build();
-                }
-                childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
+                checkDuplicates(sessionInfo, childSchedulingCourseInfo, schedulingCourseInfo);
             }
             childSchedulingCourseInfoRepository.saveAll(courseIdSchedulingMap.values());
         }
@@ -135,6 +124,20 @@ public class ChildService {
         List<ChildSchedulingCourseInfo> schedulingInfos = childSchedulingCourseInfoRepository.findAllByChildInfoOrderById(childInfo);
         response.setCourseSchedulingInfos(buildChildCourseSchedulingInfo(schedulingInfos));
         return response;
+    }
+
+    private void checkDuplicates(SessionInfo sessionInfo, ChildSchedulingCourseInfo childSchedulingCourseInfo, SchedulingCourseInfo schedulingCourseInfo) {
+        if(childSchedulingCourseInfo.getSchedulingCourseInfoList().stream()
+                .filter(it -> it.getDayOfWeek() == schedulingCourseInfo.getDayOfWeek())
+                .filter(it -> it.getTimeStart().equals(schedulingCourseInfo.getTimeStart()))
+                .anyMatch(it -> it.getTimeEnd().equals(schedulingCourseInfo.getTimeEnd()))) {
+            throw ServiceException.builder()
+                    .code(ApiResultCode.DUPLICATES)
+                    .message(localizationService.getTranslated(sessionInfo, "ui.error.scheduling_duplicates"))
+                    .systemMessage(localizationService.getTranslated("eng", "ui.error.scheduling_duplicates"))
+                    .build();
+        }
+        childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
     }
 
     @Transactional
@@ -199,18 +202,7 @@ public class ChildService {
 
                 ChildSchedulingCourseInfo childSchedulingCourseInfo = childSchedulingCourseInfos.get(courseSchedulingInfo.getCourseInfo().getId());
 
-                SchedulingCourseInfo finalSchedulingCourseInfo = schedulingCourseInfo;
-                if(childSchedulingCourseInfo.getSchedulingCourseInfoList().stream()
-                        .filter(it -> it.getDayOfWeek() == finalSchedulingCourseInfo.getDayOfWeek())
-                        .filter(it -> it.getTimeStart().equals(finalSchedulingCourseInfo.getTimeStart()))
-                        .anyMatch(it -> it.getTimeEnd().equals(finalSchedulingCourseInfo.getTimeEnd()))) {
-                    throw ServiceException.builder()
-                            .code(ApiResultCode.DUPLICATES)
-                            .message(localizationService.getTranslated(sessionInfo, "ui.error.scheduling_duplicates"))
-                            .systemMessage(localizationService.getTranslated("eng", "ui.error.scheduling_duplicates"))
-                            .build();
-                }
-                childSchedulingCourseInfo.getSchedulingCourseInfoList().add(schedulingCourseInfo);
+                checkDuplicates(sessionInfo, childSchedulingCourseInfo, schedulingCourseInfo);
             }
             childSchedulingCourseInfoRepository.saveAll(childSchedulingCourseInfos.values());
         } else {

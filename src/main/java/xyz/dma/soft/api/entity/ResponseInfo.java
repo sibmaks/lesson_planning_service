@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @NoArgsConstructor
-@JsonIgnoreProperties(value = {"apiResultCode"}, allowGetters = false, allowSetters = false)
+@JsonIgnoreProperties(value = {"apiResultCode"})
 public class ResponseInfo implements Serializable {
     @Getter
     private String resultCode;

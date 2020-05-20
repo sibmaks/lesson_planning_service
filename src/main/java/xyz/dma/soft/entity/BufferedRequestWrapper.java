@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class BufferedRequestWrapper extends HttpServletRequestWrapper {
 
-    private byte[] content;
+    private final byte[] content;
     private String payload;
 
     public BufferedRequestWrapper(HttpServletRequest request) throws IOException {

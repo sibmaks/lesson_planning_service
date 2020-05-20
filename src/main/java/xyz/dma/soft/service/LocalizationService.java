@@ -11,10 +11,7 @@ import xyz.dma.soft.repository.LocaleRepository;
 import xyz.dma.soft.repository.TranslationRepository;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -78,7 +75,7 @@ public class LocalizationService {
     }
 
     public TranslationEntity getTranslation(String countryIso3, String languageIso3, String code) {
-        Map<String, TranslationEntity> translationEntityMap = getTranslations(countryIso3, languageIso3, Arrays.asList(code));
+        Map<String, TranslationEntity> translationEntityMap = getTranslations(countryIso3, languageIso3, Collections.singletonList(code));
         return translationEntityMap.get(code);
     }
 

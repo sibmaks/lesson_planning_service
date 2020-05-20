@@ -3,7 +3,7 @@ package xyz.dma.soft.api.validator.user;
 import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.user.SetPasswordRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.impl.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 
 @Component

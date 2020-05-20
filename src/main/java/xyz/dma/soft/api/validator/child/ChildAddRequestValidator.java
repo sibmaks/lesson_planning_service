@@ -6,7 +6,7 @@ import xyz.dma.soft.api.entity.CourseInfo;
 import xyz.dma.soft.api.entity.CourseSchedulingInfo;
 import xyz.dma.soft.api.request.child.ChildAddRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.impl.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IChainConstraintValidator;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.core.constraint.ILineConstraintValidator;

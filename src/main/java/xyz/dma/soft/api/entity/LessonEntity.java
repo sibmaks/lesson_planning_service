@@ -37,6 +37,6 @@ public class LessonEntity implements Serializable {
         this.lessonEndDate = lesson.getLessonEndDate() == null ? null : lesson.getLessonEndDate().format(ICommonConstants.DATE_FORMATTER);
         this.courseInfo = new CourseInfo(lesson.getCourse());
         this.teacher = new UserInfoEntity(lesson.getTeacher());
-        this.children = lesson.getChildren().stream().map(ChildInfoEntity::new).collect(toList());;
+        this.children = lesson.getChildren().stream().map(ChildInfoEntity::new).collect(toList());
     }
 }

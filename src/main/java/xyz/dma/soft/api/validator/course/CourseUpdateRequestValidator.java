@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import xyz.dma.soft.api.request.course.CourseUpdateRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.core.constraint.ConstraintContextBuilder;
+import xyz.dma.soft.core.constraint.impl.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.entity.ConstraintType;
 import xyz.dma.soft.repository.CourseRepository;
