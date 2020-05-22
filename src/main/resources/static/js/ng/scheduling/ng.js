@@ -5,7 +5,7 @@ moment.locale(locale);
 lPCModule.controller('SchedulingController', function ($scope) {
         $scope.courses = courses;
         $scope.translations = translations;
-        $scope.loadRequest = {courseId: $scope.courses[0].id};
+        $scope.loadRequest = {courseId: $scope.courses === null || $scope.courses === undefined ? null : $scope.courses[0]?.id};
 
 
         $scope.changeMonth = function(monthVal) {
