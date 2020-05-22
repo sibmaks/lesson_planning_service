@@ -38,7 +38,7 @@ lPCModule.controller('LessonController', function ($scope) {
             field.datetimepicker({
                 format: 'HH:mm',
                 date: val,
-                enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+                enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
                 stepping: 30
             });
         }
@@ -51,7 +51,7 @@ lPCModule.controller('LessonController', function ($scope) {
             $(endField).datetimepicker({
                 format: 'HH:mm',
                 date: val,
-                enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+                enabledHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
                 stepping: 30
             });
             endField.datetimepicker('minDate', startVal.add(30, 'minutes'));

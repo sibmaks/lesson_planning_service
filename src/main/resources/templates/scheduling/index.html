@@ -15,7 +15,7 @@
 <main ng-cloak role="main" class="container col-lg-10" ng-controller="SchedulingController">
     <div class="jumbotron col-lg-8 offset-lg-2 col-sm-10 offset-sm-1">
         <div class="container">
-            <form class="row form-row align-items-center mb-4">
+            <form class="row form-row align-items-center mb-4" data-ng-init="doLoad()">
                 <div class="offset-sm-2 col-sm-3">
                     <select class="form-control" ng-model="loadRequest.courseId" required>
                         <option th:each="course: ${courses}" th:value="${course.id}"

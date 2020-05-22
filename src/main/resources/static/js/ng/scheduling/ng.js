@@ -29,7 +29,7 @@ lPCModule.controller('SchedulingController', function ($scope) {
             }
 
             const startTime = moment.utc('06:00', 'HH:mm');
-            const endTime = moment.utc('19:00', 'HH:mm');
+            const endTime = moment.utc('20:00', 'HH:mm');
 
             const timeRanges = [];
 
@@ -142,10 +142,6 @@ lPCModule.controller('SchedulingController', function ($scope) {
                     $scope.error = responseMessage;
                 }
             });
-        }
-
-        $scope.sprintf = function(string, args) {
-            return sprintf(string, args);
         }
 
         $scope.handleAsyncResult = function () {
