@@ -11,7 +11,7 @@
     </pageInfos>
     <pageInfos>
         <name>login</name>
-        <templatePath>/login</templatePath>
+        <templatePath>login</templatePath>
         <codes>ui.header.language</codes>
         <codes>ui.header.authorization</codes>
         <codes>ui.text.login</codes>
@@ -21,7 +21,7 @@
     </pageInfos>
     <pageInfos>
         <name>scheduling</name>
-        <templatePath>/scheduling/index</templatePath>
+        <templatePath>scheduling/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.scheduling.index</codes>
         <codes>ui.button.load</codes>
@@ -30,7 +30,7 @@
     </pageInfos>
     <pageInfos>
         <name>404</name>
-        <templatePath>/errors/404</templatePath>
+        <templatePath>errors/404</templatePath>
         <codes>ui.error.404.title</codes>
         <codes>ui.error.404.header</codes>
         <codes>ui.error.404.text</codes>
@@ -38,7 +38,7 @@
     </pageInfos>
     <pageInfos>
         <name>profile</name>
-        <templatePath>/profile/index</templatePath>
+        <templatePath>profile/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.text.successfully_saved</codes>
         <codes>ui.text.first_name</codes>
@@ -49,7 +49,7 @@
     </pageInfos>
     <pageInfos>
         <name>course</name>
-        <templatePath>/course/index</templatePath>
+        <templatePath>course/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.course.list</codes>
         <codes>ui.header.course.list</codes>
@@ -65,7 +65,7 @@
     </pageInfos>
     <pageInfos>
         <name>child</name>
-        <templatePath>/child/index</templatePath>
+        <templatePath>child/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.child.list</codes>
         <codes>ui.header.child.name</codes>
@@ -86,7 +86,7 @@
     </pageInfos>
     <pageInfos>
         <name>lesson</name>
-        <templatePath>/lesson/index</templatePath>
+        <templatePath>lesson/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.lesson.edit</codes>
         <codes>ui.header.lesson.edit</codes>
