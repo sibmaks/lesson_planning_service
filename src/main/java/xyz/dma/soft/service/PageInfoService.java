@@ -1,7 +1,7 @@
 package xyz.dma.soft.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import xyz.dma.soft.entity.PageInfo;
@@ -12,7 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +23,6 @@ import java.util.Map;
 public class PageInfoService {
     private final Map<String, PageInfo> pagesInfo;
     private final LocalizationService localizationService;
-    @Value("classpath:/META-INF/pages.xml")
-    private File pagesInfoFile;
 
     public PageInfoService(LocalizationService localizationService) {
         this.localizationService = localizationService;
@@ -38,7 +37,8 @@ public class PageInfoService {
         try {
             jaxbContext = JAXBContext.newInstance(PageInfos.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            PageInfos pageInfos = (PageInfos) jaxbUnmarshaller.unmarshal(pagesInfoFile);
+            InputStream inputStream = new ClassPathResource("META-INF/pages.xml").getInputStream();
+            PageInfos pageInfos = (PageInfos) jaxbUnmarshaller.unmarshal(inputStream);
             for(PageInfo pageInfo : pageInfos.getPageInfos()) {
                 if (pageInfo.isAbstractPage()) {
                     abstractPagesInfo.put(pageInfo.getName(), pageInfo);
@@ -46,8 +46,8 @@ public class PageInfoService {
                     this.pagesInfo.put(pageInfo.getName(), pageInfo);
                 }
             }
-        } catch (JAXBException e) {
-            e.printStackTrace();
+        } catch (JAXBException | IOException e) {
+            throw new RuntimeException("Pages config get error", e);
         }
         for(PageInfo pageInfo : pagesInfo.values()) {
             if(pageInfo.getExtendsPages() != null) {
