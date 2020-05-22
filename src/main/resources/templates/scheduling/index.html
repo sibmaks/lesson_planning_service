@@ -77,6 +77,7 @@
                                     ng-if="schedulingChildren.length !== 0"
                                     id="schedulingPopover_{{timeIndex}}_{{$index}}_{{dayIndex}}"
                                     data-toggle="popover"
+                                    data-trigger="focus"
                                     elem-ready="initSchedulingPopover('#schedulingPopover_{{timeIndex}}_{{$index}}_{{dayIndex}}',
                                     day, timeRange, schedulingChildren)">
                                 {{translations['ui.text.children_scheduled'].translation}}
