@@ -45,6 +45,9 @@
         <codes>ui.text.last_name</codes>
         <codes>ui.header.profile.change</codes>
         <codes>ui.title.profile.change</codes>
+        <codes>ui.header.password.change</codes>
+        <codes>ui.text.old_password</codes>
+        <codes>ui.text.new_password</codes>
         <codes>ui.button.save</codes>
     </pageInfos>
     <pageInfos>

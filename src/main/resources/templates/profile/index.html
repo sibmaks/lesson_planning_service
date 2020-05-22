@@ -17,32 +17,57 @@
             <h1 class="display-4" th:text="${translations['ui.header.profile.change'].translation}"></h1>
             <hr class="my-4"/>
             <form class="col-lg-10">
-                <div ng-cloak class="form-label-group" ng-if="resultInfo != null && !resultInfo.empty()">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{resultInfo}}
+                <fieldset>
+                    <div ng-cloak class="form-label-group" ng-if="resultInfo != null && !resultInfo.empty()">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{resultInfo}}
+                        </div>
                     </div>
-                </div>
-                <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{error}}
+                    <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{error}}
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="firstNameInput" th:text="${translations['ui.text.first_name'].translation}"></label>
-                    <input type="text" class="form-control" id="firstNameInput"
-                           ng-model="userInfo.firstName"
-                           th:value="${userInfo.firstName}">
-                </div>
-                <div class="form-group">
-                    <label for="lastNameInput" th:text="${translations['ui.text.last_name'].translation}"></label>
-                    <input type="text" class="form-control" id="lastNameInput"
-                           ng-model="userInfo.lastName"
-                           th:value="${userInfo.lastName}">
-                </div>
-                <div class="form-group text-right">
-                    <button id="save_profile" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
-                            th:text="${translations['ui.button.save'].translation}"></button>
-                </div>
+                    <div class="form-group">
+                        <label for="firstNameInput" th:text="${translations['ui.text.first_name'].translation}"></label>
+                        <input type="text" class="form-control" id="firstNameInput"
+                               ng-model="userInfo.firstName"
+                               th:value="${userInfo.firstName}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastNameInput" th:text="${translations['ui.text.last_name'].translation}"></label>
+                        <input type="text" class="form-control" id="lastNameInput"
+                               ng-model="userInfo.lastName"
+                               th:value="${userInfo.lastName}">
+                    </div>
+                    <div class="form-group text-right">
+                        <button id="save_profile" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
+                                th:text="${translations['ui.button.save'].translation}"></button>
+                    </div>
+                </fieldset>
+
+                <h1 class="display-5" th:text="${translations['ui.header.password.change'].translation}"></h1>
+                <hr class="my-5"/>
+                <fieldset>
+                    <div class="form-group">
+                        <label for="oldPasswordInput" th:text="${translations['ui.text.old_password'].translation}"></label>
+                        <input type="password" class="form-control" id="oldPasswordInput"
+                               ng-class="{'is-invalid': constrains.oldPassword}"
+                               ng-model="passwordChange.oldPassword"/>
+                        <div class="invalid-feedback">{{constrains.oldPassword}}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPasswordInput" th:text="${translations['ui.text.new_password'].translation}"></label>
+                        <input type="password" class="form-control" id="newPasswordInput"
+                               ng-class="{'is-invalid': constrains.newPassword}"
+                               ng-model="passwordChange.newPassword"/>
+                        <div class="invalid-feedback">{{constrains.newPassword}}</div>
+                    </div>
+                    <div class="form-group text-right">
+                        <button id="change_pass" type="button" class="btn btn-primary btn-lg" ng-click="doSetPassword()"
+                                th:text="${translations['ui.button.save'].translation}"></button>
+                    </div>
+                </fieldset>
             </form>
         </div>
     </div>

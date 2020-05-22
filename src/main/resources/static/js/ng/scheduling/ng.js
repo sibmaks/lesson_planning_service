@@ -86,12 +86,11 @@ lPCModule.controller('SchedulingController', function ($scope) {
         }
 
         $scope.doLoad = function () {
-            if(!isNull($scope.loadRequest.courseId)) {
+            if(!isNull($scope.loadRequest.courseId) && $scope.loadRequest.courseId >= 1) {
                 $('button#load_scheduling').prop("disabled", true);
                 $('select#month_select').prop("disabled", true);
                 $scope.lessonGetSuccess = false;
                 $scope.schedulingGetSuccess = false;
-
                 $.ajax({
                     type: "POST",
                     url: '/v3/scheduling/get',
