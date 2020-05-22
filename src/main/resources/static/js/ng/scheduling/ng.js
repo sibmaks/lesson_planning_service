@@ -156,5 +156,55 @@ lPCModule.controller('SchedulingController', function ($scope) {
                 $scope.lessons = $scope._lessons;
             }
         }
+
+        $scope.initPopover = function (popoverId, day, timeLesson) {
+            let body = "";
+            for(const key in timeLesson.children) {
+                const child = timeLesson.children[key];
+                body += `<p>${child.name}, ${child.parentName} - ${child.phone}</p>\n`
+            }
+            if(body.length !== 0) {
+                body += `
+                <form class="text-right" method="get" action="/lesson/">
+                    <input type="hidden" name="mode" value="update"/>
+                    <input type="hidden" name="lesson" value="${timeLesson.id}"/>
+                    <input type="hidden" name="lessonDate" value="${day.format('DD-MM-YYYY')}"/>
+                    <button type="submit" class="btn btn-outline-primary">
+                    <i class="far fa-edit"></i>
+                    </button>
+                </form>`
+            }
+            $(popoverId).popover({
+                content: body,
+                html: true
+            });
+        }
+
+        $scope.initSchedulingPopover = function (popoverId, day, timeRange, schedulingChildren) {
+            let body = "";
+            for(const key in schedulingChildren) {
+                const schedulingChild = schedulingChildren[key];
+                body += `<p>${schedulingChild.child.name}, ${schedulingChild.child.parentName} - ${schedulingChild.child.phone}
+                                            (${schedulingChild.timeStart}-${schedulingChild.timeEnd})</p>\n`
+            }
+            if(body.length !== 0) {
+                body += `
+<form class="text-right" method="get" action="/lesson/">
+    <input type="hidden" name="mode" value="add"/>
+    <input type="hidden" name="courseId" value="${$scope.loadRequest.courseId}"/>
+    <input type="hidden" name="dayOfWeek" value="${day.format('E')}"/>
+    <input type="hidden" name="timeStart" value="${timeRange.from.format('HH:mm')}"/>
+    <input type="hidden" name="timeEnd" value="${timeRange.to.format('HH:mm')}"/>
+    <input type="hidden" name="lessonDate" value="${day.format('DD-MM-YYYY')}"/>
+    <button type="submit" class="btn btn-outline-primary">
+        <i class="fas fa-plus"></i>
+    </button>
+</form>`
+            }
+            $(popoverId).popover({
+                content: body,
+                html: true
+            });
+        }
     }
 );
