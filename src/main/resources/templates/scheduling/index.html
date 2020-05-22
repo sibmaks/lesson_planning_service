@@ -73,7 +73,7 @@
                             schedulingChildren = filterDuplicateChildren(filterTimeRange(timeRange, dayOfWeekScheduling[day.format('E')]));
                             filteredLessons = filterTimeRange(timeRange, lessons[day.format('E')])">
 
-                            <button type="button"
+                            <a type="button"
                                     tabindex="0"
                                     role="button"
                                     class="btn btn-info"
@@ -85,8 +85,8 @@
                                     day, timeRange, schedulingChildren)">
                                 {{translations['ui.text.children_scheduled'].translation}}
                                 {{schedulingChildren.length}}
-                            </button>
-                            <button type="button" class="btn border-success"
+                            </a>
+                            <a type="button" class="btn btn-outline-primary"
                                     tabindex="0"
                                     role="button"
                                     ng-repeat="timeLesson in filteredLessons"
@@ -97,7 +97,7 @@
                                     elem-ready="initPopover('#lessonPopover_{{timeIndex}}_{{$index}}_{{dayIndex}}', day, timeLesson)">
                                 {{translations['ui.text.lesson'].translation}}
                                 ({{timeLesson.timeStart}}-{{timeLesson.timeEnd}})
-                            </button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
