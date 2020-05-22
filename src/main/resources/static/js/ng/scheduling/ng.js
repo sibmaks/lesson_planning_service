@@ -5,7 +5,7 @@ moment.locale(locale);
 lPCModule.controller('SchedulingController', function ($scope) {
         $scope.courses = courses;
         $scope.translations = translations;
-        $scope.loadRequest = {courseId: $scope.courses === null || $scope.courses === undefined ? null : $scope.courses[0]?.id};
+        $scope.loadRequest = {courseId: ($scope.courses === null || $scope.courses === undefined ? null : $scope.courses[0]?.id)};
 
 
         $scope.changeMonth = function(monthVal) {
@@ -86,7 +86,7 @@ lPCModule.controller('SchedulingController', function ($scope) {
         }
 
         $scope.doLoad = function () {
-            if($scope.loadRequest.courseId !== null) {
+            if(!isNull($scope.loadRequest.courseId)) {
                 $('button#load_scheduling').prop("disabled", true);
                 $('select#month_select').prop("disabled", true);
                 $scope.lessonGetSuccess = false;

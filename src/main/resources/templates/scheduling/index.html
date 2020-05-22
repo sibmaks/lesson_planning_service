@@ -28,7 +28,9 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <button id="load_scheduling" type="button" class="btn btn-outline-success" ng-click="doLoad()"
+                    <button id="load_scheduling" type="button" class="btn btn-outline-success"
+                            ng-if="isNull(loadRequest.courseId)"
+                            ng-click="doLoad()"
                             th:text="${translations['ui.button.load'].translation}"></button>
                 </div>
             </form>
