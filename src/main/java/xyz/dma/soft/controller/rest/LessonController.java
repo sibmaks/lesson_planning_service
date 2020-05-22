@@ -43,9 +43,16 @@ public class LessonController extends BaseController {
     public StandardResponse add(@RequestBody LessonAddRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         LessonEntity lessonEntity = request.getLessonEntity();
-        return new LessonAddResponse(lessonService.add(sessionInfo, lessonEntity.getCourseInfo().getId(),
+        lessonEntity = lessonService.add(sessionInfo, lessonEntity.getCourseInfo().getId(),
                 lessonEntity.getDayOfWeek(), lessonEntity.getTimeStart(), lessonEntity.getTimeEnd(), lessonEntity.getLessonStartDate(),
-                lessonEntity.getLessonEndDate(), lessonEntity.getChildren()));
+                lessonEntity.getLessonEndDate(), lessonEntity.getChildren());
+        StandardResponse response = new LessonAddResponse(lessonEntity,
+                String.format("/lesson/?mode=update&lesson=%d&lessonDate=%s", lessonEntity.getId(), lessonEntity.getLessonStartDate()));
+        response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
+                "ui.text.successfully_saved"));
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslated("eng",
+                "ui.text.successfully_saved"));
+        return response;
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")
@@ -69,12 +76,7 @@ public class LessonController extends BaseController {
     @RequestMapping(path = "get", method = RequestMethod.POST)
     public StandardResponse get(@RequestBody LessonsGetRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        StandardResponse response = new LessonsGetResponse(lessonService.get(sessionInfo, request.getCourseId(),
+        return new LessonsGetResponse(lessonService.get(sessionInfo, request.getCourseId(),
                 request.getFromDate(), request.getToDate()));
-        response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
-                "ui.text.successfully_saved"));
-        response.getResponseInfo().setSystemMessage(localizationService.getTranslated("eng",
-                "ui.text.successfully_saved"));
-        return response;
     }
 }

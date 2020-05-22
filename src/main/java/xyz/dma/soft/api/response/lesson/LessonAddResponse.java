@@ -13,4 +13,5 @@ import xyz.dma.soft.api.response.StandardResponse;
 @EqualsAndHashCode(callSuper = true)
 public class LessonAddResponse extends StandardResponse {
     private LessonEntity lessonEntity;
+    private String redirectUrl;
 }

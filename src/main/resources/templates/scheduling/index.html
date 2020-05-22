@@ -83,9 +83,17 @@
                                             {{schedulingChild.child.phone}}
                                             ({{schedulingChild.timeStart}}-{{schedulingChild.timeEnd}})
                                         </p>
-                                        <p class="text-right">
-                                            <a href="#" class="btn btn-outline-primary"><i class="fas fa-plus"></i></a>
-                                        </p>
+                                        <form class="text-right" method="get" th:action="@{/lesson/}">
+                                            <input type="hidden" name="mode" value="add"/>
+                                            <input type="hidden" name="courseId" value="{{loadRequest.courseId}}"/>
+                                            <input type="hidden" name="dayOfWeek" value="{{day.format('E')}}"/>
+                                            <input type="hidden" name="timeStart" value="{{timeRange.from.format('HH:mm')}}"/>
+                                            <input type="hidden" name="timeEnd" value="{{timeRange.to.format('HH:mm')}}"/>
+                                            <input type="hidden" name="lessonDate" value="{{day.format('DD-MM-YYYY')}}"/>
+                                            <button type="submit" class="btn btn-outline-primary">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

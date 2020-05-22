@@ -74,4 +74,8 @@ public class CourseService {
         course = courseRepository.save(course);
         return new CourseInfo(course);
     }
+
+    public CourseInfo get(Long courseId) {
+        return new CourseInfo(courseRepository.findFirstById(courseId));
+    }
 }

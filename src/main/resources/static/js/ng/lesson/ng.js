@@ -9,6 +9,7 @@ lPCModule.controller('LessonController', function ($scope) {
         $scope.initRequest = function() {
             $scope.requestEntity = {
                 id: $scope.lesson.id,
+                courseInfo: $scope.lesson.courseInfo,
                 dayOfWeek: $scope.lesson.dayOfWeek,
                 timeStart: $scope.lesson.timeStart,
                 timeEnd: $scope.lesson.timeEnd,
@@ -21,6 +22,9 @@ lPCModule.controller('LessonController', function ($scope) {
                 $scope.requestEntity.children.push($scope.lesson.children[key])
             }
 
+            if($scope.lesson.children === null || $scope.lesson.children === undefined) {
+                $scope.lesson.children = [];
+            }
             for(const key in $scope.childrenScheduling) {
                 $scope.lesson.children.push($scope.childrenScheduling[key].child)
             }
@@ -174,6 +178,9 @@ lPCModule.controller('LessonController', function ($scope) {
                 const responseCode = data?.responseInfo?.resultCode;
                 const responseMessage = data?.responseInfo?.message;
                 if (responseCode === "Ok") {
+                    if(data?.redirectUrl !== null && data?.redirectUrl !== undefined) {
+                        window.location.replace(data.redirectUrl);
+                    }
                     if (responseMessage !== undefined && responseMessage !== null) {
                         $scope.resultInfo = responseMessage;
                     }
