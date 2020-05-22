@@ -6,6 +6,7 @@
         <codes>ui.header.scheduling</codes>
         <codes>ui.header.courses</codes>
         <codes>ui.header.children</codes>
+        <codes>ui.header.users</codes>
         <codes>ui.header.profile</codes>
         <codes>ui.button.log_out</codes>
     </pageInfos>
@@ -48,10 +49,12 @@
         <codes>ui.header.password.change</codes>
         <codes>ui.text.old_password</codes>
         <codes>ui.text.new_password</codes>
+        <codes>ui.text.password_changed</codes>
         <codes>ui.button.save</codes>
     </pageInfos>
     <pageInfos>
         <name>course</name>
+        <allowedAction>MODIFY_COURSES</allowedAction>
         <templatePath>course/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.course.list</codes>
@@ -68,6 +71,7 @@
     </pageInfos>
     <pageInfos>
         <name>child</name>
+        <allowedAction>MODIFY_CHILDREN</allowedAction>
         <templatePath>child/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>
         <codes>ui.title.child.list</codes>
@@ -105,5 +109,24 @@
         <codes>ui.header.child.parent</codes>
         <codes>ui.header.phone</codes>
         <codes>ui.button.save</codes>
+    </pageInfos>
+    <pageInfos>
+        <name>user</name>
+        <allowedAction>MODIFY_USERS</allowedAction>
+        <templatePath>user/index</templatePath>
+        <extendsPages>$BASE_PAGE_INFO</extendsPages>
+        <codes>ui.title.user.list</codes>
+        <codes>ui.header.user.list</codes>
+        <codes>ui.header.user.add</codes>
+        <codes>ui.text.login</codes>
+        <codes>ui.text.role</codes>
+        <codes>ui.text.roles</codes>
+        <codes>ui.text.last_auth_ip</codes>
+        <codes>ui.text.last_auth_date</codes>
+        <codes>ui.text.password</codes>
+        <codes>ui.text.first_name</codes>
+        <codes>ui.text.last_name</codes>
+        <codes>ui.button.save</codes>
+        <codes>ui.button.add</codes>
     </pageInfos>
 </pageInfos>

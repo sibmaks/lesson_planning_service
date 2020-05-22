@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.dma.soft.api.request.StandardRequest;
 import xyz.dma.soft.api.request.user.LoginRequest;
 import xyz.dma.soft.api.request.user.RegisterRequest;
 import xyz.dma.soft.api.request.user.SetPasswordRequest;
+import xyz.dma.soft.api.response.GetUsersResponse;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.api.response.user.LoginResponse;
 import xyz.dma.soft.api.validator.user.LoginRequestValidator;
@@ -18,10 +20,7 @@ import xyz.dma.soft.controller.BaseController;
 import xyz.dma.soft.core.RequestValidateRequired;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
-import xyz.dma.soft.service.ProfileService;
-import xyz.dma.soft.service.RoleService;
-import xyz.dma.soft.service.SessionService;
-import xyz.dma.soft.service.UserService;
+import xyz.dma.soft.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,13 +32,15 @@ import static xyz.dma.soft.constants.ICommonConstants.X_USER_SESSION_ID_HEADER;
 public class UserController extends BaseController {
     private final UserService userService;
     private final RoleService roleService;
+    private final LocalizationService localizationService;
     private final ProfileService profileService;
 
     public UserController(SessionService sessionService, UserService userService, RoleService roleService,
-                          ProfileService profileService) {
+                          LocalizationService localizationService, ProfileService profileService) {
         super(sessionService);
         this.userService = userService;
         this.roleService = roleService;
+        this.localizationService = localizationService;
         this.profileService = profileService;
     }
 
@@ -81,7 +82,12 @@ public class UserController extends BaseController {
         SessionInfo sessionInfo = getCurrentSession();
         userService.setPassword(sessionInfo, request.getOldPassword(), request.getNewPassword());
         sessionService.deleteAllExpectCurrent(sessionInfo);
-        return new StandardResponse();
+        StandardResponse response = new StandardResponse();
+        response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
+                "ui.text.password_changed"));
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslated("eng",
+                "ui.text.password_changed"));
+        return response;
     }
 
     @SessionRequired(requiredAction = "MODIFY_USERS")
@@ -91,5 +97,13 @@ public class UserController extends BaseController {
         SessionInfo sessionInfo = getCurrentSession();
         return userService.register(sessionInfo, request.getLogin(), request.getPassword(), request.getUserInfo(),
                 request.getRoles());
+    }
+
+    @SessionRequired(requiredAction = "MODIFY_USERS")
+    @RequestValidateRequired(beanValidator = RegisterRequestValidator.class)
+    @RequestMapping(path = "getAll", method = RequestMethod.POST)
+    public StandardResponse getAll(@RequestBody StandardRequest request) {
+        SessionInfo sessionInfo = getCurrentSession();
+        return new GetUsersResponse(userService.getAll(sessionInfo));
     }
 }

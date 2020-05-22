@@ -10,6 +10,7 @@ import xyz.dma.soft.api.response.user.LoginResponse;
 import xyz.dma.soft.api.response.user.RegisterResponse;
 import xyz.dma.soft.domain.user.AuthInfo;
 import xyz.dma.soft.domain.user.User;
+import xyz.dma.soft.domain.user.UserInfo;
 import xyz.dma.soft.domain.user.UserRole;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.exception.ServiceException;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -98,9 +101,9 @@ public class UserService {
                 .registrationDate(LocalDateTime.now())
                 .build();
 
-        xyz.dma.soft.domain.user.UserInfo domainUserInfo = new xyz.dma.soft.domain.user.UserInfo(userInfoEntity);
-        domainUserInfo.setUser(user);
-        user.setUserInfo(domainUserInfo);
+        UserInfo userInfo = new UserInfo(userInfoEntity);
+        userInfo.setUser(user);
+        user.setUserInfo(userInfo);
 
         List<UserRole> userRoles = new ArrayList<>();
         for(String role : roles) {
@@ -111,12 +114,16 @@ public class UserService {
         user = userRepository.save(user);
 
         RegisterResponse registerResponse = new RegisterResponse();
-        registerResponse.setUserInfo(new UserInfoEntity(user));
+        registerResponse.setUserInfo(new UserInfoEntity(user, true));
         registerResponse.setRoleInfos(RoleService.buildRoleInfos(user.getUserRoles()));
         return registerResponse;
     }
 
     public User getUser(SessionInfo sessionInfo) {
         return userRepository.findFirstById(sessionInfo.getUserId());
+    }
+
+    public List<UserInfoEntity> getAll(SessionInfo sessionInfo) {
+        return userRepository.findAllByOrderById().stream().map(it -> new UserInfoEntity(it, true)).collect(toList());
     }
 }

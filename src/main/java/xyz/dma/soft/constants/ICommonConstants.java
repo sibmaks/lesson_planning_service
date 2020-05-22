@@ -13,5 +13,8 @@ public interface ICommonConstants {
     String DATE_FORMAT = "dd-MM-yyyy";
     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
+    String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
+    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+
     List<String> LANGUAGES = Arrays.asList("rus", "eng");
 }

@@ -1,0 +1,144 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru" ng-app="lessonPlanningUser">
+<head>
+    <!--/*/ <th:block th:include="includes/header :: header"></th:block> /*/-->
+    <title th:text="${translations['ui.title.user.list'].translation}"></title>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const users = /*[[${users}]]*/ [];
+        const roles = /*[[${roles}]]*/ [];
+        /*]]>*/
+    </script>
+    <link rel="stylesheet" th:href="@{/css/libs/tempusdominus-bootstrap-4.min.css}"/>
+</head>
+<body>
+<meta th:replace="includes/menu"/>
+<main role="main" class="container">
+    <div class="jumbotron col-lg-12" ng-controller="UserController">
+        <div class="container">
+            <h1 class="display-4" th:text="${translations['ui.header.user.list'].translation}"
+                ng-bind="pageHeader"></h1>
+            <hr class="my-4"/>
+            <div class="col-lg-12" ng-if="mode == 'list'">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th th:text="${translations['ui.text.login'].translation}"></th>
+                        <th th:text="${translations['ui.text.roles'].translation}"></th>
+                        <th th:text="${translations['ui.text.last_auth_ip'].translation}"></th>
+                        <th th:text="${translations['ui.text.last_auth_date'].translation}"></th>
+                    </tr>
+                    </thead>
+                    <tbody ng-cloak>
+                    <tr ng-repeat="user in users">
+                        <td>{{user.login}}</td>
+                        <td>{{user.roleLine}}</td>
+                        <td>{{user.lastIpAuth}}</td>
+                        <td>{{user.lastDateTimeAuth}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="form-group text-right">
+                    <button id="add_user" type="button" class="btn btn-primary btn-lg" ng-click="doAdd()"
+                            th:text="${translations['ui.button.add'].translation}"></button>
+                </div>
+            </div>
+            <div ng-cloak class="col-lg-12" ng-if="mode == 'add'">
+                <form>
+                    <fieldset class="col-lg-10">
+                        <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{error}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userLoginInput"
+                                   th:text="${translations['ui.text.login'].translation}"></label>
+                            <input type="text" class="form-control" id="userLoginInput"
+                                   ng-class="{'is-invalid': constrains.login}"
+                                   ng-model="registerRequest.login">
+                            <div class="invalid-feedback" ng-bind="constrains.login"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPasswordInput"
+                                   th:text="${translations['ui.text.password'].translation}"></label>
+                            <input type="text" class="form-control" id="userPasswordInput"
+                                   ng-class="{'is-invalid': constrains.password}"
+                                   ng-model="registerRequest.password">
+                            <div class="invalid-feedback" ng-bind="constrains.password"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userNameInput"
+                                   th:text="${translations['ui.text.first_name'].translation}"></label>
+                            <input type="text" class="form-control" id="userNameInput"
+                                   ng-class="{'is-invalid': constrains['userInfo.firstName']}"
+                                   ng-model="registerRequest.userInfo.firstName">
+                            <div class="invalid-feedback" ng-bind="constrains['userInfo.firstName']"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userLastNameInput"
+                                   th:text="${translations['ui.text.last_name'].translation}"></label>
+                            <input type="text" class="form-control" id="userLastNameInput"
+                                   ng-class="{'is-invalid': constrains['userInfo.lastName']}"
+                                   ng-model="registerRequest.userInfo.lastName">
+                            <div class="invalid-feedback" ng-bind="constrains['userInfo.lastName']"></div>
+                        </div>
+                    </fieldset>
+                    <h1 class="display-5"
+                        th:text="${translations['ui.text.roles'].translation}"></h1>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th th:text="${translations['ui.text.role'].translation}"></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="role in registerRequest.roles">
+                            <td>
+                                <select class="form-control"
+                                        ng-class="{'is-invalid': constrains.roles}"
+                                        ng-model="registerRequest.roles[$index]"
+                                        ng-options="role.name as (role.name + ' - ' + role.description) for role in roles">
+                                </select>
+                                <div class="invalid-feedback" ng-bind="constrains.roles"></div>
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-outline-danger" ng-click="doRemove(role)">
+                                    <i class="fas fa-trash"></i></a>
+                            </td>
+                            <td>
+                                <a ng-if="$last && roles.length > registerRequest.roles.length" class="btn btn-outline-success" ng-click="doAddRow()">
+                                    <i class="fas fa-plus"></i></a>
+                            </td>
+                        </tr>
+                        <tr ng-if="registerRequest.roles === null || registerRequest.roles === undefined ||
+                            registerRequest.roles.length === 0">
+                            <td colspan="5"></td>
+                            <td>
+                                <a class="btn btn-outline-success" ng-click="doAddRow()"><i class="fas fa-plus"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group text-right">
+                        <button id="save_user" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
+                                th:text="${translations['ui.button.save'].translation}"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script th:src="@{/js/libs/jquery-3.5.1.min.js}"></script>
+<script th:src="@{/js/libs/jquery.cookie.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script th:src="@{/js/libs/moment.min.js}"></script>
+<script th:src="@{/js/libs/tempusdominus-bootstrap-4.min.js}"></script>
+<script th:src="@{/js/ng/common-ng.js}"></script>
+<script th:src="@{/js/ng/user/ng.js}"></script>
+</body>
+</html>

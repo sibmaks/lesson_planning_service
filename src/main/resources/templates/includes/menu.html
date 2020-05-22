@@ -20,6 +20,10 @@
             ng-class="{active: page.startsWith('/child/')}">
             <a class="nav-link" href="/child/" th:text="${translations['ui.header.children'].translation}"></a>
         </li>
+        <li th:if="${allowedActions.contains('MODIFY_USERS')}" class="nav-item"
+            ng-class="{active: page.startsWith('/user/')}">
+            <a class="nav-link" href="/user/" th:text="${translations['ui.header.users'].translation}"></a>
+        </li>
         <li class="nav-item" ng-class="{active: page.startsWith('/profile/')}">
             <a class="nav-link" href="/profile/" th:text="${translations['ui.header.profile'].translation}"></a>
         </li>
