@@ -86,28 +86,30 @@ lPCModule.controller('SchedulingController', function ($scope) {
         }
 
         $scope.doLoad = function () {
-            $('button#load_scheduling').prop("disabled", true);
-            $('select#month_select').prop("disabled", true);
-            $scope.lessonGetSuccess = false;
-            $scope.schedulingGetSuccess = false;
+            if($scope.loadRequest.courseId !== null) {
+                $('button#load_scheduling').prop("disabled", true);
+                $('select#month_select').prop("disabled", true);
+                $scope.lessonGetSuccess = false;
+                $scope.schedulingGetSuccess = false;
 
-            $.ajax({
-                type: "POST",
-                url: '/v3/scheduling/get',
-                data: JSON.stringify($scope.loadRequest),
-                success: $scope.handleLoadSchedulingResponse,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            });
+                $.ajax({
+                    type: "POST",
+                    url: '/v3/scheduling/get',
+                    data: JSON.stringify($scope.loadRequest),
+                    success: $scope.handleLoadSchedulingResponse,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                });
 
-            $.ajax({
-                type: "POST",
-                url: '/v3/lesson/get',
-                data: JSON.stringify($scope.loadRequest),
-                success: $scope.handleLoadLessonsResponse,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            });
+                $.ajax({
+                    type: "POST",
+                    url: '/v3/lesson/get',
+                    data: JSON.stringify($scope.loadRequest),
+                    success: $scope.handleLoadLessonsResponse,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                });
+            }
         }
 
         $scope.handleLoadSchedulingResponse = function (data) {
