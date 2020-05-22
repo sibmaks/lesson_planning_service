@@ -19,7 +19,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -52,10 +53,14 @@ public class LessonService {
         return lessonEntities;
     }
 
+    public LessonEntity get(Long lessonId) {
+        return new LessonEntity(lessonRepository.findFirstById(lessonId));
+    }
+
     @Transactional
     public LessonEntity add(SessionInfo sessionInfo, Long courseId, int dayOfWeek, String timeStart, String timeEnd,
                       String lessonStartDate, String lessonEndDate, List<ChildInfoEntity> children) {
-        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(Collectors.toList());
+        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(toList());
         List<ChildInfo> childInfos = children == null || children.isEmpty() ? Collections.emptyList() :
                 childInfoRepository.getAllByIdIn(childrenIds);
 
@@ -86,9 +91,9 @@ public class LessonService {
     }
 
     @Transactional
-    public LessonEntity update(SessionInfo sessionInfo, Long id, Long courseId, int dayOfWeek, String timeStart,
+    public LessonEntity update(SessionInfo sessionInfo, Long id, int dayOfWeek, String timeStart,
                                String timeEnd, String lessonStartDate, String lessonEndDate, List<ChildInfoEntity> children) {
-        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(Collectors.toList());
+        List<Long> childrenIds = children == null ? null : children.stream().map(ChildInfoEntity::getId).collect(toList());
         List<ChildInfo> childInfos = children == null || children.isEmpty() ? Collections.emptyList() :
                 childInfoRepository.getAllByIdIn(childrenIds);
 
@@ -99,23 +104,23 @@ public class LessonService {
 
         Lesson lesson = lessonRepository.findFirstById(id);
 
-        if(!(courseId == lesson.getCourse().getId() && lesson.getTeacher().getId() == teacher.getId() &&
+        if(!(lesson.getTeacher().getId() == teacher.getId() &&
                 dayOfWeek == lesson.getDayOfWeek() &&
                 timeStartVal.equals(lesson.getTimeStart()) && timeEndVal.equals(lesson.getTimeEnd()))) {
-            if(lessonRepository.existsByCourse_IdAndTeacherAndDayOfWeekAndTimeStartAndTimeEnd(courseId, teacher,
-                    dayOfWeek, timeStartVal, timeEndVal)) {
+            if(lessonRepository.existsByCourse_IdAndTeacherAndDayOfWeekAndTimeStartAndTimeEnd(lesson.getCourse().getId(),
+                    teacher, dayOfWeek, timeStartVal, timeEndVal)) {
                 throw ServiceException.builder().code(ApiResultCode.ALREADY_EXISTS).build();
             }
         }
 
         Lesson.LessonBuilder lessonBuilder = Lesson.builder()
-                .id(id)
-                .course(courseRepository.findFirstById(courseId))
+                .id(lesson.getId())
+                .course(lesson.getCourse())
                 .dayOfWeek(dayOfWeek)
                 .timeStart(timeStartVal)
                 .timeEnd(timeEndVal)
                 .lessonStartDate(LocalDate.parse(lessonStartDate, ICommonConstants.DATE_FORMATTER))
-                .teacher(teacher)
+                .teacher(lesson.getTeacher())
                 .children(childInfos);
 
         if(lessonEndDate != null && !lessonEndDate.isEmpty()) {

@@ -1,47 +1,146 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru" ng-app="lessonPlanningChild">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru" ng-app="lessonPlanningLesson">
 <head>
     <!--/*/ <th:block th:include="includes/header :: header"></th:block> /*/-->
-    <title th:text="${translations['ui.title.child.list'].translation}"></title>
+    <title th:text="${page_title}"></title>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const childrenScheduling = /*[[${childrenScheduling}]]*/ [];
         const lesson = /*[[${lesson}]]*/ {};
+        const locale = /*[[${session_locale}]]*/ {};
         /*]]>*/
     </script>
-    <link rel="stylesheet"
-          th:href="@{/css/libs/tempusdominus-bootstrap-4.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/libs/tempusdominus-bootstrap-4.min.css}"/>
 </head>
 <body>
 <meta th:replace="includes/menu"/>
 <main role="main" class="container">
-    <div class="jumbotron col-lg-12" ng-controller="ChildController">
+    <div class="jumbotron col-lg-12" ng-controller="LessonController">
         <div class="container">
-            <h1 class="display-4" th:text="${translations['ui.header.children'].translation}"
-                ng-bind="pageHeader"></h1>
+            <h1 class="display-4" th:text="${page_header}"></h1>
             <hr class="my-4"/>
             <div ng-cloak class="col-lg-12">
                 <form>
                     <fieldset class="col-lg-10">
-                    <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{error}}
+                        <input type="hidden" ng-model="requestEntity.id"/>
+                        <div ng-cloak class="form-label-group" ng-if="resultInfo != null && !resultInfo.empty()">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{resultInfo}}
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" ng-model="child.childInfo.id">
-                        <label for="childNameInput"
-                               th:text="${translations['ui.header.child.name'].translation}"></label>
-                        <input type="text" class="form-control" id="childNameInput"
-                               ng-class="{'is-invalid': constraints.childInfo || constraints['childInfo.name']}"
-                               ng-model="child.childInfo.name">
-                        <div class="invalid-feedback" ng-bind="constraints['childInfo.name']"></div>
-                        <div class="invalid-feedback" ng-bind="constraints.childInfo"></div>
-                    </div>
-                    </fieldset>
+                        <div ng-cloak class="form-label-group" ng-if="error != null && !error.empty()">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{error}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseNameInput"
+                                   th:text="${translations['ui.header.course.name'].translation}"></label>
+                            <input type="text" class="form-control" id="courseNameInput"
+                                   ng-model="lesson.courseInfo.name"
+                                   readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="dayOfWeekSelect"
+                                   th:text="${translations['ui.header.day_of_week'].translation}"></label>
+                            <input class="form-control"
+                                   ng-model="requestEntity.dayOfWeek"
+                                   id="dayOfWeekSelect" readonly/>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeStartInput"
+                                   th:text="${translations['ui.header.time_start'].translation}"></label>
+                            <input type="text" class="form-control datetimepicker-input"
+                                   id="timeStartInput"
+                                   data-toggle="datetimepicker"
+                                   data-target="#timeStartInput"
+                                   value="{{lesson.timeStart}}"
+                                   ng-model="requestEntity.timeStart"
+                                   elem-ready="initStartTime()"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeEndInput"
+                                   th:text="${translations['ui.header.time_end'].translation}"></label>
+                            <input type="text" class="form-control datetimepicker-input"
+                                   id="timeEndInput"
+                                   data-toggle="datetimepicker"
+                                   data-target="#timeEndInput"
+                                   ng-model="requestEntity.timeEnd"
+                                   elem-ready="initEndTime()"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateStartInput"
+                                   th:text="${translations['ui.header.date_start'].translation}"></label>
+                            <input type="text" class="form-control datetimepicker-input"
+                                   id="dateStartInput"
+                                   data-toggle="datetimepicker"
+                                   data-target="#dateStartInput"
+                                   ng-model="requestEntity.lessonStartDate"
+                                   elem-ready="initStartDate()"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateEndInput"
+                                   th:text="${translations['ui.header.date_end'].translation}"></label>
 
+                            <div class="input-group date">
+                                <input type="text" class="form-control datetimepicker-input"
+                                       id="dateEndInput"
+                                       data-toggle="datetimepicker"
+                                       data-target="#dateEndInput"
+                                       ng-model="requestEntity.lessonEndDate"
+                                       elem-ready="initEndDate()"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-danger" ng-click="clearEndDate()">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h1 class="display-5" th:text="${translations['ui.header.children'].translation}"></h1>
+                    <hr class="my-4"/>
+                    <fieldset>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th th:text="${translations['ui.header.child.name'].translation + ', ' +
+                                translations['ui.header.child.parent'].translation + ', ' +
+                                translations['ui.header.phone'].translation}"></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="child in requestEntity.children"
+                                ng-class="{'table-danger': child.duplicate}">
+                                <td>
+                                    <select class="form-control"
+                                            ng-model="child.id"
+                                            ng-options="child.id as (child.name + ', ' + child.parentName + ', ' + child.phone) for child in lesson.children"
+                                            ng-change="changeChild()">
+                                    </select>
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-outline-danger" ng-click="doRemove(child)">
+                                        <i class="fas fa-trash"></i></a>
+                                </td>
+                                <td>
+                                    <a ng-if="$last && lesson.children.length > requestEntity.children.length" class="btn btn-outline-success" ng-click="doAddRow()"><i
+                                            class="fas fa-plus"></i></a>
+                                </td>
+                            </tr>
+                            <tr ng-if="requestEntity.children === null || requestEntity.children === undefined ||
+                            requestEntity.children.length === 0">
+                                <td colspan="5"></td>
+                                <td>
+                                    <a class="btn btn-outline-success" ng-click="doAddRow()"><i class="fas fa-plus"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
                     <div class="form-group text-right">
-                        <button id="save_child" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
+                        <button id="save_lesson" type="button" class="btn btn-primary btn-lg" ng-click="doSave()"
                                 th:text="${translations['ui.button.save'].translation}"></button>
                     </div>
                 </form>
@@ -54,9 +153,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-<script th:src="@{/js/libs/moment.min.js}"></script>
+<script th:src="@{/js/libs/moment-with-locales.js}"></script>
 <script th:src="@{/js/libs/tempusdominus-bootstrap-4.min.js}"></script>
 <script th:src="@{/js/ng/common-ng.js}"></script>
-<script th:src="@{/js/ng/child/ng.js}"></script>
+<script th:src="@{/js/ng/lesson/ng.js}"></script>
 </body>
 </html>

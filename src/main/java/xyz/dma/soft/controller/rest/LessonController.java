@@ -21,16 +21,20 @@ import xyz.dma.soft.core.RequestValidateRequired;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.service.LessonService;
+import xyz.dma.soft.service.LocalizationService;
 import xyz.dma.soft.service.SessionService;
 
 @RestController
 @RequestMapping(path = "/v3/lesson/", consumes = {MediaType.APPLICATION_JSON_VALUE})
 public class LessonController extends BaseController {
     private final LessonService lessonService;
+    private final LocalizationService localizationService;
 
-    public LessonController(SessionService sessionService, LessonService lessonService) {
+    public LessonController(SessionService sessionService, LessonService lessonService,
+                            LocalizationService localizationService) {
         super(sessionService);
         this.lessonService = lessonService;
+        this.localizationService = localizationService;
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")
@@ -50,9 +54,14 @@ public class LessonController extends BaseController {
     public StandardResponse update(@RequestBody LessonUpdateRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         LessonEntity lessonEntity = request.getLessonEntity();
-        return new LessonUpdateResponse(lessonService.update(sessionInfo, lessonEntity.getId(), lessonEntity.getCourseInfo().getId(),
+        StandardResponse response = new LessonUpdateResponse(lessonService.update(sessionInfo, lessonEntity.getId(),
                 lessonEntity.getDayOfWeek(), lessonEntity.getTimeStart(), lessonEntity.getTimeEnd(), lessonEntity.getLessonStartDate(),
                 lessonEntity.getLessonEndDate(), lessonEntity.getChildren()));
+        response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
+                "ui.text.successfully_saved"));
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslated("eng",
+                "ui.text.successfully_saved"));
+        return response;
     }
 
     @SessionRequired(requiredAction = "CRUD_LESSONS")
@@ -60,7 +69,12 @@ public class LessonController extends BaseController {
     @RequestMapping(path = "get", method = RequestMethod.POST)
     public StandardResponse get(@RequestBody LessonsGetRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
-        return new LessonsGetResponse(lessonService.get(sessionInfo, request.getCourseId(),
+        StandardResponse response = new LessonsGetResponse(lessonService.get(sessionInfo, request.getCourseId(),
                 request.getFromDate(), request.getToDate()));
+        response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
+                "ui.text.successfully_saved"));
+        response.getResponseInfo().setSystemMessage(localizationService.getTranslated("eng",
+                "ui.text.successfully_saved"));
+        return response;
     }
 }

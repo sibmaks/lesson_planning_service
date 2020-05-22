@@ -2,22 +2,19 @@ package xyz.dma.soft.api.validator.lesson;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import xyz.dma.soft.api.entity.CourseInfo;
 import xyz.dma.soft.api.entity.LessonEntity;
 import xyz.dma.soft.api.request.lesson.LessonUpdateRequest;
 import xyz.dma.soft.api.validator.ARequestValidator;
-import xyz.dma.soft.core.constraint.impl.ConstraintContextBuilder;
 import xyz.dma.soft.core.constraint.IChainConstraintValidator;
 import xyz.dma.soft.core.constraint.IConstraintContext;
 import xyz.dma.soft.core.constraint.ILineConstraintValidator;
+import xyz.dma.soft.core.constraint.impl.ConstraintContextBuilder;
 import xyz.dma.soft.entity.ConstraintType;
-import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.LessonRepository;
 
 @Component
 @AllArgsConstructor
 public class LessonUpdateRequestValidator extends ARequestValidator<LessonUpdateRequest> {
-    private final CourseRepository courseRepository;
     private final LessonRepository lessonRepository;
 
     @Override
@@ -34,14 +31,6 @@ public class LessonUpdateRequestValidator extends ARequestValidator<LessonUpdate
                 .map(LessonEntity::getId, "id")
                 .validate(this::notNull)
                 .validate(it -> lessonRepository.existsById(it) ? null : ConstraintType.INVALID);
-
-        constraintValidator
-                .chain()
-                .map(LessonEntity::getCourseInfo, "courseInfo")
-                .validate(this::notNull)
-                .map(CourseInfo::getId, "id")
-                .validate(this::notNull)
-                .validate(it -> courseRepository.existsById(it) ? null : ConstraintType.INVALID);
 
         constraintValidator
                 .chain()

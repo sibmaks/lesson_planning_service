@@ -12,6 +12,7 @@ import xyz.dma.soft.exception.PageNotFoundException;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +50,13 @@ public class PageController extends BasePageController {
     }
 
     @RequestMapping(path = "/{page}/", method = RequestMethod.GET)
-    public String page(@PathVariable String page, Model model) {
+    public String page(@PathVariable String page, Model model, HttpServletRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         if(sessionInfo == null || !sessionInfo.isAuthorized()) {
             return "redirect:/";
         }
         if(pageControllerMap.containsKey(page)) {
-            return pageControllerMap.get(page).handle(model, sessionInfo);
+            return pageControllerMap.get(page).handle(model, request, sessionInfo);
         }
         PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, page);
         if(pageInfo == null) {

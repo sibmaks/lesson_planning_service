@@ -9,14 +9,7 @@
         const courses = /*[[${courses}]]*/ [];
         /*]]>*/
     </script>
-    <style>
-        .datepicker td, .datepicker th {
-            width: 1.5em;
-            height: 1.5em;
-        }
-    </style>
-    <link rel="stylesheet"
-          th:href="@{/css/libs/tempusdominus-bootstrap-4.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/libs/tempusdominus-bootstrap-4.min.css}"/>
 </head>
 <body>
 <meta th:replace="includes/menu"/>
@@ -137,7 +130,8 @@
                             <td style="position: relative">
                                 <input type="text" class="form-control datetimepicker-input"
                                        id="{{endDatetimepickerTemplate + courseSchedulingInfo.dateTimePickerIndex}}"
-                                       data-toggle="datetimepicker" data-target="#{{endDatetimepickerTemplate + courseSchedulingInfo.dateTimePickerIndex}}"
+                                       data-toggle="datetimepicker"
+                                       data-target="#{{endDatetimepickerTemplate + courseSchedulingInfo.dateTimePickerIndex}}"
                                        ng-model="courseSchedulingInfo.timeEnd"
                                        ng-value="courseSchedulingInfo.timeEnd"
                                        elem-ready="initEndDate({{courseSchedulingInfo.dateTimePickerIndex}})"/>

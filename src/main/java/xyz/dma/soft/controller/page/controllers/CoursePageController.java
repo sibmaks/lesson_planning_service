@@ -8,6 +8,8 @@ import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.service.CourseService;
 import xyz.dma.soft.service.PageInfoService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @AllArgsConstructor
 @Service
 public class CoursePageController implements IPageController {
@@ -15,7 +17,7 @@ public class CoursePageController implements IPageController {
     private final CourseService courseService;
 
     @Override
-    public String handle(Model model, SessionInfo sessionInfo) {
+    public String handle(Model model, HttpServletRequest request, SessionInfo sessionInfo) {
         PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, getName());
         model.addAttribute("courses", courseService.getAll());
         return pageInfo.getTemplatePath();

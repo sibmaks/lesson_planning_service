@@ -27,6 +27,11 @@ public interface LessonRepository extends CrudRepository<Lesson, Long> {
                                                                                 LocalDate startDate,
                                                                                 LocalDate endDate);
 
+    @Query("select l from Lesson l where l.course.id = ?1 and " +
+            "l.dayOfWeek = ?2 and " +
+            "l.lessonStartDate <= ?3 and (l.lessonEndDate is null or l.lessonEndDate >= ?3)")
+    List<Lesson> getAllByCourseAndDayOfWeekAndLessonDate(Long courseId, int dayOfWeek, LocalDate lessonDate);
+
     boolean existsById(Long id);
 
     boolean existsByCourse_IdAndTeacherAndDayOfWeekAndTimeStartAndTimeEnd(

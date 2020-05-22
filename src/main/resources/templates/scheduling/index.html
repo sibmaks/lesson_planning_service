@@ -64,7 +64,7 @@
                             ng-init="
                             dayIndex = $index;
                             schedulingChildren = filterDuplicateChildren(filterTimeRange(timeRange, dayOfWeekScheduling[day.format('E')]));
-                            timeLessons = filterTimeRange(timeRange, lessons[day.format('E')])">
+                            filteredLessons = filterTimeRange(timeRange, lessons[day.format('E')])">
                             <div class="card" ng-if="schedulingChildren.length !== 0">
                                 <div class="card-header bg-info btn btn-info collapsed"
                                      id="schedulingChildrenHead_{{timeIndex}}_{{dayIndex}}"
@@ -72,12 +72,16 @@
                                      data-target="#schedulingChildrenCollapseThree_{{timeIndex}}_{{dayIndex}}"
                                      aria-expanded="false"
                                      aria-controls="schedulingChildrenCollapseThree_{{timeIndex}}_{{dayIndex}}">
-                                    {{translations['ui.text.children_scheduled'].translation}} {{schedulingChildren.length}}
+                                    {{translations['ui.text.children_scheduled'].translation}}
+                                    {{schedulingChildren.length}}
                                 </div>
-                                <div id="schedulingChildrenCollapseThree_{{timeIndex}}_{{dayIndex}}" class="collapse" aria-labelledby="schedulingChildrenHead_{{timeIndex}}_{{dayIndex}}">
+                                <div id="schedulingChildrenCollapseThree_{{timeIndex}}_{{dayIndex}}" class="collapse"
+                                     aria-labelledby="schedulingChildrenHead_{{timeIndex}}_{{dayIndex}}">
                                     <div class="card-body">
                                         <p ng-repeat="schedulingChild in schedulingChildren">
-                                            {{schedulingChild.child.name}}, {{schedulingChild.child.parentName}} - {{schedulingChild.child.phone}} ({{schedulingChild.timeStart}}-{{schedulingChild.timeEnd}})
+                                            {{schedulingChild.child.name}}, {{schedulingChild.child.parentName}} -
+                                            {{schedulingChild.child.phone}}
+                                            ({{schedulingChild.timeStart}}-{{schedulingChild.timeEnd}})
                                         </p>
                                         <p class="text-right">
                                             <a href="#" class="btn btn-outline-primary"><i class="fas fa-plus"></i></a>
@@ -85,14 +89,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card border-success" ng-repeat="timeLesson in timeLessons"
+                            <div class="card border-success" ng-repeat="timeLesson in filteredLessons"
                                  ng-if="day >= stringToDate(timeLesson.lessonStartDate) && (timeLesson.lessonEndDate === null || timeLesson.lessonEndDate === undefined || day <= stringToDate(timeLesson.lessonEndDate))">
                                 <div class="card-header btn collapsed" id="timeLessonHead_{{timeIndex}}_{{$index}}"
                                      data-toggle="collapse"
                                      data-target="#timeLessonCollapseThree_{{timeIndex}}_{{$index}}_{{dayIndex}}"
                                      aria-expanded="false"
                                      aria-controls="timeLessonCollapseThree_{{timeIndex}}_{{$index}}_{{dayIndex}}">
-                                    {{translations['ui.text.lesson'].translation}} ({{timeLesson.timeStart}}-{{timeLesson.timeEnd}})
+                                    {{translations['ui.text.lesson'].translation}}
+                                    ({{timeLesson.timeStart}}-{{timeLesson.timeEnd}})
                                 </div>
                                 <div id="timeLessonCollapseThree_{{timeIndex}}_{{$index}}_{{dayIndex}}"
                                      class="collapse"
@@ -101,9 +106,14 @@
                                         <p ng-repeat="child in timeLesson.children">
                                             {{child.name}}, {{child.parentName}} - {{child.phone}}
                                         </p>
-                                        <p class="text-right">
-                                            <a href="#" class="btn btn-outline-primary"><i class="far fa-edit"></i></a>
-                                        </p>
+                                        <form class="text-right" method="get" th:action="@{/lesson/}">
+                                            <input type="hidden" name="mode" value="update"/>
+                                            <input type="hidden" name="lesson" value="{{timeLesson.id}}"/>
+                                            <input type="hidden" name="lessonDate" value="{{day.format('DD-MM-YYYY')}}"/>
+                                            <button type="submit" class="btn btn-outline-primary">
+                                                <i class="far fa-edit"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
