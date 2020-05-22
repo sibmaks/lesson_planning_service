@@ -29,7 +29,7 @@
                         <th th:text="${translations['ui.button.edit'].translation}"></th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody ng-cloak>
                     <tr ng-repeat="child in children">
                         <td>{{child.childInfo.name}}</td>
                         <td>{{child.childInfo.parentName}}</td>
