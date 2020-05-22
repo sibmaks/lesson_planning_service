@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-sm-2">
                     <button id="load_scheduling" type="button" class="btn btn-outline-success"
-                            ng-if="isNull(loadRequest.courseId)"
+                            ng-if="!isNull(loadRequest.courseId)"
                             ng-click="doLoad()"
                             th:text="${translations['ui.button.load'].translation}"></button>
                 </div>
@@ -73,7 +73,10 @@
                             schedulingChildren = filterDuplicateChildren(filterTimeRange(timeRange, dayOfWeekScheduling[day.format('E')]));
                             filteredLessons = filterTimeRange(timeRange, lessons[day.format('E')])">
 
-                            <button type="button" class="btn btn-info"
+                            <button type="button"
+                                    tabindex="0"
+                                    role="button"
+                                    class="btn btn-info"
                                     ng-if="schedulingChildren.length !== 0"
                                     id="schedulingPopover_{{timeIndex}}_{{$index}}_{{dayIndex}}"
                                     data-toggle="popover"
@@ -84,6 +87,8 @@
                                 {{schedulingChildren.length}}
                             </button>
                             <button type="button" class="btn border-success"
+                                    tabindex="0"
+                                    role="button"
                                     ng-repeat="timeLesson in filteredLessons"
                                     ng-if="day >= stringToDate(timeLesson.lessonStartDate) && (timeLesson.lessonEndDate === null || timeLesson.lessonEndDate === undefined || day <= stringToDate(timeLesson.lessonEndDate))"
                                     id="lessonPopover_{{timeIndex}}_{{$index}}_{{dayIndex}}"
