@@ -6,25 +6,18 @@ import xyz.dma.soft.domain.user.User;
 import xyz.dma.soft.domain.user.UserAction;
 import xyz.dma.soft.domain.user.UserRole;
 import xyz.dma.soft.entity.SessionInfo;
+import xyz.dma.soft.storage.SessionStorage;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class SessionService {
-    private final Lock sessionByLoginModificationLock;
-    private final Map<String, SessionInfo> sessionInfoMapBySessionId;
-    private final Map<Long, List<SessionInfo>> sessionInfoMapByUserId;
+    private final SessionStorage sessionStorage;
 
-    public SessionService() {
-        sessionInfoMapBySessionId = new ConcurrentHashMap<>();
-        sessionInfoMapByUserId = new ConcurrentHashMap<>();
-        sessionByLoginModificationLock = new ReentrantLock();
+    public SessionService(SessionStorage sessionStorage) {
+        this.sessionStorage = sessionStorage;
     }
 
     public boolean isAuthorized(SessionInfo sessionInfo) {
@@ -39,16 +32,7 @@ public class SessionService {
                 .allowedActions(getAllowedActions(user))
                 .authorized(authorized)
                 .build();
-        sessionInfoMapBySessionId.put(sessionInfo.getId(), sessionInfo);
-        try {
-            sessionByLoginModificationLock.lock();
-            if (!sessionInfoMapByUserId.containsKey(user.getId())) {
-                sessionInfoMapByUserId.put(user.getId(), new CopyOnWriteArrayList<>());
-            }
-            sessionInfoMapByUserId.get(user.getId()).add(sessionInfo);
-        } finally {
-            sessionByLoginModificationLock.unlock();
-        }
+        sessionStorage.put(sessionInfo.getId(), sessionInfo);
         return sessionInfo;
     }
 
@@ -65,48 +49,26 @@ public class SessionService {
     }
 
     public SessionInfo getSessionInfo(String sessionId) {
-        return sessionInfoMapBySessionId.get(sessionId);
+        return sessionStorage.get(sessionId);
     }
 
     public void deleteSession(String sessionId) {
-        SessionInfo sessionInfo = sessionInfoMapBySessionId.get(sessionId);
+        SessionInfo sessionInfo = sessionStorage.get(sessionId);
         if(sessionInfo == null) {
             return;
         }
         sessionInfo.setAuthorized(false);
-        sessionInfoMapBySessionId.remove(sessionId);
-        Long id = sessionInfo.getUserId();
-        try {
-            sessionByLoginModificationLock.lock();
-            if (sessionInfoMapByUserId.containsKey(id)) {
-                sessionInfoMapByUserId.get(id).remove(sessionInfo);
-                if(sessionInfoMapByUserId.get(id).isEmpty()) {
-                    sessionInfoMapByUserId.remove(id);
-                }
-            }
-        } finally {
-            sessionByLoginModificationLock.unlock();
-        }
+        sessionStorage.remove(sessionId);
     }
 
-    public void deleteAllExpectCurrent(SessionInfo currentSessionInfo) {
+    public void deleteAllExpect(SessionInfo currentSessionInfo) {
         String sessionId = currentSessionInfo.getId();
         Long id = currentSessionInfo.getUserId();
-        try {
-            sessionByLoginModificationLock.lock();
-            if (sessionInfoMapByUserId.containsKey(id)) {
-                List<SessionInfo> sessionInfos = sessionInfoMapByUserId.get(id);
-                for(int i = 0; i < sessionInfos.size(); i++) {
-                    SessionInfo sessionInfo = sessionInfos.get(i);
-                    if(!sessionId.equals(sessionInfo.getId())) {
-                        sessionInfos.remove(sessionInfo);
-                        sessionInfoMapBySessionId.remove(sessionInfo.getId());
-                        i--;
-                    }
-                }
+        List<SessionInfo> sessionInfos = sessionStorage.get(it -> it.getUserId().equals(id));
+        for(SessionInfo sessionInfo : sessionInfos) {
+            if(!sessionInfo.getId().equals(sessionId)) {
+                sessionStorage.remove(sessionInfo.getId());
             }
-        } finally {
-            sessionByLoginModificationLock.unlock();
         }
     }
 

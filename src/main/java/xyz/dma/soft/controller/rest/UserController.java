@@ -81,7 +81,7 @@ public class UserController extends BaseController {
     public StandardResponse setPassword(@RequestBody SetPasswordRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         userService.setPassword(sessionInfo, request.getOldPassword(), request.getNewPassword());
-        sessionService.deleteAllExpectCurrent(sessionInfo);
+        sessionService.deleteAllExpect(sessionInfo);
         StandardResponse response = new StandardResponse();
         response.getResponseInfo().setMessage(localizationService.getTranslated(sessionInfo,
                 "ui.text.password_changed"));
