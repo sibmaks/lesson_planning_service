@@ -37,13 +37,13 @@
                         <td>{{user.roleLine}}</td>
                         <td>{{user.lastIpAuth}}</td>
                         <td>{{user.lastDateTimeAuth}}</td>
-                        <td class="text-center" ng-if="currentUserId !== user.userId && userBlocked = user.blocked !== null && user.blocked !== undefined && user.blocked">
-                            <button id="unblock_button_{{user.userId}}" type="button" class="btn btn-outline-danger" ng-click="doSetBlock(user, !userBlocked)">
+                        <td class="text-center" ng-if="currentUserId !== user.userId && user.blocked !== null && user.blocked !== undefined && user.blocked">
+                            <button id="unblock_button_{{user.userId}}" type="button" class="btn btn-outline-danger" ng-click="doSetBlock(user, false)">
                                 <i class="fas fa-lock-open"></i>
                             </button>
                         </td>
-                        <td class="text-center" ng-if="currentUserId !== user.userId && !(userBlocked = user.blocked !== null && user.blocked !== undefined && user.blocked)">
-                            <button id="block_button_{{user.userId}}" type="button" class="btn btn-outline-info" ng-click="doSetBlock(user, !userBlocked)">
+                        <td class="text-center" ng-if="currentUserId !== user.userId && (user.blocked === null || user.blocked === undefined || !user.blocked)">
+                            <button id="block_button_{{user.userId}}" type="button" class="btn btn-outline-info" ng-click="doSetBlock(user, true)">
                                 <i class="fas fa-lock"></i>
                             </button>
                         </td>
