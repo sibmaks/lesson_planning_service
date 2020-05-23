@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.api.entity.ResponseInfo;
@@ -47,12 +48,22 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    public StandardResponse handleException(Exception e) {
+    public Object handleException(HttpServletRequest request, Model model, Exception e) {
         log.error(e.getMessage(), e);
-        ResponseInfo responseInfo = ResponseInfo.builder()
-                .resultCode(ApiResultCode.UNEXPECTED_ERROR)
-                .build();
-        return new StandardResponse(responseInfo);
+        String uri = request.getRequestURI();
+        if (uri != null && uri.startsWith("/v3/")) {
+            ResponseInfo responseInfo = ResponseInfo.builder()
+                    .resultCode(ApiResultCode.UNEXPECTED_ERROR)
+                    .build();
+            return new StandardResponse(responseInfo);
+        } else {
+            SessionInfo sessionInfo = sessionService.getCurrentSession(request);
+            PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, "500");
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.addAllObjects(model.asMap())
+                    .setViewName(pageInfo.getTemplatePath());
+            return modelAndView;
+        }
     }
 
     @ExceptionHandler(ServiceException.class)
@@ -105,16 +116,15 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    public StandardResponse handleMissingHeaderException(MissingRequestHeaderException e)   {
+    public Object handleMissingHeaderException(HttpServletRequest request,
+                                               Model model, MissingRequestHeaderException e)   {
         if(e.getHeaderName().equals(ICommonConstants.X_USER_SESSION_ID_HEADER)) {
             ResponseInfo responseInfo = ResponseInfo.builder()
                     .resultCode(ApiResultCode.UNAUTHORIZED)
-                    .message(e.getLocalizedMessage())
-                    .systemMessage(e.getMessage())
                     .build();
             return new StandardResponse(responseInfo);
         } else {
-            return handleException(e);
+            return handleException(request, model, e);
         }
     }
 

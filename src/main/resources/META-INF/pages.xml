@@ -38,6 +38,14 @@
         <codes>ui.button.home</codes>
     </pageInfos>
     <pageInfos>
+        <name>500</name>
+        <templatePath>errors/500</templatePath>
+        <codes>ui.error.500.title</codes>
+        <codes>ui.error.500.header</codes>
+        <codes>ui.error.500.text</codes>
+        <codes>ui.button.home</codes>
+    </pageInfos>
+    <pageInfos>
         <name>profile</name>
         <templatePath>profile/index</templatePath>
         <extendsPages>$BASE_PAGE_INFO</extendsPages>

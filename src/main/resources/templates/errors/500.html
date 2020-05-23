@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta th:replace="includes/header :: header"/>
-    <title th:text="${translations['ui.error.404.title'].translation}"></title>
+    <title th:text="${translations['ui.error.500.title'].translation}"></title>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="jumbotron col-lg-10 offset-lg-1">
-            <h1 class="display-4" th:text="${translations['ui.error.404.header'].translation}"></h1>
-            <p class="lead" th:text="${translations['ui.error.404.text'].translation}"></p>
+            <h1 class="display-4" th:text="${translations['ui.error.500.header'].translation}"></h1>
+            <p class="lead" th:text="${translations['ui.error.500.text'].translation}"></p>
             <hr class="my-4"/>
             <p class="lead text-right">
                 <a class="btn btn-primary btn-lg" th:href="@{/home/}" role="button"
@@ -20,7 +20,6 @@
     </div>
 </div>
 <script th:src="@{/js/libs/jquery-3.5.1.min.js}"></script>
-<script th:src="@{/js/libs/jquery.cookie.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
