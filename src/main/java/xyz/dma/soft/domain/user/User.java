@@ -30,6 +30,10 @@ public class User implements Serializable {
     private String password;
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
+    @Column(name = "blocked")
+    private Boolean blocked;
+    @Column(name = "blocked_date")
+    private LocalDateTime blockedDate;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private AuthInfo authInfo;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

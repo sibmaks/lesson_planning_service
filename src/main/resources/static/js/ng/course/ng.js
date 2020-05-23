@@ -33,7 +33,7 @@ angular.module('lessonPlanningCourse', ['lessonPlanning'])
             $scope.doSave = function () {
                 $('button#save_course').prop("disabled", true);
 
-                if($scope.course?.id === null || $scope.course?.id === undefined) {
+                if(isNull($scope.course) || isNull($scope.course.id)) {
                     $.ajax({
                         type: "POST",
                         url: '/v3/course/add',
@@ -58,8 +58,8 @@ angular.module('lessonPlanningCourse', ['lessonPlanning'])
                 $scope.error = null;
                 $scope.$apply(function () {
                     $('button#save_course').prop("disabled", false);
-                    const responseCode = data?.responseInfo?.resultCode;
-                    const responseMessage = data?.responseInfo?.message;
+                    const responseCode = data.responseInfo.resultCode;
+                    const responseMessage = data.responseInfo.message;
                     if (responseCode === "Ok") {
                         if($scope.course.id === null || $scope.course.id === undefined) {
                             $scope.courses.push(data.courseInfo);

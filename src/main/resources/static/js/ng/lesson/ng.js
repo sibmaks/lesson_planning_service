@@ -115,34 +115,38 @@ lPCModule.controller('LessonController', function ($scope) {
         }
 
         $scope.doRemove = function(child) {
-            for(let i = 0, size = $scope.requestEntity?.children?.length; i < size; i++) {
-                const iInfo = $scope.requestEntity?.children[i];
-                if(iInfo === child) {
-                    $scope.requestEntity.children.splice(i, 1);
-                    break;
+            if(!isNull($scope.requestEntity.children)) {
+                for (let i = 0, size = $scope.requestEntity.children.length; i < size; i++) {
+                    const iInfo = $scope.requestEntity.children[i];
+                    if (iInfo === child) {
+                        $scope.requestEntity.children.splice(i, 1);
+                        break;
+                    }
                 }
             }
         }
 
         $scope.changeChild = function() {
-            for(let i = 0, size = $scope.requestEntity?.children?.length; i < size; i++) {
-                const iInfo = $scope.requestEntity?.children[i];
-                if(isNull(iInfo.id)) {
-                    continue;
-                }
-                let duplicate = false;
-                for(let j = 0; j < i; j++) {
-                    const jInfo = $scope.requestEntity?.children[j];
-                    if(isNull(jInfo.id)) {
+            if(!isNull($scope.requestEntity.children)) {
+                for (let i = 0, size = $scope.requestEntity.children.length; i < size; i++) {
+                    const iInfo = $scope.requestEntity.children[i];
+                    if (isNull(iInfo.id)) {
                         continue;
                     }
-                    if(iInfo.id === jInfo.id) {
-                        iInfo.duplicate = true;
-                        duplicate = true;
+                    let duplicate = false;
+                    for (let j = 0; j < i; j++) {
+                        const jInfo = $scope.requestEntity.children[j];
+                        if (isNull(jInfo.id)) {
+                            continue;
+                        }
+                        if (iInfo.id === jInfo.id) {
+                            iInfo.duplicate = true;
+                            duplicate = true;
+                        }
                     }
-                }
-                if(!duplicate) {
-                    iInfo.duplicate = false;
+                    if (!duplicate) {
+                        iInfo.duplicate = false;
+                    }
                 }
             }
         }
@@ -175,10 +179,10 @@ lPCModule.controller('LessonController', function ($scope) {
             $scope.error = null;
             $scope.$apply(function () {
                 $('button#save_lesson').prop("disabled", false);
-                const responseCode = data?.responseInfo?.resultCode;
-                const responseMessage = data?.responseInfo?.message;
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
                 if (responseCode === "Ok") {
-                    if(data?.redirectUrl !== null && data?.redirectUrl !== undefined) {
+                    if(data.redirectUrl !== null && data.redirectUrl !== undefined) {
                         window.location.replace(data.redirectUrl);
                     }
                     if (responseMessage !== undefined && responseMessage !== null) {

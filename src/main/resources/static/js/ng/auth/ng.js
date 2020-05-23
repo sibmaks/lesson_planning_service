@@ -32,8 +32,8 @@ angular.module('authApp', [])
             $scope.handleLoginResponse = function(data, textStatus, request) {
                 $scope.$apply(function () {
                     $('button#sing_in').prop("disabled", false);
-                    const responseCode = data?.responseInfo?.resultCode;
-                    const responseMessage = data?.responseInfo?.message;
+                    const responseCode = data.responseInfo.resultCode;
+                    const responseMessage = data.responseInfo.message;
                     if (responseCode === "Ok") {
                         $.cookie('X-User-Session-Id', request.getResponseHeader('X-User-Session-Id'),
                             {expires: 7});
@@ -48,7 +48,7 @@ angular.module('authApp', [])
 
             $scope.handleChangeLanguageResponse = function (data) {
                 $scope.$apply(function () {
-                    const responseCode = data?.responseInfo?.resultCode;
+                    const responseCode = data.responseInfo.resultCode;
                     if (responseCode === "Ok") {
                         $scope.language = data.translations[$scope.codes[0]].languageIso3;
                         $scope.translations = data.translations;

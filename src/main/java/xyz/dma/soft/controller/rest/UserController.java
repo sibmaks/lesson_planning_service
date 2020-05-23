@@ -6,20 +6,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.dma.soft.api.entity.ApiResultCode;
 import xyz.dma.soft.api.request.StandardRequest;
 import xyz.dma.soft.api.request.user.LoginRequest;
 import xyz.dma.soft.api.request.user.RegisterRequest;
+import xyz.dma.soft.api.request.user.SetBlockRequest;
 import xyz.dma.soft.api.request.user.SetPasswordRequest;
 import xyz.dma.soft.api.response.GetUsersResponse;
 import xyz.dma.soft.api.response.StandardResponse;
 import xyz.dma.soft.api.response.user.LoginResponse;
+import xyz.dma.soft.api.response.user.SetBlockResponse;
 import xyz.dma.soft.api.validator.user.LoginRequestValidator;
 import xyz.dma.soft.api.validator.user.RegisterRequestValidator;
+import xyz.dma.soft.api.validator.user.SetBlockRequestValidator;
 import xyz.dma.soft.api.validator.user.SetPasswordRequestValidator;
 import xyz.dma.soft.controller.BaseController;
 import xyz.dma.soft.core.RequestValidateRequired;
 import xyz.dma.soft.core.SessionRequired;
 import xyz.dma.soft.entity.SessionInfo;
+import xyz.dma.soft.exception.ServiceException;
 import xyz.dma.soft.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +56,13 @@ public class UserController extends BaseController {
         SessionInfo sessionInfo = getCurrentSession();
         if(sessionInfo != null) {
             if(sessionService.isAuthorized(sessionInfo)) {
+                if(userService.isBlocked(sessionInfo.getUserId())) {
+                    throw ServiceException.builder()
+                            .code(ApiResultCode.USER_BLOCKED)
+                            .message(localizationService.getTranslated(sessionInfo, "ui.text.error.user_blocked"))
+                            .systemMessage(localizationService.getTranslated("eng", "ui.text.error.user_blocked"))
+                            .build();
+                }
                 response.setHeader(X_USER_SESSION_ID_HEADER, sessionInfo.getId());
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setUserInfo(profileService.getUserInfo(sessionInfo.getUserId()));
@@ -105,5 +117,17 @@ public class UserController extends BaseController {
     public StandardResponse getAll(@RequestBody StandardRequest request) {
         SessionInfo sessionInfo = getCurrentSession();
         return new GetUsersResponse(userService.getAll(sessionInfo));
+    }
+
+    @SessionRequired
+    @RequestValidateRequired(beanValidator = SetBlockRequestValidator.class)
+    @RequestMapping(path = "setBlock", method = RequestMethod.POST)
+    public StandardResponse setBlock(@RequestBody SetBlockRequest request) {
+        SessionInfo sessionInfo = getCurrentSession();
+        boolean blocked = userService.setBlock(sessionInfo, request.getUserId(), request.getBlocked());
+        if(blocked) {
+            sessionService.deleteAllFor(request.getUserId());
+        }
+        return new SetBlockResponse(request.getUserId(), blocked);
     }
 }

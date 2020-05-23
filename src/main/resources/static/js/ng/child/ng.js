@@ -97,7 +97,7 @@ lPCModule.controller('ChildController', function ($scope) {
         $scope.doSave = function () {
             $('button#save_child').prop("disabled", true);
 
-            if (isNull($scope.child?.childInfo?.id)) {
+            if (isNull($scope.child) || isNull($scope.child.childInfo) || isNull($scope.child.childInfo.id)) {
                 $.ajax({
                     type: "POST",
                     url: '/v3/child/add',
@@ -122,8 +122,8 @@ lPCModule.controller('ChildController', function ($scope) {
             $scope.error = null;
             $scope.$apply(function () {
                 $('button#save_child').prop("disabled", false);
-                const responseCode = data?.responseInfo?.resultCode;
-                const responseMessage = data?.responseInfo?.message;
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
                 if (responseCode === "Ok") {
                     if (isNull($scope.child.childInfo.id)) {
                         $scope.children.push({
@@ -131,8 +131,10 @@ lPCModule.controller('ChildController', function ($scope) {
                             courseSchedulingInfos: data.courseSchedulingInfos
                         });
                     }
-                    for(let i = 0, size = $scope.child?.courseSchedulingInfos?.length; i < size; i++) {
-                        $scope.child.courseSchedulingInfos[i].duplicate = null;
+                    if(!isNull($scope.child) && !isNull($scope.child.courseSchedulingInfos)) {
+                        for(let i = 0, size = $scope.child.courseSchedulingInfos.length; i < size; i++) {
+                            $scope.child.courseSchedulingInfos[i].duplicate = null;
+                        }
                     }
                     $scope.showList();
                 } else if (responseCode === "ConstraintException") {
@@ -146,15 +148,17 @@ lPCModule.controller('ChildController', function ($scope) {
                         $scope.error = responseMessage;
                     }
 
-                    for(let i = 0, size = $scope.child?.courseSchedulingInfos?.length; i < size; i++) {
-                        const iInfo = $scope.child?.courseSchedulingInfos[i];
-                        for(let j = 0; j < i; j++) {
-                            const jInfo = $scope.child?.courseSchedulingInfos[j];
-                            if(Number(iInfo.courseInfo.id) === Number(jInfo.courseInfo.id) &&
-                                Number(iInfo.dayOfWeek) === Number(jInfo.dayOfWeek) &&
-                                iInfo.timeStart === jInfo.timeStart && iInfo.timeEnd === jInfo.timeEnd) {
-                                iInfo.duplicate = true;
-                                break;
+                    if(!isNull($scope.child) && !isNull($scope.child.courseSchedulingInfos)) {
+                        for (let i = 0, size = $scope.child.courseSchedulingInfos.length; i < size; i++) {
+                            const iInfo = $scope.child.courseSchedulingInfos[i];
+                            for (let j = 0; j < i; j++) {
+                                const jInfo = $scope.child.courseSchedulingInfos[j];
+                                if (Number(iInfo.courseInfo.id) === Number(jInfo.courseInfo.id) &&
+                                    Number(iInfo.dayOfWeek) === Number(jInfo.dayOfWeek) &&
+                                    iInfo.timeStart === jInfo.timeStart && iInfo.timeEnd === jInfo.timeEnd) {
+                                    iInfo.duplicate = true;
+                                    break;
+                                }
                             }
                         }
                     }

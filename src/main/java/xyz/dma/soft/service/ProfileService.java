@@ -3,6 +3,7 @@ package xyz.dma.soft.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import xyz.dma.soft.api.entity.UserInfoEntity;
+import xyz.dma.soft.domain.user.UserInfo;
 import xyz.dma.soft.repository.UserInfoRepository;
 import xyz.dma.soft.repository.UserRepository;
 
@@ -15,15 +16,15 @@ public class ProfileService {
     private final UserInfoRepository userInfoRepository;
 
     public UserInfoEntity getUserInfo(Long userId) {
-        xyz.dma.soft.domain.user.UserInfo userInfo = userInfoRepository.findFirstById(userId);
+        UserInfo userInfo = userInfoRepository.findFirstById(userId);
         return new UserInfoEntity(userId, userInfo);
     }
 
     @Transactional
     public void changeProfile(Long userId, UserInfoEntity newUserInfoEntity) {
-        xyz.dma.soft.domain.user.UserInfo userInfo = userInfoRepository.findFirstById(userId);
+        UserInfo userInfo = userInfoRepository.findFirstById(userId);
         if(userInfo == null) {
-            userInfo = new xyz.dma.soft.domain.user.UserInfo();
+            userInfo = new UserInfo();
             userInfo.setUser(userRepository.findFirstById(userId));
         }
         if(newUserInfoEntity != null) {

@@ -16,6 +16,7 @@ public enum ApiResultCode {
     ROLE_ALREADY_GRANTED("RoleAlreadyGranted"),
     NOT_EXISTS("NotExists"),
     ACCESS_DENIED("AccessDenied"),
+    USER_BLOCKED("UserBlocked"),
     DUPLICATES("Duplicates"),
     UNEXPECTED_ERROR("UnexpectedError");
 

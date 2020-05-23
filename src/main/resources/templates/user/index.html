@@ -5,6 +5,7 @@
     <title th:text="${translations['ui.title.user.list'].translation}"></title>
     <script th:inline="javascript">
         /*<![CDATA[*/
+        const currentUserId = /*[[${userId}]]*/ 0;
         const users = /*[[${users}]]*/ [];
         const roles = /*[[${roles}]]*/ [];
         /*]]>*/
@@ -27,6 +28,7 @@
                         <th th:text="${translations['ui.text.roles'].translation}"></th>
                         <th th:text="${translations['ui.text.last_auth_ip'].translation}"></th>
                         <th th:text="${translations['ui.text.last_auth_date'].translation}"></th>
+                        <th th:text="${translations['ui.text.blocking'].translation}"></th>
                     </tr>
                     </thead>
                     <tbody ng-cloak>
@@ -35,6 +37,17 @@
                         <td>{{user.roleLine}}</td>
                         <td>{{user.lastIpAuth}}</td>
                         <td>{{user.lastDateTimeAuth}}</td>
+                        <td class="text-center" ng-if="currentUserId !== user.userId && userBlocked = user.blocked !== null && user.blocked !== undefined && user.blocked">
+                            <button id="unblock_button_{{user.userId}}" type="button" class="btn btn-outline-danger" ng-click="doSetBlock(user, !userBlocked)">
+                                <i class="fas fa-lock-open"></i>
+                            </button>
+                        </td>
+                        <td class="text-center" ng-if="currentUserId !== user.userId && !(userBlocked = user.blocked !== null && user.blocked !== undefined && user.blocked)">
+                            <button id="block_button_{{user.userId}}" type="button" class="btn btn-outline-info" ng-click="doSetBlock(user, !userBlocked)">
+                                <i class="fas fa-lock"></i>
+                            </button>
+                        </td>
+                        <td ng-if="currentUserId === user.userId"></td>
                     </tr>
                     </tbody>
                 </table>

@@ -136,5 +136,6 @@
         <codes>ui.text.last_name</codes>
         <codes>ui.button.save</codes>
         <codes>ui.button.add</codes>
+        <codes>ui.text.blocking</codes>
     </pageInfos>
 </pageInfos>

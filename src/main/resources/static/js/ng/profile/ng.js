@@ -19,8 +19,8 @@ angular.module('lessonPlanningProfile', ['lessonPlanning'])
             $scope.handleChangeProfileResponse = function(data) {
                 $scope.$apply(function () {
                     $('button#save_profile').prop("disabled", false);
-                    const responseCode = data?.responseInfo?.resultCode;
-                    const responseMessage = data?.responseInfo?.message;
+                    const responseCode = data.responseInfo.resultCode;
+                    const responseMessage = data.responseInfo.message;
                     if (responseCode === "Ok") {
                         if (responseMessage !== undefined && responseMessage !== null) {
                             $scope.resultInfo = responseMessage;
@@ -48,8 +48,8 @@ angular.module('lessonPlanningProfile', ['lessonPlanning'])
                 $scope.resultInfo = "";
                 $scope.$apply(function () {
                     $('button#change_pass').prop("disabled", false);
-                    const responseCode = data?.responseInfo?.resultCode;
-                    const responseMessage = data?.responseInfo?.message;
+                    const responseCode = data.responseInfo.resultCode;
+                    const responseMessage = data.responseInfo.message;
                     if (responseCode === "Ok") {
                         if (responseMessage !== undefined && responseMessage !== null) {
                             $scope.resultInfo = responseMessage;

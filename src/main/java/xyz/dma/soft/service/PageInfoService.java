@@ -78,6 +78,7 @@ public class PageInfoService {
                         !sessionInfo.getAllowedActions().contains(pageInfo.getAllowedAction())) {
                     return null;
                 }
+                model.addAttribute("userId", sessionInfo.getUserId());
                 model.addAttribute("allowedActions", sessionInfo.getAllowedActions());
             }
 

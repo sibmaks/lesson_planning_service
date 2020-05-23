@@ -47,6 +47,12 @@ public class UserService {
                             "ui.text.error.user_not_found"))
                     .build();
         }
+        if(user.getBlocked() != null && user.getBlocked()) {
+            throw ServiceException.builder().code(ApiResultCode.USER_BLOCKED)
+                    .message(localizationService.getTranslated(countryIso3, languageIso3, "ui.text.error.user_blocked"))
+                    .systemMessage(localizationService.getTranslated("eng", "ui.text.error.user_blocked"))
+                    .build();
+        }
         Map<String, String> attributes = new HashMap<>();
         attributes.put(SessionInfo.ATTR_COUNTRY_ISO3, countryIso3);
         attributes.put(SessionInfo.ATTR_LANGUAGE_ISO3, languageIso3);
@@ -125,5 +131,23 @@ public class UserService {
 
     public List<UserInfoEntity> getAll(SessionInfo sessionInfo) {
         return userRepository.findAllByOrderById().stream().map(it -> new UserInfoEntity(it, true)).collect(toList());
+    }
+
+    @Transactional
+    public boolean setBlock(SessionInfo sessionInfo, Long userId, Boolean blocked) {
+        User user = userRepository.findFirstById(userId);
+        if(blocked) {
+            user.setBlocked(true);
+            user.setBlockedDate(LocalDateTime.now());
+        } else {
+            user.setBlocked(false);
+            user.setBlockedDate(null);
+        }
+        return userRepository.save(user).getBlocked();
+    }
+
+    public boolean isBlocked(Long userId) {
+        Boolean blocked = userRepository.findFirstById(userId).getBlocked();
+        return blocked != null && blocked;
     }
 }

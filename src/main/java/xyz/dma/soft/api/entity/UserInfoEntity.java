@@ -21,6 +21,7 @@ public class UserInfoEntity implements Serializable {
     private String firstName;
     private String lastName;
     private List<String> roles;
+    private Boolean blocked;
     private String roleLine;
     private String lastIpAuth;
     private String lastDateTimeAuth;
@@ -42,6 +43,8 @@ public class UserInfoEntity implements Serializable {
             this.lastName = user.getUserInfo().getLastName();
         }
         if(extended) {
+            this.blocked = user.getBlocked();
+
             this.login = user.getLogin();
             if(user.getUserRoles() != null) {
                 this.roles = user.getUserRoles().stream().map(UserRole::getName).collect(Collectors.toList());

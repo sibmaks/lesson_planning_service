@@ -5,7 +5,7 @@ moment.locale(locale);
 lPCModule.controller('SchedulingController', function ($scope) {
         $scope.courses = courses;
         $scope.translations = translations;
-        $scope.loadRequest = {courseId: ($scope.courses === null || $scope.courses === undefined ? null : $scope.courses[0]?.id)};
+        $scope.loadRequest = {courseId: (isNull($scope.courses) || $scope.courses.length === 0 ? null : $scope.courses[0].id)};
 
 
         $scope.changeMonth = function(monthVal) {
@@ -53,12 +53,14 @@ lPCModule.controller('SchedulingController', function ($scope) {
         $scope.filterTimeRange = function(timeRange, list) {
             const result = [];
 
-            for(let i = 0, size = list?.length; i < size; i++) {
-                const item = list[i];
-                const timeStart = moment.utc(item.timeStart, 'HH:mm');
-                const timeEnd = moment.utc(item.timeEnd, 'HH:mm');
-                if(timeEnd > timeRange.from && timeStart < timeRange.to) {
-                    result.push(item);
+            if(!isNull(list)) {
+                for (let i = 0, size = list.length; i < size; i++) {
+                    const item = list[i];
+                    const timeStart = moment.utc(item.timeStart, 'HH:mm');
+                    const timeEnd = moment.utc(item.timeEnd, 'HH:mm');
+                    if (timeEnd > timeRange.from && timeStart < timeRange.to) {
+                        result.push(item);
+                    }
                 }
             }
 
@@ -68,17 +70,19 @@ lPCModule.controller('SchedulingController', function ($scope) {
         $scope.filterDuplicateChildren = function(list) {
             const result = [];
 
-            for(let i = 0, size = list?.length; i < size; i++) {
-                const iItem = list[i];
-                let exist = false;
-                for(let j = 0, sizeResult = result.length; j < sizeResult; j++) {
-                    if(result[j].child.id === iItem.child.id) {
-                        exist = true;
-                        break;
+            if(!isNull(list)) {
+                for (let i = 0, size = list.length; i < size; i++) {
+                    const iItem = list[i];
+                    let exist = false;
+                    for (let j = 0, sizeResult = result.length; j < sizeResult; j++) {
+                        if (result[j].child.id === iItem.child.id) {
+                            exist = true;
+                            break;
+                        }
                     }
-                }
-                if(!exist) {
-                    result.push(iItem);
+                    if (!exist) {
+                        result.push(iItem);
+                    }
                 }
             }
 
@@ -114,8 +118,8 @@ lPCModule.controller('SchedulingController', function ($scope) {
         $scope.handleLoadSchedulingResponse = function (data) {
             $scope.error = null;
             $scope.$apply(function () {
-                const responseCode = data?.responseInfo?.resultCode;
-                const responseMessage = data?.responseInfo?.message;
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
                 if (responseCode === "Ok") {
                     $scope._dateRange = [];
                     $scope._dayOfWeekScheduling = data.dayOfWeekScheduling;
@@ -133,8 +137,8 @@ lPCModule.controller('SchedulingController', function ($scope) {
         $scope.handleLoadLessonsResponse = function (data) {
             $scope.error = null;
             $scope.$apply(function () {
-                const responseCode = data?.responseInfo?.resultCode;
-                const responseMessage = data?.responseInfo?.message;
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
                 if (responseCode === "Ok") {
                     $scope._lessons = data.lessons;
                     $scope.lessonGetSuccess = true;

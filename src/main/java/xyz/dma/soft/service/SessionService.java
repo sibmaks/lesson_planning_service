@@ -64,12 +64,8 @@ public class SessionService {
     public void deleteAllExpect(SessionInfo currentSessionInfo) {
         String sessionId = currentSessionInfo.getId();
         Long id = currentSessionInfo.getUserId();
-        List<SessionInfo> sessionInfos = sessionStorage.get(it -> it.getUserId().equals(id));
-        for(SessionInfo sessionInfo : sessionInfos) {
-            if(!sessionInfo.getId().equals(sessionId)) {
-                sessionStorage.remove(sessionInfo.getId());
-            }
-        }
+        sessionStorage.get(it -> it.getUserId().equals(id) && !it.getId().equals(sessionId))
+                .forEach(it -> sessionStorage.remove(it.getId()));
     }
 
     public SessionInfo getCurrentSession(HttpServletRequest request) {
@@ -83,5 +79,9 @@ public class SessionService {
             }
         }
         return sessionId == null || sessionId.isEmpty() ? null : getSessionInfo(sessionId);
+    }
+
+    public void deleteAllFor(Long userId) {
+        sessionStorage.get(it -> it.getUserId().equals(userId)).forEach(it -> sessionStorage.remove(it.getId()));
     }
 }

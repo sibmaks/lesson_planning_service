@@ -1,6 +1,7 @@
 const lPCModule = angular.module('lessonPlanningUser', ['lessonPlanning']);
 
 lPCModule.controller('UserController', function ($scope) {
+        $scope.currentUserId = currentUserId;
         $scope.users = users;
         $scope.roles = roles;
 
@@ -36,6 +37,44 @@ lPCModule.controller('UserController', function ($scope) {
             }
         }
 
+        $scope.doSetBlock = function (user, userBlock) {
+            if(userBlock) {
+                $('button#block_button_' + user.userId).prop("disabled", true);
+            } else {
+                $('button#unblock_button_' + user.userId).prop("disabled", true);
+            }
+            $.ajax({
+                type: "POST",
+                url: '/v3/user/setBlock',
+                data: JSON.stringify({userId: user.userId, blocked: userBlock}),
+                success: $scope.handleUserSetBlockResponse,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        }
+
+        $scope.handleUserSetBlockResponse = function (data) {
+            $scope.$apply(function () {
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
+                if (responseCode === "Ok") {
+                    const userId = data.userId;
+                    $('button#block_button_' + userId).prop("disabled", false);
+                    $('button#unblock_button_' + userId).prop("disabled", false);
+                    for(const key in $scope.users) {
+                        if($scope.users[key].userId === userId) {
+                            $scope.users[key].blocked = data.blocked;
+                            break;
+                        }
+                    }
+                } else if (responseCode === "ConstraintException") {
+                    // Ignore this, very strange
+                } else if (!isNull(responseMessage)) {
+                    alert(responseMessage);
+                }
+            });
+        }
+
         $scope.doSave = function () {
             $('button#save_user').prop("disabled", true);
             $.ajax({
@@ -52,8 +91,8 @@ lPCModule.controller('UserController', function ($scope) {
             $scope.error = null;
             $scope.$apply(function () {
                 $('button#save_user').prop("disabled", false);
-                const responseCode = data?.responseInfo?.resultCode;
-                const responseMessage = data?.responseInfo?.message;
+                const responseCode = data.responseInfo.resultCode;
+                const responseMessage = data.responseInfo.message;
                 if (responseCode === "Ok") {
                     $scope.users.push(data.userInfo);
                     $scope.showList();
