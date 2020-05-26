@@ -19,6 +19,8 @@ import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 @Controller("defaultErrorController")
@@ -50,8 +52,12 @@ public class DefaultErrorHandler implements ErrorController {
 
     @RequestMapping(value = "/error", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public String handleErrorGET(HttpServletRequest request, Model model) {
+    public String handleErrorGET(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
         SessionInfo sessionInfo = sessionService.getCurrentSession(request);
+        if(sessionInfo == null || !sessionInfo.isAuthorized()) {
+            response.sendRedirect("/home/");
+            return "redirect:/home";
+        }
         PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, "404");
         return pageInfo.getTemplatePath();
     }
