@@ -5,6 +5,7 @@ moment.locale(locale);
 lPCModule.controller('SchedulingController', function ($scope) {
         $scope.courses = courses;
         $scope.translations = translations;
+        $scope.loading = false;
         $scope.loadRequest = {courseId: (isNull($scope.courses) || $scope.courses.length === 0 ? null : $scope.courses[0].id)};
 
 
@@ -91,6 +92,7 @@ lPCModule.controller('SchedulingController', function ($scope) {
 
         $scope.doLoad = function () {
             if(!isNull($scope.loadRequest.courseId) && $scope.loadRequest.courseId >= 1) {
+                $scope.loading = true;
                 $('button#load_scheduling').prop("disabled", true);
                 $('select#month_select').prop("disabled", true);
                 $scope.lessonGetSuccess = false;
@@ -151,6 +153,7 @@ lPCModule.controller('SchedulingController', function ($scope) {
 
         $scope.handleAsyncResult = function () {
             if($scope.lessonGetSuccess && $scope.schedulingGetSuccess) {
+                $scope.loading = false;
                 $('button#load_scheduling').prop("disabled", false);
                 $('select#month_select').prop("disabled", false);
 

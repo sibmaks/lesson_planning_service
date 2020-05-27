@@ -29,6 +29,13 @@
                         <th th:text="${translations['ui.button.edit'].translation}"></th>
                     </tr>
                     </thead>
+                    <tbody class="ng-hide" ng-hide="loaded">
+                        <tr>
+                            <td colspan="4" class="fa-3x text-center">
+                                <i class="fas fa-spinner fa-pulse"></i>
+                            </td>
+                        </tr>
+                    </tbody>
                     <tbody ng-cloak>
                     <tr ng-repeat="child in children">
                         <td>{{child.childInfo.name}}</td>

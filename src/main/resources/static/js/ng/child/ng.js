@@ -12,6 +12,7 @@ lPCModule.controller('ChildController', function ($scope) {
             $scope.constraints = {};
             $scope.mode = 'list';
             $scope.child = {};
+            $scope.loaded = true;
         }
 
         $scope.showList();

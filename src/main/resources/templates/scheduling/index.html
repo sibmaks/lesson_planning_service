@@ -53,7 +53,7 @@
     <div class="jumbotron col-lg-12 col-sm-12">
         <div class="container col-lg-12">
             <div class="table-responsive">
-                <table class="table">
+                <table ng-if="!loading" class="table">
                     <thead>
                     <tr>
                         <th></th>
@@ -100,8 +100,8 @@
                             </a>
                         </td>
                     </tr>
-                    </tbody>
                 </table>
+                <div ng-if="loading" class="fa-3x text-center"><i class="fas fa-spinner fa-pulse"></i></div>
             </div>
         </div>
     </div>
