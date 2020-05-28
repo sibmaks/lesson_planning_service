@@ -45,7 +45,7 @@ angular.module('lessonPlanningProfile', ['lessonPlanning'])
 
             $scope.handleChangePasswordResponse = function(data) {
                 $scope.constrains = {};
-                $scope.resultInfo = "";
+                $scope.resultInfo = null;
                 $scope.$apply(function () {
                     $('button#change_pass').prop("disabled", false);
                     const responseCode = data.responseInfo.resultCode;
