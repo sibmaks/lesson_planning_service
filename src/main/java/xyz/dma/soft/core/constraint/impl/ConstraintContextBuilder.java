@@ -15,11 +15,17 @@ import java.util.Set;
  * Created by maksim.drobyshev on 08-May-20.
  */
 public class ConstraintContextBuilder {
+    private final String languageIso3;
     @Getter
     private final Set<ConstraintInfo> constraints;
 
+    public ConstraintContextBuilder(String languageIso3) {
+        this.languageIso3 = languageIso3;
+        this.constraints = new HashSet<>();
+    }
+
     public ConstraintContextBuilder() {
-        constraints = new HashSet<>();
+        this(null);
     }
 
     void addConstraint(String field, ConstraintType constraintType) {
@@ -38,11 +44,13 @@ public class ConstraintContextBuilder {
     }
 
     public IConstraintContext build() {
-        return new ConstraintContextImpl(constraints);
+        return new ConstraintContextImpl(languageIso3, constraints);
     }
 
     @AllArgsConstructor
     private static class ConstraintContextImpl implements IConstraintContext {
+        @Getter
+        private final String languageIso3;
         @Getter
         private final Set<ConstraintInfo> constraints;
     }

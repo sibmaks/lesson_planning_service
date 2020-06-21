@@ -87,10 +87,12 @@ public class DefaultExceptionHandler {
                 .build();
         SessionInfo sessionInfo = sessionService.getCurrentSession(request);
         String countryIso3 = null;
-        String languageIso3 = null;
+        String languageIso3;
         if(sessionInfo != null) {
             countryIso3 = sessionInfo.getCountryIso3();
             languageIso3 = sessionInfo.getLanguageIso3();
+        } else {
+            languageIso3 = e.getConstraintContext().getLanguageIso3();
         }
         Map<String, String> localizedConstraints = new HashMap<>();
         for(ConstraintInfo constraintInfo : e.getConstraintContext().getConstraints()) {

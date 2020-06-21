@@ -13,7 +13,7 @@ import static xyz.dma.soft.constants.ICommonConstants.LANGUAGES;
 public class LoginRequestValidator extends ARequestValidator<LoginRequest> {
     @Override
     public IConstraintContext validate(LoginRequest request) {
-        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder();
+        ConstraintContextBuilder contextBuilder = new ConstraintContextBuilder(request.getLanguageIso3());
         contextBuilder
                 .line(request)
                     .validate(it -> notEmpty(it.getLogin()), "login")
