@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import xyz.dma.soft.domain.user.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -41,8 +39,7 @@ public class Lesson implements Serializable {
     @Column(name = "lesson_end_date")
     private LocalDate lessonEndDate;
 
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<ChildInfo> children;
 
     @ManyToOne(fetch = FetchType.EAGER)

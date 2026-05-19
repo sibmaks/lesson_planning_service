@@ -15,7 +15,7 @@ import xyz.dma.soft.repository.ChildInfoRepository;
 import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.LessonRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;

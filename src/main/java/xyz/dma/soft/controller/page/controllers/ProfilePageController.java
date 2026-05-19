@@ -8,7 +8,7 @@ import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.ProfileService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @AllArgsConstructor
 @Service

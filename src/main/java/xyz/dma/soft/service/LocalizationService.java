@@ -10,7 +10,7 @@ import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.repository.LocaleRepository;
 import xyz.dma.soft.repository.TranslationRepository;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -19,7 +19,7 @@ import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.SchedulingCourseInfoRepository;
 import xyz.dma.soft.utils.ConvertUtils;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;

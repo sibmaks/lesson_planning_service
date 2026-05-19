@@ -25,7 +25,7 @@ import xyz.dma.soft.service.LocalizationService;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 

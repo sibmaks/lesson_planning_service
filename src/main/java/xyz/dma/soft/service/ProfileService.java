@@ -7,7 +7,7 @@ import xyz.dma.soft.domain.user.UserInfo;
 import xyz.dma.soft.repository.UserInfoRepository;
 import xyz.dma.soft.repository.UserRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 @AllArgsConstructor

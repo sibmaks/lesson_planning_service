@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import xyz.dma.soft.conf.SessionInfoStorageConfig;
 import xyz.dma.soft.entity.SessionInfo;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;

@@ -12,7 +12,7 @@ import xyz.dma.soft.exception.PageNotFoundException;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,7 +25,6 @@ public class ChildSchedulingCourseInfo implements Serializable {
     private Course course;
     @ManyToOne(fetch = FetchType.EAGER)
     private ChildInfo childInfo;
-    @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.EAGER)
     private List<SchedulingCourseInfo> schedulingCourseInfoList;
 }

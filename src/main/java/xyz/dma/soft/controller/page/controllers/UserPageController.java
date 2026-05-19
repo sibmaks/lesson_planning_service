@@ -9,7 +9,7 @@ import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.RoleService;
 import xyz.dma.soft.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @AllArgsConstructor
 @Service

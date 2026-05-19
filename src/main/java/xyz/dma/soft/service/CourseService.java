@@ -11,7 +11,7 @@ import xyz.dma.soft.exception.ServiceException;
 import xyz.dma.soft.repository.CourseRepository;
 import xyz.dma.soft.repository.UserRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -17,7 +17,7 @@ import xyz.dma.soft.exception.ServiceException;
 import xyz.dma.soft.repository.UserRepository;
 import xyz.dma.soft.repository.UserRoleRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

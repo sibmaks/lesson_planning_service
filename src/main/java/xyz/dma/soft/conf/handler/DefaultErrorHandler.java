@@ -1,7 +1,8 @@
 package xyz.dma.soft.conf.handler;
 
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.webmvc.error.ErrorAttributes;
+import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +19,8 @@ import xyz.dma.soft.entity.SessionInfo;
 import xyz.dma.soft.service.PageInfoService;
 import xyz.dma.soft.service.SessionService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class DefaultErrorHandler implements ErrorController {
     @ResponseBody
     public StandardResponse handleError(WebRequest request) {
         StandardResponse response = new StandardResponse();
-        Map<String, Object> defaultAttributes = this.errorAttributes.getErrorAttributes(request, false);
+        Map<String, Object> defaultAttributes = this.errorAttributes.getErrorAttributes(request, ErrorAttributeOptions.defaults());
         ResponseInfo responseInfo = response.getResponseInfo();
         responseInfo.setResultCode(ApiResultCode.UNEXPECTED_ERROR);
         String systemMessage = defaultAttributes.get("message") + "\n" + defaultAttributes.get("error");
@@ -60,10 +61,5 @@ public class DefaultErrorHandler implements ErrorController {
         }
         PageInfo pageInfo = pageInfoService.getPreparedPageInfo(model, sessionInfo, "404");
         return pageInfo.getTemplatePath();
-    }
-
-    @Override
-    public String getErrorPath() {
-        return "/error";
     }
 }

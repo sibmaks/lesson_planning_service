@@ -3,7 +3,7 @@ package xyz.dma.soft.domain.user;
 import lombok.*;
 import xyz.dma.soft.api.entity.UserInfoEntity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Data
